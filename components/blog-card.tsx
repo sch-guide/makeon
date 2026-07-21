@@ -12,7 +12,6 @@ export function BlogCard({ post, featured = false }: BlogCardProps) {
     <article className={`blog-card${featured ? " blog-card-featured" : ""}`}>
       <div className="blog-card-topline">
         <span className="category-pill">{post.category}</span>
-        <span>{post.readingTime} 읽기</span>
       </div>
       <div>
         <h3>

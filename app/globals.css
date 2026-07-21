@@ -647,11 +647,6 @@ textarea {
   gap: 12px;
 }
 
-.blog-card-topline > span:last-child {
-  color: var(--text-subtle);
-  font-size: 12px;
-}
-
 .category-pill,
 .status-pill {
   display: inline-flex;
