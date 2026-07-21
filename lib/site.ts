@@ -4,7 +4,7 @@ export const siteConfig = {
   description:
     "코딩을 몰라도 AI와 함께 웹사이트와 앱을 만들고, 누구나 사용할 수 있는 유용한 무료 도구를 공유합니다.",
   url: (process.env.NEXT_PUBLIC_SITE_URL ?? "https://makeon.kr").replace(/\/$/, ""),
-  email: "hello@makeon.kr",
+  email: "sabaha0506@gmail.com",
 } as const;
 
 export const navigation = [
