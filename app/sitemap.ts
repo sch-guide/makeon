@@ -16,7 +16,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return [
     ...staticRoutes.map((route) => ({
       url: `${siteConfig.url}${route}`,
-      lastModified: new Date("2026-07-21"),
+      lastModified: new Date("2026-07-22"),
       changeFrequency: route === "" ? ("weekly" as const) : ("monthly" as const),
       priority:
         route === ""
