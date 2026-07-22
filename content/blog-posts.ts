@@ -1,6 +1,8 @@
 import type { BlogPost } from "@/types/content";
+import { secondClusterPosts } from "@/content/blog-posts-second-cluster";
 
 export const blogPosts: BlogPost[] = [
+  ...secondClusterPosts,
   {
     slug: "build-a-website-with-ai-without-coding",
     title: "AI로 무료 홈페이지 만들기: 코딩 없이 기획부터 Vercel 배포까지",
@@ -171,6 +173,20 @@ export const blogPosts: BlogPost[] = [
           "검색 메타데이터와 sitemap, robots.txt가 올바른 공개 주소를 사용한다",
           "production build가 성공하고 배포 로그에 오류가 없다",
         ],
+        contextualLinks: [
+          {
+            prefix: "정보형 홈페이지 다음 단계로 작은 기능을 만들고 싶다면",
+            label: "AI로 미니앱 만드는 방법",
+            href: "/blog/build-a-mini-app-with-ai",
+            suffix: "을 따라가세요.",
+          },
+          {
+            prefix: "콘텐츠와 무료 도구를 수익 모델로 연결하기 전에는",
+            label: "AI 웹사이트 수익화 방법",
+            href: "/blog/monetize-an-ai-built-website",
+            suffix: "의 정책·트래픽 체크리스트를 확인하세요.",
+          },
+        ],
       },
     ],
     toolCta: {
@@ -213,6 +229,8 @@ export const blogPosts: BlogPost[] = [
       "better-prompts-for-ai-coding",
       "nextjs-vercel-deployment-guide",
       "github-pages-vs-vercel-for-beginners",
+      "build-a-mini-app-with-ai",
+      "monetize-an-ai-built-website",
     ],
     sources: [
       { label: "OpenAI Codex IDE extension 공식 안내", href: "https://developers.openai.com/codex/ide" },
@@ -533,7 +551,7 @@ export const blogPosts: BlogPost[] = [
       {
         question: "애드센스 사이트도 Vercel Hobby를 사용해도 되나요?",
         answer:
-          "현재 공식 안내는 Hobby를 개인·비상업적 용도로 설명합니다. 광고 수익화를 계획한다면 최신 이용 조건을 직접 확인하고 상업적 사용에 맞는 플랜을 선택하세요.",
+          "현재 플랜 안내는 Hobby를 개인 프로젝트용, Pro를 전문 개발자와 비즈니스를 위한 플랜으로 구분합니다. 광고 수익화를 계획한다면 최신 이용 조건을 직접 확인하고 목적에 맞는 플랜을 선택하세요.",
       },
     ],
     relatedSlugs: [
@@ -810,6 +828,12 @@ export const blogPosts: BlogPost[] = [
             href: "/blog/codex-vscode-guide",
             suffix: "을 다음 단계로 읽어보세요.",
           },
+          {
+            prefix: "일반 ChatGPT 답변이 모호하거나 형식이 맞지 않는다면",
+            label: "ChatGPT 프롬프트 수정 방법",
+            href: "/blog/fix-chatgpt-prompts-for-better-answers",
+            suffix: "의 진단표로 부족한 항목부터 찾으세요.",
+          },
         ],
       },
       {
@@ -857,6 +881,8 @@ export const blogPosts: BlogPost[] = [
       },
     ],
     relatedSlugs: [
+      "fix-chatgpt-prompts-for-better-answers",
+      "free-ai-prompt-generator-guide",
       "build-a-website-with-ai-without-coding",
       "codex-vscode-guide",
       "chatgpt-codex-webapp-review",
@@ -864,50 +890,69 @@ export const blogPosts: BlogPost[] = [
   },
   {
     slug: "github-pages-vs-vercel-for-beginners",
-    title: "GitHub Pages와 Vercel 차이, 초보자는 무엇이 쉬울까?",
-    seoTitle: "GitHub Pages와 Vercel 차이: 초보자 무료 배포 비교",
+    title: "GitHub Pages와 Vercel 차이: 무료 홈페이지 배포 비교",
+    seoTitle: "GitHub Pages와 Vercel 차이: 무료 홈페이지 배포 비교",
     summary:
-      "정적 사이트와 Next.js 프로젝트를 기준으로 배포 방식, 자동 업데이트, 초보자 난이도를 비교했습니다.",
+      "정적 사이트와 Next.js 프로젝트를 기준으로 자동 배포, 커스텀 도메인, 서버 기능, 무료 플랜 조건과 선택 기준을 비교합니다.",
     description:
-      "GitHub Pages와 Vercel의 배포 방식, 미리보기, Next.js 지원 차이를 초보자 관점에서 비교하고 프로젝트별 선택 기준을 안내합니다.",
+      "GitHub Pages와 Vercel 차이를 정적 사이트, Next.js, 자동 배포, 커스텀 도메인, API와 서버 기능, 초보자 난이도 기준으로 비교합니다.",
     primaryKeyword: "GitHub Pages Vercel 차이",
-    relatedKeywords: ["초보자 웹사이트 배포", "GitHub Pages 사용법", "Vercel 무료 배포", "Next.js 호스팅"],
+    relatedKeywords: ["무료 홈페이지 배포", "GitHub Pages vs Vercel", "초보자 웹사이트 배포", "Next.js 무료 배포"],
     publishedAt: "2026-07-11",
     updatedAt: "2026-07-23",
     category: "배포 가이드",
-    readingTime: "8분",
+    readingTime: "11분",
     sections: [
       {
-        heading: "둘 다 웹사이트를 공개하지만 잘하는 일이 다릅니다",
+        heading: "결론: 정적 파일은 GitHub Pages, 일반적인 Next.js 프로젝트는 Vercel이 이해하기 쉽습니다",
         paragraphs: [
-          "GitHub 공식 문서에서 GitHub Pages는 저장소의 HTML, CSS, JavaScript 파일을 게시하는 정적 사이트 호스팅 서비스로 설명합니다. 소개 페이지나 문서처럼 서버 동작이 필요 없는 사이트에 잘 맞고, 구조가 단순한 만큼 문제가 생겼을 때 확인할 지점도 비교적 적습니다.",
-          "Vercel은 Git 저장소의 변경에 맞춰 미리보기와 운영 배포를 만들 수 있습니다. Next.js는 정적 파일로 내보낼 수도 있지만 사용하는 기능에 따라 제한이 생기므로, Next.js 기능을 계속 활용하는 프로젝트라면 프레임워크 흐름을 지원하는 배포 환경이 편리합니다.",
+          "HTML, CSS, JavaScript 파일만으로 동작하는 소개 페이지나 문서라면 GitHub Pages가 단순합니다. Next.js의 서버 렌더링, Route Handler, 함수, 이미지 최적화처럼 빌드 이후 실행 환경이 필요한 기능을 사용한다면 Vercel이 프로젝트 구조를 그대로 배포하기 쉽습니다.",
+          "둘 다 GitHub 저장소와 무료로 시작할 수 있는 범위와 커스텀 도메인 연결 기능을 제공하지만 사용 목적, 플랜 조건, 제한은 다릅니다. 어느 서비스가 더 좋은지보다 내 프로젝트가 완전한 정적 사이트인지, 서버 기능과 미리보기 배포가 필요한지를 먼저 판단하세요.",
         ],
       },
       {
-        heading: "초보자가 체감하는 차이를 표로 비교합니다",
+        heading: "GitHub Pages와 Vercel 차이를 표로 비교합니다",
         paragraphs: [
-          "도구의 절대적인 난이도보다 내가 만든 프로젝트의 기술과 맞는지가 중요합니다. HTML 파일 몇 개로 끝나는 사이트와 서버 기능을 포함한 Next.js 앱은 필요한 배포 환경이 다릅니다.",
+          "초보자 난이도는 설정 화면보다 프로젝트와 서비스의 궁합에서 갈립니다. 정적 사이트를 Vercel에 올릴 수도 있고 정적으로 내보낸 Next.js를 GitHub Pages에 올릴 수도 있지만, 추가 설정과 기능 제한을 이해해야 합니다.",
         ],
         table: {
-          caption: "GitHub Pages와 Vercel 선택 기준",
+          caption: "무료 홈페이지 배포 서비스 핵심 비교",
           headers: ["항목", "GitHub Pages", "Vercel"],
           rows: [
-            ["잘 맞는 프로젝트", "정적 HTML·문서·소개 페이지", "Next.js·웹앱·프레임워크 프로젝트"],
-            ["배포 흐름", "저장소 파일 또는 Actions 설정", "Git push 기반 Preview·Production 배포"],
-            ["서버 기능", "정적 파일 중심", "플랫폼이 지원하는 함수와 프레임워크 기능"],
-            ["초보자 판단 기준", "사이트가 완전한 정적 파일인지", "Next.js 기능과 자동 배포가 필요한지"],
+            ["잘 맞는 프로젝트", "정적 HTML·CSS·JS, 문서, 포트폴리오", "Next.js, 프레임워크 사이트, 미니앱"],
+            ["Next.js", "정적 내보내기 설정과 기능 제한 확인", "프레임워크를 감지해 빌드 설정 제공"],
+            ["자동 배포", "브랜치·Actions 설정에 따라 게시", "연결한 Git 브랜치 push마다 배포"],
+            ["미리보기 배포", "기본 흐름에는 없음", "브랜치·PR별 Preview 배포 지원"],
+            ["커스텀 도메인", "지원", "지원"],
+            ["서버/API 기능", "정적 호스팅이므로 직접 실행하지 않음", "플랜과 런타임이 지원하는 함수 사용 가능"],
+            ["초보자 선택 기준", "완전한 정적 파일인가", "서버 기능·Preview·Next.js 흐름이 필요한가"],
           ],
         },
       },
       {
-        heading: "Next.js 프로젝트라면 배포 방식부터 확인합니다",
+        heading: "GitHub Pages는 정적 사이트를 저장소에서 바로 공개합니다",
         paragraphs: [
-          "Next.js는 Node.js 서버, Docker, 정적 내보내기 등 여러 방식으로 배포할 수 있고 방식에 따라 지원 기능이 달라집니다. 정적 내보내기로 충분한지 모른다면 기능을 억지로 줄이기보다 현재 라우트와 서버 기능을 확인한 뒤 배포 환경을 선택하세요.",
+          "GitHub 공식 문서는 Pages를 저장소의 HTML, CSS, JavaScript를 선택적인 빌드 과정 뒤 게시하는 정적 사이트 호스팅으로 설명합니다. 개인 소개, 프로젝트 문서, 캠페인 안내처럼 방문자의 요청에 따라 서버에서 데이터를 처리하지 않는 사이트와 잘 맞습니다.",
+          "저장소의 특정 브랜치나 GitHub Actions 워크플로를 게시 소스로 정할 수 있습니다. 소스가 바뀌면 새 사이트가 만들어지지만 Vercel의 Preview 배포처럼 PR마다 운영 주소와 분리된 미리보기 환경을 제공하는 흐름과는 다릅니다.",
         ],
         contextualLinks: [
           {
-            prefix: "Next.js를 GitHub와 연결해 공개하는 실제 단계는",
+            prefix: "정적 페이지를 넘어 콘텐츠와 도구를 함께 확장하려면",
+            label: "AI로 무료 홈페이지 만들기",
+            href: "/blog/build-a-website-with-ai-without-coding",
+            suffix: "에서 Next.js를 선택하는 기준을 확인하세요.",
+          },
+        ],
+      },
+      {
+        heading: "Vercel은 Git push와 Next.js 배포 흐름을 연결합니다",
+        paragraphs: [
+          "Vercel 공식 문서는 연결한 Git 저장소의 브랜치 push와 PR에 배포를 만들고, production 브랜치의 최신 변경을 운영 배포로 연결하는 흐름을 안내합니다. Next.js 프로젝트를 가져오면 프레임워크와 빌드 설정을 감지해 시작 단계를 줄여줍니다.",
+          "배포가 실패하면 Vercel의 Build Logs에서 첫 오류를 확인할 수 있고, 이전 커밋으로 되돌린 뒤 다시 push하는 Git 기반 복구 흐름을 사용할 수 있습니다. 프로젝트 설정에 따라 production 브랜치와 환경변수가 다를 수 있으므로 자동 배포가 항상 같은 결과를 보장하는 것은 아닙니다.",
+        ],
+        contextualLinks: [
+          {
+            prefix: "저장소 연결과 환경변수, 자동 재배포를 실제 순서로 따라가려면",
             label: "Next.js Vercel 배포 방법",
             href: "/blog/nextjs-vercel-deployment-guide",
             suffix: "을 참고하세요.",
@@ -915,17 +960,92 @@ export const blogPosts: BlogPost[] = [
         ],
       },
       {
-        heading: "비용과 도메인은 최신 조건을 다시 봐야 합니다",
+        heading: "Next.js는 정적 내보내기 가능 여부가 선택을 가릅니다",
         paragraphs: [
-          "두 서비스 모두 비용 없이 시작할 수 있는 범위가 있지만 사용 조건은 다릅니다. Vercel의 현재 공식 안내는 Hobby 플랜을 개인·비상업적 프로젝트용으로 설명하므로, 광고나 유료 기능을 계획한다면 상업적 사용에 맞는 플랜을 확인해야 합니다. 요금과 사용량 제한은 바뀔 수 있으므로 배포 전 공식 문서를 확인하세요.",
-          "두 서비스 모두 기본 주소를 제공하고 조건에 따라 개인 도메인을 연결할 수 있습니다. 브랜드를 운영할 계획이라면 기본 주소로 기능을 검증한 뒤 도메인과 플랜을 함께 결정하는 편이 안전합니다.",
+          "Next.js는 정적 HTML 파일로 내보낼 수 있지만 Node.js 서버나 빌드 시점에 결정할 수 없는 동적 기능은 지원 범위에서 벗어날 수 있습니다. API Routes, 일부 리디렉션·헤더, 서버 측 기능을 사용한다면 정적 내보내기 제한을 먼저 확인해야 합니다.",
+          "블로그 글처럼 빌드 때 만들어지는 페이지와 브라우저에서만 실행하는 간단한 계산기는 정적 배포가 가능할 수 있습니다. 반면 요청마다 서버에서 처리해야 하는 API, 인증, 동적 데이터가 필요하다면 해당 런타임을 제공하는 환경이 필요합니다.",
+        ],
+        contextualLinks: [
+          {
+            prefix: "작은 웹앱의 기능 범위를 정하고 배포 환경까지 선택하는 과정은",
+            label: "AI로 미니앱 만드는 방법",
+            href: "/blog/build-a-mini-app-with-ai",
+            suffix: "에 정리했습니다.",
+          },
         ],
       },
       {
-        heading: "MAKEON의 선택 기준",
+        heading: "자동 배포는 둘 다 가능하지만 검토 흐름이 다릅니다",
         paragraphs: [
-          "Next.js로 콘텐츠 페이지와 무료 도구를 계속 추가할 계획이라면 Vercel의 Git 연동 흐름이 자연스럽습니다. 반대로 한 장짜리 소개 페이지나 정적 문서를 빠르게 공유할 때는 GitHub Pages도 충분합니다.",
-          "어떤 서비스를 고르든 README에 실행 방법을 남기고, 환경변수 실제 값은 저장소 밖에서 관리하며, 배포 전 production build를 확인하는 습관이 중요합니다.",
+          "GitHub Pages는 브랜치 또는 Actions를 게시 소스로 사용해 저장소 변경을 사이트에 반영할 수 있습니다. 단순한 정적 사이트라면 설정할 지점이 적고, 별도 빌드가 필요하면 Actions 워크플로를 관리해야 합니다.",
+          "Vercel은 Git 저장소를 가져온 뒤 일반적으로 브랜치 push에는 Preview, production 브랜치에는 Production 배포를 생성합니다. 변경을 운영 사이트에 바로 넣기 전에 고유 미리보기 URL에서 확인하고 싶은 프로젝트에 유용합니다.",
+        ],
+        bullets: [
+          "정적 파일만 있고 운영 전 별도 미리보기가 필요 없으면 GitHub Pages 검토",
+          "PR별 미리보기와 production 브랜치 자동 배포가 필요하면 Vercel 검토",
+          "두 경우 모두 커밋 전 비밀키와 환경변수 파일 제외",
+          "배포 전 로컬 production build와 내부 링크 확인",
+        ],
+      },
+      {
+        heading: "커스텀 도메인은 둘 다 지원하지만 DNS 설정은 별도입니다",
+        paragraphs: [
+          "GitHub Pages는 github.io 기본 주소와 소유한 커스텀 도메인을 지원하고, Vercel은 vercel.app 주소와 프로젝트별 커스텀 도메인을 지원합니다. 도메인 구매 비용은 호스팅 무료 범위와 별개입니다.",
+          "도메인을 연결할 때는 서비스 화면의 안내에 맞춰 DNS 레코드를 설정하고 HTTPS가 정상 적용됐는지 확인하세요. 기존 도메인을 옮길 때는 이전 레코드를 바로 지우기보다 새 설정이 확인된 뒤 전환해 중단 시간을 줄이는 편이 안전합니다.",
+        ],
+      },
+      {
+        heading: "서버 기능과 API가 필요하면 GitHub Pages만으로는 부족합니다",
+        paragraphs: [
+          "GitHub Pages는 정적 호스팅이므로 방문자의 요청을 받아 서버 코드를 실행하거나 비밀키를 안전하게 보관하는 백엔드 역할을 하지 않습니다. 외부 API를 브라우저에서 직접 호출하며 비밀키를 넣으면 코드에 노출될 수 있습니다.",
+          "Vercel은 플랜과 런타임이 지원하는 범위에서 Functions와 프레임워크 서버 기능을 제공할 수 있습니다. 하지만 데이터베이스, 인증, 외부 API 비용이 자동으로 해결되는 것은 아니며 서비스별 보안과 사용량을 별도로 설계해야 합니다.",
+        ],
+      },
+      {
+        heading: "무료 플랜과 상업적 이용 조건은 공개 전에 확인합니다",
+        paragraphs: [
+          "GitHub Pages 공식 제한 문서는 온라인 비즈니스, 전자상거래, 상업용 SaaS를 운영하는 무료 웹호스팅 용도로 사용하도록 설계된 서비스가 아니라고 안내합니다. 수익형 서비스라면 단순히 기술적으로 배포되는지만 보지 말고 사용 제한을 확인해야 합니다.",
+          "Vercel의 현재 플랜 안내는 Hobby를 개인 프로젝트용, Pro를 전문 개발자와 비즈니스를 위한 플랜으로 구분합니다. 광고, 유료 기능, 고객용 프로젝트를 계획한다면 최신 플랜 설명과 이용 조건, 예상 사용량을 직접 확인하세요. 정책과 제공량은 바뀔 수 있습니다.",
+        ],
+        contextualLinks: [
+          {
+            prefix: "광고와 무료 도구를 포함한 운영 모델을 설계하려면",
+            label: "AI 웹사이트 수익화 방법",
+            href: "/blog/monetize-an-ai-built-website",
+            suffix: "에서 비용과 정책 체크리스트를 함께 보세요.",
+          },
+        ],
+      },
+      {
+        heading: "내 프로젝트에 맞는 선택 체크리스트",
+        paragraphs: [
+          "아래 질문에 답하면 서비스 이름보다 프로젝트 요구사항을 기준으로 선택할 수 있습니다. 어느 쪽을 고르든 README에 실행 방법을 남기고 실제 환경변수는 저장소 밖에서 관리하세요.",
+        ],
+        subsections: [
+          {
+            heading: "GitHub Pages가 잘 맞는 경우",
+            paragraphs: [
+              "정적 파일만으로 완성되고 서버 처리나 상업용 SaaS 운영이 필요 없는 프로젝트에 적합합니다.",
+            ],
+            bullets: [
+              "HTML·CSS·JavaScript 또는 정적 빌드 결과만 사용",
+              "포트폴리오, 프로젝트 문서, 학습용 소개 사이트",
+              "PR별 미리보기보다 단순한 게시 흐름을 선호",
+              "GitHub Pages의 사용 제한과 저장소 공개 범위가 목적에 맞음",
+            ],
+          },
+          {
+            heading: "Vercel이 잘 맞는 경우",
+            paragraphs: [
+              "Next.js 기능을 유지하고 Preview와 Production을 나누거나 향후 웹앱 기능을 확장할 프로젝트에 적합합니다.",
+            ],
+            bullets: [
+              "Next.js 프로젝트를 기본 구조 그대로 배포",
+              "브랜치와 PR마다 미리보기 주소가 필요",
+              "지원 범위 안의 서버 함수나 이미지 최적화 사용",
+              "프로젝트 목적에 맞는 최신 플랜과 사용량을 확인할 수 있음",
+            ],
+          },
         ],
         contextualLinks: [
           {
@@ -941,29 +1061,42 @@ export const blogPosts: BlogPost[] = [
       {
         question: "Next.js는 GitHub Pages에 배포할 수 없나요?",
         answer:
-          "정적 내보내기가 가능한 범위에서는 선택할 수 있지만 일부 Next.js 기능이 제한될 수 있습니다. 프로젝트가 사용하는 기능과 공식 배포 문서를 먼저 확인해야 합니다.",
+          "정적 내보내기가 가능한 범위에서는 배포할 수 있지만 서버가 필요한 기능과 일부 Next.js 기능은 제한됩니다. 현재 프로젝트의 라우트와 공식 정적 내보내기 문서를 먼저 확인하세요.",
       },
       {
         question: "초보자는 GitHub Pages와 Vercel 중 무엇이 쉬운가요?",
         answer:
-          "순수 HTML 정적 사이트는 GitHub Pages가 단순하고, 일반적인 Next.js 프로젝트는 Vercel이 설정을 줄여주는 경우가 많습니다. 프로젝트 기술에 맞춰 선택하세요.",
+          "순수 HTML 정적 사이트는 GitHub Pages가 단순하고, 일반적인 Next.js 프로젝트는 Vercel이 설정을 줄여주는 경우가 많습니다. 서비스보다 프로젝트 기술을 먼저 기준으로 선택하세요.",
       },
       {
-        question: "무료 플랜으로 상업 사이트를 운영해도 되나요?",
+        question: "두 서비스 모두 커스텀 도메인을 연결할 수 있나요?",
         answer:
-          "서비스와 플랜마다 조건이 다릅니다. 특히 Vercel Hobby는 현재 개인·비상업적 용도로 안내되므로 광고나 수익화 전 최신 약관과 적합한 플랜을 확인하세요.",
+          "GitHub Pages와 Vercel 모두 소유한 도메인을 연결할 수 있습니다. 도메인 구매 비용은 별도이며 서비스 안내에 맞춰 DNS와 HTTPS 상태를 확인해야 합니다.",
+      },
+      {
+        question: "GitHub에 push하면 사이트가 자동으로 바뀌나요?",
+        answer:
+          "게시 소스와 Git 연동이 올바르게 설정돼 있으면 새 배포가 시작될 수 있습니다. 빌드 실패나 production 브랜치 설정에 따라 반영되지 않을 수 있으므로 배포 상태와 로그를 확인하세요.",
+      },
+      {
+        question: "무료 플랜으로 수익형 사이트를 운영해도 되나요?",
+        answer:
+          "서비스와 플랜마다 목적과 사용 제한이 다르고 변경될 수 있습니다. GitHub Pages의 상업용 호스팅 제한과 Vercel의 최신 플랜 구분을 공식 문서에서 확인한 뒤 사이트 목적에 맞는 서비스를 선택하세요.",
       },
     ],
     relatedSlugs: [
       "build-a-website-with-ai-without-coding",
       "nextjs-vercel-deployment-guide",
-      "codex-vscode-guide",
+      "build-a-mini-app-with-ai",
     ],
     sources: [
       { label: "GitHub Pages 공식 소개", href: "https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages" },
-      { label: "Next.js 공식 배포 문서", href: "https://nextjs.org/docs/app/getting-started/deploying" },
+      { label: "GitHub Pages 공식 사용 제한", href: "https://docs.github.com/en/pages/getting-started-with-github-pages/github-pages-limits" },
+      { label: "GitHub Pages 커스텀 도메인 안내", href: "https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/about-custom-domains-and-github-pages" },
+      { label: "Next.js 정적 내보내기 문서", href: "https://nextjs.org/docs/pages/guides/static-exports" },
       { label: "Vercel Git 저장소 배포 문서", href: "https://vercel.com/docs/git" },
-      { label: "Vercel Hobby 플랜 공식 안내", href: "https://vercel.com/docs/plans/hobby" },
+      { label: "Vercel 커스텀 도메인 안내", href: "https://vercel.com/docs/domains/working-with-domains/add-a-domain" },
+      { label: "Vercel 플랜 공식 안내", href: "https://vercel.com/docs/plans" },
     ],
   },
 ];
