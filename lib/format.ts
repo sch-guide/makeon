@@ -3,5 +3,6 @@ export function formatDate(date: string) {
     year: "numeric",
     month: "long",
     day: "numeric",
+    timeZone: "Asia/Seoul",
   }).format(new Date(`${date}T00:00:00+09:00`));
 }
