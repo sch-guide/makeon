@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+  <title id="title">로컬 Next.js 프로젝트 준비 UI 모형</title>
+  <desc id="desc">프로젝트 폴더, package.json build script, production build 성공 확인을 세 단계로 설명하는 모형 화면</desc>
+  <rect width="1200" height="720" rx="36" fill="#FAF7F0"/>
+  <rect x="42" y="38" width="1116" height="84" rx="24" fill="#2F332B"/>
+  <circle cx="88" cy="80" r="20" fill="#A8C686"/>
+  <text x="88" y="87" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" font-weight="700" fill="#2F332B">1</text>
+  <text x="126" y="75" font-family="Arial, sans-serif" font-size="30" font-weight="700" fill="#FFFFFF">LOCAL PROJECT</text>
+  <text x="126" y="101" font-family="Arial, sans-serif" font-size="18" fill="#D9DDCF">폴더 열기 → build 명령 확인 → production build</text>
+
+  <rect x="42" y="154" width="330" height="510" rx="26" fill="#FFFFFF" stroke="#DDD6C8" stroke-width="2"/>
+  <rect x="66" y="178" width="282" height="54" rx="14" fill="#EFF5E7"/>
+  <text x="88" y="212" font-family="Arial, sans-serif" font-size="22" font-weight="700" fill="#52613F">① OPEN FOLDER</text>
+  <text x="76" y="275" font-family="Arial, sans-serif" font-size="21" font-weight="700" fill="#302C28">PROJECT ROOT</text>
+  <g font-family="Arial, sans-serif" font-size="19" fill="#6E7168">
+    <rect x="76" y="302" width="24" height="18" rx="4" fill="#A8C686"/><text x="116" y="318">app</text>
+    <rect x="76" y="346" width="24" height="18" rx="4" fill="#A8C686"/><text x="116" y="362">components</text>
+    <rect x="76" y="390" width="24" height="18" rx="4" fill="#A8C686"/><text x="116" y="406">public</text>
+    <rect x="76" y="434" width="24" height="18" rx="4" fill="#B79F82"/><text x="116" y="450">package.json</text>
+    <rect x="76" y="478" width="24" height="18" rx="4" fill="#B79F82"/><text x="116" y="494">package-lock.json</text>
+  </g>
+  <rect x="76" y="566" width="220" height="54" rx="27" fill="#8FB36A"/>
+  <text x="186" y="600" text-anchor="middle" font-family="Arial, sans-serif" font-size="19" font-weight="700" fill="#FFFFFF">OPEN PROJECT</text>
+
+  <path d="M392 406h48" stroke="#8FB36A" stroke-width="8" stroke-linecap="round"/>
+  <path d="M426 390l18 16-18 16" fill="none" stroke="#8FB36A" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <rect x="464" y="154" width="330" height="510" rx="26" fill="#FFFFFF" stroke="#DDD6C8" stroke-width="2"/>
+  <rect x="488" y="178" width="282" height="54" rx="14" fill="#EFF5E7"/>
+  <text x="510" y="212" font-family="Arial, sans-serif" font-size="22" font-weight="700" fill="#52613F">② CHECK SCRIPT</text>
+  <rect x="488" y="264" width="282" height="252" rx="16" fill="#302C28"/>
+  <g font-family="Consolas, monospace" font-size="20">
+    <text x="516" y="306" fill="#E8E1D5">"scripts": {</text>
+    <text x="536" y="350" fill="#B7D59A">"dev"</text><text x="608" y="350" fill="#E8E1D5">: "next dev",</text>
+    <rect x="516" y="374" width="222" height="44" rx="9" fill="#4B523F"/>
+    <text x="536" y="403" fill="#FFFFFF">"build": "next build"</text>
+    <text x="516" y="462" fill="#E8E1D5">}</text>
+  </g>
+  <rect x="510" y="566" width="220" height="54" rx="27" fill="#8FB36A"/>
+  <text x="620" y="600" text-anchor="middle" font-family="Arial, sans-serif" font-size="19" font-weight="700" fill="#FFFFFF">VERIFY BUILD</text>
+
+  <path d="M814 406h48" stroke="#8FB36A" stroke-width="8" stroke-linecap="round"/>
+  <path d="M848 390l18 16-18 16" fill="none" stroke="#8FB36A" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <rect x="886" y="154" width="272" height="510" rx="26" fill="#FFFFFF" stroke="#DDD6C8" stroke-width="2"/>
+  <rect x="910" y="178" width="224" height="54" rx="14" fill="#EFF5E7"/>
+  <text x="932" y="212" font-family="Arial, sans-serif" font-size="22" font-weight="700" fill="#52613F">③ RUN BUILD</text>
+  <rect x="910" y="264" width="224" height="252" rx="16" fill="#302C28"/>
+  <g font-family="Consolas, monospace" font-size="18">
+    <text x="932" y="306" fill="#FFFFFF">$ npm run build</text>
+    <text x="932" y="352" fill="#C7C0B6">Compiling...</text>
+    <text x="932" y="398" fill="#C7C0B6">Generating pages...</text>
+    <text x="932" y="456" fill="#B7D59A">✓ Build completed</text>
+  </g>
+  <rect x="930" y="566" width="184" height="54" rx="27" fill="#8FB36A"/>
+  <text x="1022" y="600" text-anchor="middle" font-family="Arial, sans-serif" font-size="19" font-weight="700" fill="#FFFFFF">SUCCESS</text>
+</svg>

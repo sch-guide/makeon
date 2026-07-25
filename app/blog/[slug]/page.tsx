@@ -21,11 +21,16 @@ function ArticleImageBlock({
   image,
   imageAlt,
   imageCaption,
-  imageWidth = 1672,
-  imageHeight = 941,
+  imageWidth = 1536,
+  imageHeight = 1024,
+  imagePosition = "full",
+  imagePriority = false,
   variant = "section",
 }: ArticleImageBlockProps) {
-  const figureClassName = variant === "cover" ? "article-cover" : "article-section-image";
+  const figureClassName =
+    variant === "cover"
+      ? "article-cover"
+      : `article-section-image article-section-image-${imagePosition}`;
 
   return (
     <figure className={figureClassName}>
@@ -46,7 +51,8 @@ function ArticleImageBlock({
               ? "(max-width: 640px) calc(100vw - 32px), (max-width: 1200px) calc(100vw - 48px), 960px"
               : "(max-width: 640px) calc(100vw - 32px), (max-width: 1024px) calc(100vw - 80px), 760px"
           }
-          loading="lazy"
+          loading={imagePriority ? "eager" : "lazy"}
+          fetchPriority={imagePriority ? "high" : "auto"}
         />
         <span className="article-image-zoom" aria-hidden="true">
           원본 크게 보기 ↗
@@ -182,6 +188,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               image={post.coverImage}
               imageAlt={post.coverImageAlt}
               imageCaption={post.coverImageCaption}
+              imageWidth={post.coverImageWidth}
+              imageHeight={post.coverImageHeight}
+              imagePriority
               variant="cover"
             />
           </div>
@@ -226,6 +235,8 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                     imageCaption={section.imageCaption}
                     imageWidth={section.imageWidth}
                     imageHeight={section.imageHeight}
+                    imagePosition={section.imagePosition}
+                    imagePriority={section.imagePriority}
                   />
                 ) : null}
                 {section.images?.map((image) => (

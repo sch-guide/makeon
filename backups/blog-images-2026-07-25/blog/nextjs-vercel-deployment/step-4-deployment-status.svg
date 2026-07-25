@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+  <title id="title">배포 완료와 오류 로그 UI 모형</title>
+  <desc id="desc">배포 진행, Ready 성공 상태, Build Error의 첫 오류 위치 확인을 설명하는 비브랜드 모형 화면</desc>
+  <rect width="1200" height="720" rx="36" fill="#FAF7F0"/>
+  <rect x="42" y="38" width="1116" height="84" rx="24" fill="#2F332B"/>
+  <circle cx="88" cy="80" r="20" fill="#A8C686"/>
+  <text x="88" y="87" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" font-weight="700" fill="#2F332B">4</text>
+  <text x="126" y="75" font-family="Arial, sans-serif" font-size="30" font-weight="700" fill="#FFFFFF">DEPLOYMENT STATUS</text>
+  <text x="126" y="101" font-family="Arial, sans-serif" font-size="18" fill="#D9DDCF">진행 상태 확인 → Ready 검증 또는 첫 번째 실제 오류 확인</text>
+
+  <rect x="42" y="154" width="354" height="510" rx="26" fill="#FFFFFF" stroke="#DDD6C8" stroke-width="2"/>
+  <text x="70" y="202" font-family="Arial, sans-serif" font-size="23" font-weight="700" fill="#302C28">① DEPLOYING</text>
+  <circle cx="104" cy="264" r="18" fill="#8FB36A"/>
+  <path d="M104 246a18 18 0 0 1 18 18" fill="none" stroke="#FFFFFF" stroke-width="4"/>
+  <text x="140" y="271" font-family="Arial, sans-serif" font-size="19" fill="#52613F">Installing packages</text>
+  <circle cx="104" cy="326" r="18" fill="#8FB36A"/>
+  <path d="M94 326l7 7 15-18" fill="none" stroke="#FFF" stroke-width="5" stroke-linecap="round"/>
+  <text x="140" y="333" font-family="Arial, sans-serif" font-size="19" fill="#52613F">Running build</text>
+  <circle cx="104" cy="388" r="18" fill="#D7D0C3"/>
+  <text x="140" y="395" font-family="Arial, sans-serif" font-size="19" fill="#6E7168">Publishing site</text>
+  <rect x="70" y="448" width="298" height="18" rx="9" fill="#EFE8D8"/>
+  <rect x="70" y="448" width="218" height="18" rx="9" fill="#8FB36A"/>
+  <text x="70" y="500" font-family="Arial, sans-serif" font-size="17" fill="#6E7168">커밋과 진행 단계를 함께 확인</text>
+
+  <path d="M414 405h42" stroke="#8FB36A" stroke-width="8" stroke-linecap="round"/>
+  <path d="M442 389l18 16-18 16" fill="none" stroke="#8FB36A" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <rect x="480" y="154" width="290" height="510" rx="26" fill="#FFFFFF" stroke="#A8C686" stroke-width="3"/>
+  <text x="508" y="202" font-family="Arial, sans-serif" font-size="23" font-weight="700" fill="#302C28">② READY</text>
+  <circle cx="625" cy="310" r="76" fill="#EFF5E7"/>
+  <circle cx="625" cy="310" r="50" fill="#8FB36A"/>
+  <path d="M598 310l19 19 37-45" fill="none" stroke="#FFF" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="625" y="426" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" font-weight="700" fill="#52613F">DEPLOYMENT READY</text>
+  <rect x="520" y="474" width="210" height="54" rx="27" fill="#8FB36A"/>
+  <text x="625" y="508" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#FFFFFF">OPEN PUBLIC URL</text>
+  <text x="625" y="568" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#6E7168">실제 공개 주소에서 다시 검증</text>
+
+  <text x="800" y="184" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#8A7055">실패한 경우</text>
+  <rect x="794" y="204" width="364" height="460" rx="26" fill="#FFFFFF" stroke="#C9856B" stroke-width="3"/>
+  <text x="824" y="250" font-family="Arial, sans-serif" font-size="23" font-weight="700" fill="#8B4B38">③ BUILD ERROR</text>
+  <rect x="824" y="278" width="304" height="248" rx="16" fill="#302C28"/>
+  <g font-family="Consolas, monospace" font-size="17">
+    <text x="846" y="318" fill="#C7C0B6">Installing packages...</text>
+    <text x="846" y="356" fill="#B7D59A">✓ dependencies</text>
+    <text x="846" y="394" fill="#FFFFFF">Running build...</text>
+    <rect x="836" y="414" width="280" height="70" rx="10" fill="#6F3E34"/>
+    <text x="852" y="443" fill="#FFD8CD">FIRST ERROR</text>
+    <text x="852" y="470" fill="#FFFFFF">app/page.tsx · line 24</text>
+  </g>
+  <path d="M996 526v26" stroke="#C9856B" stroke-width="6"/>
+  <path d="M984 542l12 14 12-14" fill="none" stroke="#C9856B" stroke-width="6" stroke-linecap="round"/>
+  <rect x="850" y="566" width="252" height="56" rx="28" fill="#8A7055"/>
+  <text x="976" y="601" text-anchor="middle" font-family="Arial, sans-serif" font-size="19" font-weight="700" fill="#FFFFFF">VIEW BUILD LOGS</text>
+</svg>

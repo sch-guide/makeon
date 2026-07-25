@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+  <title id="title">Git 저장소 업로드 흐름 UI 모형</title>
+  <desc id="desc">gitignore 확인, commit, push, 원격 저장소 반영을 단계별로 설명하는 모형 화면</desc>
+  <rect width="1200" height="720" rx="36" fill="#FAF7F0"/>
+  <rect x="42" y="38" width="1116" height="84" rx="24" fill="#2F332B"/>
+  <circle cx="88" cy="80" r="20" fill="#A8C686"/>
+  <text x="88" y="87" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" font-weight="700" fill="#2F332B">2</text>
+  <text x="126" y="75" font-family="Arial, sans-serif" font-size="30" font-weight="700" fill="#FFFFFF">GIT UPLOAD FLOW</text>
+  <text x="126" y="101" font-family="Arial, sans-serif" font-size="18" fill="#D9DDCF">제외 파일 확인 → commit → push → 원격 저장소 확인</text>
+
+  <rect x="42" y="154" width="322" height="510" rx="26" fill="#FFFFFF" stroke="#DDD6C8" stroke-width="2"/>
+  <text x="70" y="202" font-family="Arial, sans-serif" font-size="23" font-weight="700" fill="#302C28">① CHECK STATUS</text>
+  <rect x="68" y="232" width="270" height="260" rx="16" fill="#F3EDE1"/>
+  <text x="92" y="270" font-family="Consolas, monospace" font-size="19" font-weight="700" fill="#52613F">.gitignore</text>
+  <g font-family="Consolas, monospace" font-size="19" fill="#6E7168">
+    <text x="92" y="316">node_modules/</text>
+    <text x="92" y="356">.next/</text>
+    <text x="92" y="396">.env</text>
+    <text x="92" y="436">.env.local</text>
+  </g>
+  <circle cx="310" cy="458" r="20" fill="#8FB36A"/>
+  <path d="M300 458l7 7 14-17" fill="none" stroke="#FFF" stroke-width="5" stroke-linecap="round"/>
+  <rect x="86" y="554" width="232" height="54" rx="27" fill="#8FB36A"/>
+  <text x="202" y="588" text-anchor="middle" font-family="Arial, sans-serif" font-size="19" font-weight="700" fill="#FFFFFF">FILES SAFE</text>
+
+  <path d="M382 405h50" stroke="#8FB36A" stroke-width="8" stroke-linecap="round"/>
+  <path d="M418 389l18 16-18 16" fill="none" stroke="#8FB36A" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <rect x="456" y="154" width="300" height="510" rx="26" fill="#FFFFFF" stroke="#DDD6C8" stroke-width="2"/>
+  <text x="484" y="202" font-family="Arial, sans-serif" font-size="23" font-weight="700" fill="#302C28">② COMMIT</text>
+  <rect x="482" y="232" width="248" height="260" rx="16" fill="#302C28"/>
+  <g font-family="Consolas, monospace" font-size="18">
+    <text x="504" y="278" fill="#FFFFFF">$ git status</text>
+    <text x="504" y="322" fill="#B7D59A">4 files changed</text>
+    <text x="504" y="376" fill="#FFFFFF">$ git commit</text>
+    <text x="504" y="420" fill="#C7C0B6">"Deploy website"</text>
+    <text x="504" y="464" fill="#B7D59A">✓ commit saved</text>
+  </g>
+  <rect x="500" y="554" width="212" height="54" rx="27" fill="#8FB36A"/>
+  <text x="606" y="588" text-anchor="middle" font-family="Arial, sans-serif" font-size="19" font-weight="700" fill="#FFFFFF">COMMIT</text>
+
+  <path d="M774 405h50" stroke="#8FB36A" stroke-width="8" stroke-linecap="round"/>
+  <path d="M810 389l18 16-18 16" fill="none" stroke="#8FB36A" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <rect x="850" y="154" width="308" height="510" rx="26" fill="#FFFFFF" stroke="#DDD6C8" stroke-width="2"/>
+  <text x="878" y="202" font-family="Arial, sans-serif" font-size="23" font-weight="700" fill="#302C28">③ PUSH</text>
+  <rect x="876" y="232" width="256" height="74" rx="16" fill="#EFF5E7"/>
+  <text x="902" y="278" font-family="Consolas, monospace" font-size="19" fill="#52613F">$ git push origin main</text>
+  <path d="M1004 330v74" stroke="#8FB36A" stroke-width="8" stroke-linecap="round"/>
+  <path d="M988 388l16 18 16-18" fill="none" stroke="#8FB36A" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="876" y="430" width="256" height="108" rx="16" fill="#F3EDE1"/>
+  <text x="902" y="470" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#302C28">REMOTE REPOSITORY</text>
+  <text x="902" y="508" font-family="Arial, sans-serif" font-size="18" fill="#6E7168">main · latest commit</text>
+  <circle cx="1102" cy="504" r="20" fill="#8FB36A"/>
+  <path d="M1092 504l7 7 14-17" fill="none" stroke="#FFF" stroke-width="5" stroke-linecap="round"/>
+  <rect x="896" y="572" width="216" height="54" rx="27" fill="#8FB36A"/>
+  <text x="1004" y="606" text-anchor="middle" font-family="Arial, sans-serif" font-size="19" font-weight="700" fill="#FFFFFF">UPLOAD DONE</text>
+</svg>

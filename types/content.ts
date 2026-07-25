@@ -4,6 +4,8 @@ export type BlogImage = {
   imageCaption?: string;
   imageWidth?: number;
   imageHeight?: number;
+  imagePosition?: "full" | "wide" | "left" | "right";
+  imagePriority?: boolean;
 };
 
 export type BlogCallout = {
@@ -20,6 +22,8 @@ export type BlogSection = {
   imageCaption?: string;
   imageWidth?: number;
   imageHeight?: number;
+  imagePosition?: "full" | "wide" | "left" | "right";
+  imagePriority?: boolean;
   images?: BlogImage[];
   callout?: BlogCallout;
   bullets?: string[];
@@ -68,6 +72,8 @@ export type BlogPost = {
   coverImage?: string;
   coverImageAlt?: string;
   coverImageCaption?: string;
+  coverImageWidth?: number;
+  coverImageHeight?: number;
   reviewNote?: {
     checkedAt: string;
     environment: string;

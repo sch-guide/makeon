@@ -1,8 +1,9 @@
 import type { BlogPost } from "@/types/content";
 import { secondClusterPosts } from "@/content/blog-posts-second-cluster";
 import { thirdClusterPosts } from "@/content/blog-posts-third-cluster";
+import { applyBlogVisuals } from "@/content/blog-visuals";
 
-export const blogPosts: BlogPost[] = [
+const rawBlogPosts: BlogPost[] = [
   ...thirdClusterPosts,
   ...secondClusterPosts,
   {
@@ -1254,6 +1255,8 @@ export const blogPosts: BlogPost[] = [
     ],
   },
 ];
+
+export const blogPosts: BlogPost[] = rawBlogPosts.map(applyBlogVisuals);
 
 export function getPostBySlug(slug: string) {
   return blogPosts.find((post) => post.slug === slug);
