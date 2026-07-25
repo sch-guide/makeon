@@ -19,10 +19,16 @@ export const blogPosts: BlogPost[] = [
       "Vercel 무료 배포",
     ],
     publishedAt: "2026-07-18",
-    updatedAt: "2026-07-23",
+    updatedAt: "2026-07-25",
     category: "AI 웹사이트 제작",
     readingTime: "14분",
     featured: true,
+    reviewNote: {
+      checkedAt: "2026-07-25",
+      environment: "Next.js 프로젝트, GitHub 저장소와 Vercel 배포 흐름",
+      notice:
+        "서비스 화면, 지원 기능과 무료 이용 조건은 계정과 시점에 따라 달라질 수 있습니다. 실행 전 글 하단의 공식 자료와 현재 계정 화면을 함께 확인하세요.",
+    },
     sections: [
       {
         heading: "결론: 작은 홈페이지라면 AI와 함께 끝까지 만들 수 있습니다",
@@ -249,14 +255,21 @@ export const blogPosts: BlogPost[] = [
     primaryKeyword: "Codex VS Code 사용법",
     relatedKeywords: ["Codex 설치", "Codex 확장 프로그램", "VS Code AI 코딩", "Codex Next.js 수정"],
     publishedAt: "2026-07-23",
+    updatedAt: "2026-07-25",
     category: "Codex 가이드",
     readingTime: "12분",
+    reviewNote: {
+      checkedAt: "2026-07-25",
+      environment: "Windows 환경의 VS Code, Next.js 프로젝트와 Codex IDE 확장 사용 흐름",
+      notice:
+        "특정 버전 번호를 전제로 하지 않습니다. VS Code와 Codex의 아이콘, 명령 이름, 로그인 화면은 업데이트에 따라 달라질 수 있으므로 OpenAI 공식 Codex IDE 문서와 현재 확장 화면을 우선 확인하세요.",
+    },
     sections: [
       {
         heading: "먼저 역할부터 구분합니다: VS Code는 작업 공간, Codex는 작업을 돕는 에이전트입니다",
         paragraphs: [
           "VS Code는 프로젝트 파일을 열고 편집하며 터미널과 오류를 확인하는 코드 편집기입니다. Codex는 열린 코드와 사용자가 제공한 맥락을 바탕으로 코드를 설명하고, 권한 범위 안에서 파일을 수정하고, 검사 명령을 실행하도록 도와주는 코딩 에이전트입니다.",
-          "이 글은 2026년 7월 23일 기준 Windows, VS Code, Next.js 프로젝트, OpenAI의 Codex IDE 확장을 기준으로 작성했습니다. 확장 프로그램의 아이콘과 메뉴 위치는 업데이트에 따라 달라질 수 있으므로 화면이 다르면 확장 프로그램 이름과 게시자가 OpenAI인지, 공식 문서의 최신 빠른 시작 안내가 무엇인지 먼저 확인하세요.",
+          "이 글은 2026년 7월 25일에 Windows, VS Code, Next.js 프로젝트, OpenAI의 Codex IDE 확장 사용 흐름을 다시 확인했습니다. 확장 프로그램의 아이콘과 메뉴 위치는 업데이트에 따라 달라질 수 있으므로 화면이 다르면 확장 프로그램 이름과 게시자가 OpenAI인지, 공식 문서의 최신 빠른 시작 안내가 무엇인지 먼저 확인하세요.",
         ],
         table: {
           caption: "VS Code와 Codex의 역할",
@@ -409,14 +422,21 @@ export const blogPosts: BlogPost[] = [
     primaryKeyword: "Next.js Vercel 배포 방법",
     relatedKeywords: ["Vercel GitHub 연결", "Vercel 자동 배포", "Next.js 배포 오류", "Vercel 무료 배포"],
     publishedAt: "2026-07-23",
+    updatedAt: "2026-07-25",
     category: "배포 가이드",
     readingTime: "13분",
+    reviewNote: {
+      checkedAt: "2026-07-25",
+      environment: "Next.js 프로젝트를 GitHub 저장소와 Vercel에 연결하는 일반적인 배포 흐름",
+      notice:
+        "Next.js 설정, Vercel 대시보드와 플랜 조건은 변경될 수 있습니다. 실제 배포에서는 글 하단의 공식 문서, 프로젝트 Build Logs와 현재 플랜 안내를 기준으로 판단하세요.",
+    },
     sections: [
       {
         heading: "배포 흐름부터 이해하면 오류를 찾기 쉽습니다",
         paragraphs: [
           "Vercel 배포는 내 컴퓨터의 폴더를 그대로 공개하는 과정이 아닙니다. GitHub 저장소의 특정 커밋을 Vercel이 가져와 의존성을 설치하고 build를 실행한 뒤, 성공한 결과를 공개 주소에 연결하는 과정입니다. 따라서 로컬, GitHub, Vercel 세 곳의 상태를 구분해야 합니다.",
-          "이 글은 2026년 7월 23일 기준 Next.js App Router 프로젝트와 GitHub, Vercel의 Git 연동을 기준으로 작성했습니다. 대시보드 메뉴와 플랜 제한은 바뀔 수 있으므로 실제 배포 시 공식 문서와 계정 화면을 함께 확인하세요.",
+          "이 글은 2026년 7월 25일에 Next.js App Router 프로젝트와 GitHub, Vercel의 Git 연동 흐름을 다시 확인했습니다. 대시보드 메뉴와 플랜 제한은 바뀔 수 있으므로 실제 배포 시 공식 문서와 계정 화면을 함께 확인하세요.",
         ],
       },
       {
@@ -576,10 +596,16 @@ export const blogPosts: BlogPost[] = [
     primaryKeyword: "ChatGPT와 Codex 차이",
     relatedKeywords: ["ChatGPT 코딩 활용법", "Codex 사용법", "AI 웹앱 만들기", "ChatGPT Codex 역할"],
     publishedAt: "2026-07-15",
-    updatedAt: "2026-07-23",
+    updatedAt: "2026-07-25",
     category: "AI 코딩",
     readingTime: "11분",
     featured: true,
+    reviewNote: {
+      checkedAt: "2026-07-25",
+      environment: "웹사이트 기획, 프로젝트 파일 수정과 검증 단계에서 ChatGPT와 Codex를 나누어 쓰는 흐름",
+      notice:
+        "두 제품의 제공 기능과 화면은 계정, 앱과 업데이트 시점에 따라 달라질 수 있습니다. 이 글은 역할을 이해하기 위한 일반 흐름이며, 세부 기능은 OpenAI 공식 문서를 확인하세요.",
+    },
     sections: [
       {
         heading: "한 문장으로 정리하면 기획 대화와 프로젝트 작업의 차이입니다",
@@ -899,9 +925,15 @@ export const blogPosts: BlogPost[] = [
     primaryKeyword: "GitHub Pages Vercel 차이",
     relatedKeywords: ["무료 홈페이지 배포", "GitHub Pages vs Vercel", "초보자 웹사이트 배포", "Next.js 무료 배포"],
     publishedAt: "2026-07-11",
-    updatedAt: "2026-07-23",
+    updatedAt: "2026-07-25",
     category: "배포 가이드",
     readingTime: "11분",
+    reviewNote: {
+      checkedAt: "2026-07-25",
+      environment: "GitHub Pages와 Vercel의 공식 문서 및 공개 배포 방식",
+      notice:
+        "정적 사이트 지원 범위, 빌드 방식, 무료 플랜과 상업적 이용 조건은 바뀔 수 있습니다. 서비스를 선택하기 전 글 하단의 공식 제한·플랜 문서를 다시 확인하세요.",
+    },
     sections: [
       {
         heading: "결론: 정적 파일은 GitHub Pages, 일반적인 Next.js 프로젝트는 Vercel이 이해하기 쉽습니다",

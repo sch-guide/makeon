@@ -51,7 +51,7 @@ export default function Home() {
             </div>
             <div className="hero-note">
               <span className="live-dot" aria-hidden="true" />
-              <span>코딩 초보자의 실제 제작 과정을 기록합니다.</span>
+              <span>코딩 초보자도 따라갈 수 있는 제작 과정을 정리합니다.</span>
             </div>
           </div>
 
@@ -68,7 +68,7 @@ export default function Home() {
                   <div className="prompt-icon">✦</div>
                   <div>
                     <span>MY IDEA</span>
-                    <p>누구나 쓰는 작은 여행 도구를 만들고 싶어요.</p>
+                    <p>회의 메모를 할 일로 정리하는 웹 도구를 만들고 싶어요.</p>
                   </div>
                 </div>
                 <div className="build-line">
@@ -105,7 +105,7 @@ export default function Home() {
           <SectionHeading
             eyebrow="LATEST STORIES"
             title="최신 블로그 글"
-            description="AI와 함께 직접 부딪히며 배운 제작 과정과 쉬운 가이드를 나눕니다."
+            description="AI와 함께 제작하며 확인한 과정과 초보자를 위한 쉬운 가이드를 나눕니다."
             href="/blog"
             linkLabel="모든 글 보기"
           />
@@ -154,8 +154,8 @@ export default function Home() {
               앱으로 만들어 볼 수 있다는 믿음에서 시작했습니다.
             </p>
             <p>
-              성공한 결과만 보여주기보다 막혔던 지점과 해결 과정까지 솔직하게 기록하고,
-              그 과정에서 나온 도구를 누구나 무료로 사용할 수 있게 나눕니다.
+              완성된 결과만 보여주기보다 제작 중 확인한 문제와 해결 방법을 단계별로 정리하고,
+              그 과정에서 만든 도구를 누구나 무료로 사용할 수 있게 나눕니다.
             </p>
             <Link className="text-link" href="/about">
               MAKEON 더 알아보기 <span aria-hidden="true">→</span>

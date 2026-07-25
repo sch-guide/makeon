@@ -132,6 +132,25 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               <p>{post.description}</p>
             </div>
 
+            {post.reviewNote ? (
+              <aside className="article-review-note" aria-label="글 최신성 안내">
+                <span>LAST REVIEWED</span>
+                <div className="article-review-meta">
+                  <div>
+                    <strong>확인일</strong>
+                    <time dateTime={post.reviewNote.checkedAt}>
+                      {formatDate(post.reviewNote.checkedAt)}
+                    </time>
+                  </div>
+                  <div>
+                    <strong>확인 환경</strong>
+                    <span>{post.reviewNote.environment}</span>
+                  </div>
+                </div>
+                <p>{post.reviewNote.notice}</p>
+              </aside>
+            ) : null}
+
             {post.sections.map((section) => (
               <section key={section.heading}>
                 <h2>{section.heading}</h2>

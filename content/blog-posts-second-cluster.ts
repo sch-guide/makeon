@@ -373,9 +373,15 @@ export const secondClusterPosts: BlogPost[] = [
       "초보자 웹앱 만들기",
     ],
     publishedAt: "2026-07-23",
-    updatedAt: "2026-07-23",
+    updatedAt: "2026-07-25",
     category: "AI 웹앱 제작",
     readingTime: "14분",
+    reviewNote: {
+      checkedAt: "2026-07-25",
+      environment: "Next.js 기반 미니앱을 Codex로 수정하고 GitHub와 Vercel로 배포하는 일반 흐름",
+      notice:
+        "도구 화면, 지원 기능과 무료 플랜 조건은 시점과 계정에 따라 달라질 수 있습니다. 특정 버전 번호를 가정하지 않으며, 실제 작업 전 글 하단의 공식 자료를 확인하세요.",
+    },
     sections: [
       {
         heading: "결론: 한 사람의 작은 문제를 한 화면에서 해결하는 앱부터 시작하세요",

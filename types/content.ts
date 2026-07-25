@@ -42,6 +42,11 @@ export type BlogPost = {
   category: string;
   readingTime: string;
   featured?: boolean;
+  reviewNote?: {
+    checkedAt: string;
+    environment: string;
+    notice: string;
+  };
   sections: BlogSection[];
   faqs?: BlogFaq[];
   relatedSlugs?: string[];

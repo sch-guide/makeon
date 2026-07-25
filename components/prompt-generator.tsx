@@ -132,7 +132,7 @@ export function PromptGenerator() {
               name="projectIdea"
               value={fields.projectIdea}
               onChange={(event) => updateField("projectIdea", event.target.value)}
-              placeholder="예: 여행별 사진과 짧은 기록을 가족과 함께 볼 수 있는 반응형 웹앱"
+              placeholder="예: 회의 메모를 핵심 내용과 할 일로 정리하는 업무용 웹앱"
               rows={4}
               required
             />
@@ -146,7 +146,7 @@ export function PromptGenerator() {
               name="features"
               value={fields.features}
               onChange={(event) => updateField("features", event.target.value)}
-              placeholder="예: 여행 목록, 사진 상세 보기, 날짜별 정렬"
+              placeholder="예: 메모 입력, 핵심 요약, 담당자·마감일 목록"
               rows={4}
             />
           </div>
@@ -170,7 +170,7 @@ export function PromptGenerator() {
               name="audience"
               value={fields.audience}
               onChange={(event) => updateField("audience", event.target.value)}
-              placeholder="예: 스마트폰 사용이 익숙하지 않은 부모님"
+              placeholder="예: 회의 후 정리 시간을 줄이고 싶은 직장인"
               rows={4}
             />
           </div>
