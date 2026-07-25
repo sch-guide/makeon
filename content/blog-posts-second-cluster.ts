@@ -19,6 +19,7 @@ export const secondClusterPosts: BlogPost[] = [
     publishedAt: "2026-07-23",
     updatedAt: "2026-07-23",
     category: "AI 활용",
+    tags: ["AI 활용·프롬프트"],
     readingTime: "11분",
     sections: [
       {
@@ -209,6 +210,7 @@ export const secondClusterPosts: BlogPost[] = [
     publishedAt: "2026-07-23",
     updatedAt: "2026-07-23",
     category: "무료 도구",
+    tags: ["AI 활용·프롬프트", "무료 도구"],
     readingTime: "10분",
     sections: [
       {
@@ -375,6 +377,7 @@ export const secondClusterPosts: BlogPost[] = [
     publishedAt: "2026-07-23",
     updatedAt: "2026-07-25",
     category: "AI 웹앱 제작",
+    tags: ["AI 코딩·Codex", "웹사이트·웹앱 제작", "배포·수익화"],
     readingTime: "14분",
     reviewNote: {
       checkedAt: "2026-07-25",
@@ -608,6 +611,7 @@ export const secondClusterPosts: BlogPost[] = [
     publishedAt: "2026-07-23",
     updatedAt: "2026-07-23",
     category: "AI 수익화",
+    tags: ["웹사이트·웹앱 제작", "배포·수익화"],
     readingTime: "14분",
     sections: [
       {

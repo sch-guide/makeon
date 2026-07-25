@@ -19,6 +19,7 @@ export const thirdClusterPosts: BlogPost[] = [
     ],
     publishedAt: "2026-07-25",
     category: "AI 활용",
+    tags: ["AI 활용·프롬프트"],
     readingTime: "13분",
     reviewNote: {
       checkedAt: "2026-07-25",
@@ -266,6 +267,7 @@ export const thirdClusterPosts: BlogPost[] = [
     ],
     publishedAt: "2026-07-25",
     category: "AI 웹사이트 제작",
+    tags: ["AI 활용·프롬프트", "AI 코딩·Codex", "웹사이트·웹앱 제작"],
     readingTime: "15분",
     reviewNote: {
       checkedAt: "2026-07-25",

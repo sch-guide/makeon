@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { BlogCard } from "@/components/blog-card";
+import { BlogFilter } from "@/components/blog-filter";
 import { NewsletterCta } from "@/components/newsletter-cta";
 import { PageHero } from "@/components/page-hero";
 import { blogPosts } from "@/content/blog-posts";
@@ -18,9 +18,6 @@ export const metadata: Metadata = {
 };
 
 export default function BlogPage() {
-  const [featuredPost, ...otherPosts] = blogPosts;
-  const categories = [...new Set(blogPosts.map((post) => post.category))];
-
   return (
     <main id="main-content">
       <PageHero
@@ -31,24 +28,7 @@ export default function BlogPage() {
 
       <section className="blog-index-section">
         <div className="site-container">
-          <div className="category-row" aria-label="블로그 카테고리">
-            <span className="category-chip category-chip-active">전체 글 {blogPosts.length}</span>
-            {categories.map((category) => (
-              <span className="category-chip" key={category}>
-                {category}
-              </span>
-            ))}
-          </div>
-
-          <div className="blog-index-featured">
-            <BlogCard post={featuredPost} featured />
-          </div>
-
-          <div className="blog-index-grid">
-            {otherPosts.map((post) => (
-              <BlogCard post={post} key={post.slug} />
-            ))}
-          </div>
+          <BlogFilter posts={blogPosts} />
         </div>
       </section>
 

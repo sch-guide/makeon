@@ -23,6 +23,7 @@ export const blogPosts: BlogPost[] = [
     publishedAt: "2026-07-18",
     updatedAt: "2026-07-25",
     category: "AI 웹사이트 제작",
+    tags: ["AI 코딩·Codex", "웹사이트·웹앱 제작", "배포·수익화"],
     readingTime: "14분",
     featured: true,
     reviewNote: {
@@ -259,6 +260,7 @@ export const blogPosts: BlogPost[] = [
     publishedAt: "2026-07-23",
     updatedAt: "2026-07-25",
     category: "Codex 가이드",
+    tags: ["AI 코딩·Codex"],
     readingTime: "12분",
     reviewNote: {
       checkedAt: "2026-07-25",
@@ -426,6 +428,7 @@ export const blogPosts: BlogPost[] = [
     publishedAt: "2026-07-23",
     updatedAt: "2026-07-25",
     category: "배포 가이드",
+    tags: ["AI 코딩·Codex", "배포·수익화"],
     readingTime: "13분",
     reviewNote: {
       checkedAt: "2026-07-25",
@@ -600,6 +603,7 @@ export const blogPosts: BlogPost[] = [
     publishedAt: "2026-07-15",
     updatedAt: "2026-07-25",
     category: "AI 코딩",
+    tags: ["AI 코딩·Codex", "웹사이트·웹앱 제작"],
     readingTime: "11분",
     featured: true,
     reviewNote: {
@@ -760,6 +764,7 @@ export const blogPosts: BlogPost[] = [
     publishedAt: "2026-07-07",
     updatedAt: "2026-07-23",
     category: "프롬프트",
+    tags: ["AI 활용·프롬프트", "AI 코딩·Codex"],
     readingTime: "12분",
     featured: true,
     sections: [
@@ -929,6 +934,7 @@ export const blogPosts: BlogPost[] = [
     publishedAt: "2026-07-11",
     updatedAt: "2026-07-25",
     category: "배포 가이드",
+    tags: ["웹사이트·웹앱 제작", "배포·수익화"],
     readingTime: "11분",
     reviewNote: {
       checkedAt: "2026-07-25",

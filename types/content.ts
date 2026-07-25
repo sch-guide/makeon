@@ -40,6 +40,7 @@ export type BlogPost = {
   publishedAt: string;
   updatedAt?: string;
   category: string;
+  tags?: string[];
   readingTime: string;
   featured?: boolean;
   reviewNote?: {

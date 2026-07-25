@@ -964,19 +964,60 @@ textarea {
 .category-chip {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   border: 1px solid var(--line);
   border-radius: 999px;
   background: var(--surface);
   padding: 9px 14px;
   color: var(--text-soft);
+  font: inherit;
   font-size: 12px;
   font-weight: 680;
+  line-height: 1.4;
+  text-align: center;
+  cursor: pointer;
+  transition:
+    border-color 160ms ease,
+    background-color 160ms ease,
+    color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.category-chip:hover {
+  border-color: var(--primary);
+  color: var(--accent-strong);
+}
+
+.category-chip:focus-visible {
+  outline: 3px solid rgba(143, 179, 106, 0.28);
+  outline-offset: 2px;
 }
 
 .category-chip-active {
   border-color: var(--primary);
   background: var(--primary-light);
   color: var(--accent-strong);
+}
+
+.blog-filter-status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.blog-filter-empty {
+  display: grid;
+  min-height: 240px;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  color: var(--text-soft);
+  text-align: center;
 }
 
 .blog-index-featured {
