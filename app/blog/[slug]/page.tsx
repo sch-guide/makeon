@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BlogCard } from "@/components/blog-card";
@@ -38,7 +39,12 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
       publishedTime: post.publishedAt,
       modifiedTime: post.updatedAt ?? post.publishedAt,
       section: post.category,
-      images: [{ url: "/og.png", alt: "MAKEON - AI로 아이디어를 현실로" }],
+      images: [
+        {
+          url: post.coverImage ?? "/og.png",
+          alt: post.coverImageAlt ?? "MAKEON - AI로 아이디어를 현실로",
+        },
+      ],
     },
   };
 }
@@ -125,6 +131,22 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           </div>
         </header>
 
+        {post.coverImage && post.coverImageAlt ? (
+          <div className="site-container article-cover-wrap">
+            <figure className="article-cover">
+              <Image
+                src={post.coverImage}
+                alt={post.coverImageAlt}
+                width={1672}
+                height={941}
+                sizes="(max-width: 640px) calc(100vw - 32px), (max-width: 1200px) calc(100vw - 48px), 1120px"
+                loading="lazy"
+              />
+              {post.coverImageCaption ? <figcaption>{post.coverImageCaption}</figcaption> : null}
+            </figure>
+          </div>
+        ) : null}
+
         <div className="site-container article-layout">
           <div className="article-body">
             <div className="article-lead">
@@ -157,6 +179,19 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 {section.paragraphs.map((paragraph) => (
                   <p key={paragraph}>{paragraph}</p>
                 ))}
+                {section.image && section.imageAlt ? (
+                  <figure className="article-section-image">
+                    <Image
+                      src={section.image}
+                      alt={section.imageAlt}
+                      width={1672}
+                      height={941}
+                      sizes="(max-width: 640px) calc(100vw - 32px), (max-width: 1024px) calc(100vw - 80px), 760px"
+                      loading="lazy"
+                    />
+                    {section.imageCaption ? <figcaption>{section.imageCaption}</figcaption> : null}
+                  </figure>
+                ) : null}
                 {section.bullets ? (
                   <ul>
                     {section.bullets.map((bullet) => (
@@ -213,6 +248,29 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                     {link.prefix} <Link href={link.href}>{link.label}</Link>{link.suffix ?? ""}
                   </p>
                 ))}
+                {section.callout ? (
+                  <aside
+                    className={`article-callout article-callout-${section.callout.type}`}
+                    aria-label={
+                      section.callout.title ??
+                      (section.callout.type === "tip"
+                        ? "팁"
+                        : section.callout.type === "warning"
+                          ? "주의"
+                          : "참고")
+                    }
+                  >
+                    <strong>
+                      {section.callout.title ??
+                        (section.callout.type === "tip"
+                          ? "TIP"
+                          : section.callout.type === "warning"
+                            ? "주의"
+                            : "NOTE")}
+                    </strong>
+                    <p>{section.callout.text}</p>
+                  </aside>
+                ) : null}
               </section>
             ))}
 

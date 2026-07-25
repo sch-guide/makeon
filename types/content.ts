@@ -1,6 +1,14 @@
 export type BlogSection = {
   heading: string;
   paragraphs: string[];
+  image?: string;
+  imageAlt?: string;
+  imageCaption?: string;
+  callout?: {
+    type: "tip" | "warning" | "note";
+    title?: string;
+    text: string;
+  };
   bullets?: string[];
   subsections?: {
     heading: string;
@@ -43,6 +51,9 @@ export type BlogPost = {
   tags?: string[];
   readingTime: string;
   featured?: boolean;
+  coverImage?: string;
+  coverImageAlt?: string;
+  coverImageCaption?: string;
   reviewNote?: {
     checkedAt: string;
     environment: string;

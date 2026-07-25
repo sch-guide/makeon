@@ -1057,6 +1057,85 @@ textarea {
   text-align: center;
 }
 
+.article-cover-wrap {
+  padding-top: 42px;
+}
+
+.article-cover,
+.article-section-image {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface-muted);
+  box-shadow: var(--shadow-soft);
+}
+
+.article-cover {
+  margin: 0;
+}
+
+.article-cover img,
+.article-section-image img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+.article-cover figcaption,
+.article-section-image figcaption {
+  border-top: 1px solid var(--line);
+  padding: 12px 16px;
+  color: var(--text-soft);
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.article-section-image {
+  margin: 30px 0 34px;
+}
+
+.article-callout {
+  margin: 30px 0;
+  border: 1px solid var(--line);
+  border-left-width: 4px;
+  border-radius: var(--radius-md);
+  padding: 20px 22px;
+  background: var(--surface);
+}
+
+.article-callout strong {
+  display: block;
+  margin-bottom: 7px;
+  color: var(--text);
+  font-size: 13px;
+  letter-spacing: 0.04em;
+}
+
+.article-callout p {
+  margin: 0;
+  color: var(--text-soft);
+  font-size: 15px;
+  line-height: 1.75;
+}
+
+.article-callout-tip {
+  border-color: rgba(143, 179, 106, 0.42);
+  border-left-color: var(--primary);
+  background: var(--primary-light);
+}
+
+.article-callout-warning {
+  border-color: rgba(183, 159, 130, 0.48);
+  border-left-color: var(--accent);
+  background: var(--surface-muted);
+}
+
+.article-callout-note {
+  border-left-color: var(--accent-strong);
+  background: var(--surface);
+}
+
 .breadcrumbs {
   display: flex;
   flex-wrap: wrap;
@@ -2441,6 +2520,30 @@ textarea {
 }
 
 @media (max-width: 640px) {
+  .article-cover-wrap {
+    padding-top: 24px;
+  }
+
+  .article-cover,
+  .article-section-image {
+    border-radius: var(--radius-md);
+  }
+
+  .article-cover figcaption,
+  .article-section-image figcaption {
+    padding: 10px 12px;
+    font-size: 12px;
+  }
+
+  .article-section-image {
+    margin-block: 24px 28px;
+  }
+
+  .article-callout {
+    margin-block: 24px;
+    padding: 17px 18px;
+  }
+
   .article-review-note {
     margin-bottom: 38px;
     padding: 20px;

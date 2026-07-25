@@ -262,6 +262,11 @@ export const blogPosts: BlogPost[] = [
     category: "Codex 가이드",
     tags: ["AI 코딩·Codex"],
     readingTime: "12분",
+    coverImage: "/images/blog/codex-vscode-workflow.png",
+    coverImageAlt:
+      "프로젝트 폴더와 VS Code 코드 편집 화면, AI 작업 패널, 변경 확인 과정이 연결된 설명 일러스트",
+    coverImageCaption:
+      "VS Code에서 프로젝트 전체를 열고 Codex에 작은 수정을 요청한 뒤 변경 결과를 확인하는 흐름입니다.",
     reviewNote: {
       checkedAt: "2026-07-25",
       environment: "Windows 환경의 VS Code, Next.js 프로젝트와 Codex IDE 확장 사용 흐름",
@@ -312,6 +317,11 @@ export const blogPosts: BlogPost[] = [
             ],
           },
         ],
+        callout: {
+          type: "warning",
+          title: "설치 전 확인",
+          text: "비슷한 이름의 확장을 설치하지 않도록 게시자와 공식 문서 연결을 확인하세요. 계정 로그인이나 권한 승인 화면의 내용도 읽은 뒤 필요한 범위만 허용해야 합니다.",
+        },
       },
       {
         heading: "3단계: 파일 하나가 아니라 프로젝트 폴더를 엽니다",
@@ -319,6 +329,11 @@ export const blogPosts: BlogPost[] = [
           "초보자가 가장 자주 겪는 문제는 page.tsx 파일 하나만 열고 프로젝트 전체를 연 것으로 생각하는 것입니다. VS Code의 폴더 열기 기능으로 package.json이 있는 프로젝트 루트를 여세요. 그래야 Codex가 app, components, content, 설정 파일 사이의 관계를 파악하기 쉽습니다.",
           "프로젝트를 처음 열었을 때는 바로 수정시키지 말고 ‘이 프로젝트의 기술과 폴더 구조를 읽고, 실행 방법과 주요 페이지를 설명해줘. 아직 파일은 수정하지 마’라고 요청해 현재 맥락이 맞는지 확인하세요.",
         ],
+        image: "/images/blog/codex-vscode-safe-edit-steps.png",
+        imageAlt:
+          "프로젝트 폴더 열기, 작은 AI 수정 요청, 코드 변경 비교의 세 단계를 보여주는 설명 이미지",
+        imageCaption:
+          "폴더 전체를 연 뒤 작은 요청을 보내고 diff를 검토하는 순서가 안전한 첫 작업의 핵심입니다.",
       },
       {
         heading: "4단계: 첫 요청은 작고 검증 가능하게 작성합니다",
@@ -337,6 +352,11 @@ export const blogPosts: BlogPost[] = [
             suffix: "의 템플릿을 먼저 사용해 보세요.",
           },
         ],
+        callout: {
+          type: "tip",
+          title: "작은 성공부터 확인하세요",
+          text: "첫 요청은 문구나 링크 한 곳처럼 결과를 바로 확인할 수 있는 범위가 좋습니다. 정상 동작을 확인한 뒤 다음 변경으로 넘어가면 오류가 생긴 지점을 찾기 쉽습니다.",
+        },
       },
       {
         heading: "5단계: 변경된 줄과 실행 결과를 직접 확인합니다",
@@ -374,6 +394,11 @@ export const blogPosts: BlogPost[] = [
             ["권한 승인이 반복됨", "작업 공간 밖 파일 또는 네트워크 접근", "요청 대상과 승인 내용을 읽고 필요한 경우만 허용"],
             ["로컬은 되지만 build 실패", "타입·환경변수·대소문자 문제", "build의 첫 오류부터 순서대로 해결"],
           ],
+        },
+        callout: {
+          type: "note",
+          title: "요약",
+          text: "프로젝트 루트를 열고, 수정 범위를 좁혀 요청하고, diff와 실행 결과를 사용자가 확인하는 세 가지가 Codex와 VS Code를 안전하게 사용하는 기본 흐름입니다.",
         },
       },
     ],
@@ -430,6 +455,11 @@ export const blogPosts: BlogPost[] = [
     category: "배포 가이드",
     tags: ["AI 코딩·Codex", "배포·수익화"],
     readingTime: "13분",
+    coverImage: "/images/blog/nextjs-vercel-deployment-workflow.png",
+    coverImageAlt:
+      "Next.js 코드에서 Git 저장소와 클라우드 배포를 거쳐 데스크톱과 모바일 웹사이트가 공개되는 과정",
+    coverImageCaption:
+      "로컬 프로젝트를 검증하고 GitHub에 저장한 뒤 Vercel이 build해 공개 사이트로 연결하는 일반적인 흐름입니다.",
     reviewNote: {
       checkedAt: "2026-07-25",
       environment: "Next.js 프로젝트를 GitHub 저장소와 Vercel에 연결하는 일반적인 배포 흐름",
@@ -481,6 +511,11 @@ export const blogPosts: BlogPost[] = [
             ],
           },
         ],
+        callout: {
+          type: "warning",
+          title: "비밀 값은 저장소에 올리지 마세요",
+          text: ".env와 .env.local의 실제 값, API 키와 비밀번호는 GitHub 코드에 포함하지 말고 Vercel의 환경변수 설정에 별도로 등록하세요.",
+        },
       },
       {
         heading: "4단계: GitHub push와 자동 재배포 관계를 이해합니다",
@@ -504,12 +539,22 @@ export const blogPosts: BlogPost[] = [
             suffix: " 가이드로 돌아가세요.",
           },
         ],
+        callout: {
+          type: "tip",
+          title: "커밋과 배포를 함께 기록하세요",
+          text: "어떤 커밋이 어떤 배포로 이어졌는지 확인하면 문제가 생겼을 때 정상 커밋으로 되돌리기 쉽습니다. 배포 주소만 보지 말고 커밋 해시와 Build Logs를 함께 확인하세요.",
+        },
       },
       {
         heading: "5단계: 배포 성공 후 공개 주소에서 다시 검사합니다",
         paragraphs: [
           "대시보드에 Ready가 표시되어도 공개 주소에서 실제 페이지를 확인해야 합니다. 운영 도메인이 최신 배포를 가리키는지, 주요 메뉴와 동적 글 경로가 열리는지, sitemap과 robots가 올바른 도메인을 사용하는지 확인하세요. Preview 주소만 보고 운영 반영이 끝났다고 오해하지 않는 것이 중요합니다.",
         ],
+        image: "/images/blog/nextjs-vercel-deployment-checklist.png",
+        imageAlt:
+          "로컬 빌드, Git push, 클라우드 build, 공개 화면, 링크 검증과 비밀키 제외를 나타낸 배포 체크리스트",
+        imageCaption:
+          "배포는 Ready 표시로 끝나지 않습니다. 공개 화면과 링크를 확인하고 비밀 정보가 저장소에 포함되지 않았는지 다시 점검하세요.",
         bullets: [
           "홈, 블로그, 도구, 소개, 문의 페이지 응답 확인",
           "동적 블로그 상세 URL과 canonical 확인",
@@ -550,6 +595,11 @@ export const blogPosts: BlogPost[] = [
           "Vercel의 현재 공식 안내에서 Hobby 플랜은 개인적이고 비상업적인 프로젝트를 위한 무료 플랜으로 설명됩니다. 광고, 유료 기능, 고객 프로젝트처럼 수익과 연결되는 사이트라면 Hobby를 계속 써도 된다고 임의로 판단하지 말고 최신 플랜 조건을 확인해 적합한 플랜을 선택해야 합니다.",
           "무료 범위의 사용량과 기능 제한도 바뀔 수 있습니다. 트래픽뿐 아니라 빌드 실행, 함수, 이미지 최적화, 로그 보관 등 여러 항목이 사용량에 영향을 줄 수 있으므로 Vercel 대시보드의 Usage와 공식 플랜 문서를 주기적으로 확인하세요.",
         ],
+        callout: {
+          type: "note",
+          title: "배포 요약",
+          text: "로컬 build 성공, 안전한 Git push, 올바른 Vercel 프로젝트 설정, 공개 URL 재검증까지 완료해야 배포가 끝납니다. 플랜과 서비스 조건은 운영 목적에 맞게 최신 공식 문서에서 다시 확인하세요.",
+        },
       },
     ],
     faqs: [
@@ -606,6 +656,11 @@ export const blogPosts: BlogPost[] = [
     tags: ["AI 코딩·Codex", "웹사이트·웹앱 제작"],
     readingTime: "11분",
     featured: true,
+    coverImage: "/images/blog/chatgpt-codex-role-workflow.png",
+    coverImageAlt:
+      "대화형 기획 화면과 프로젝트 코드 작업 화면이 연결되어 ChatGPT와 Codex의 역할을 비교하는 일러스트",
+    coverImageCaption:
+      "기획과 요구사항 정리는 대화에서, 실제 프로젝트 변경과 검증은 코드 작업 공간에서 이어가는 역할 분담을 표현했습니다.",
     reviewNote: {
       checkedAt: "2026-07-25",
       environment: "웹사이트 기획, 프로젝트 파일 수정과 검증 단계에서 ChatGPT와 Codex를 나누어 쓰는 흐름",
@@ -629,6 +684,11 @@ export const blogPosts: BlogPost[] = [
             ["오류 해결", "오류 의미와 점검 순서 설명", "재현, 관련 파일 확인, 검사 실행"],
             ["완료 검증", "체크리스트 설계", "typecheck, build, diff 결과 확인 지원"],
           ],
+        },
+        callout: {
+          type: "note",
+          title: "핵심 요약",
+          text: "ChatGPT와 Codex 중 하나가 항상 더 좋은 것이 아니라, 지금 필요한 맥락이 대화 속에 있는지 실제 프로젝트 파일 속에 있는지에 따라 역할을 나누는 것이 핵심입니다.",
         },
       },
       {
@@ -659,6 +719,11 @@ export const blogPosts: BlogPost[] = [
             suffix: "에서 확인할 수 있습니다.",
           },
         ],
+        callout: {
+          type: "tip",
+          title: "수정 전에 계획을 확인하세요",
+          text: "Codex에 프로젝트를 읽고 관련 파일과 변경 계획만 먼저 설명하게 하면 기존 구조를 잘못 이해한 상태에서 큰 수정이 시작되는 일을 줄일 수 있습니다.",
+        },
       },
       {
         heading: "3단계: 화면, 기능, 검증을 한 번에 하나씩 진행합니다",
@@ -678,6 +743,11 @@ export const blogPosts: BlogPost[] = [
         paragraphs: [
           "ChatGPT에서 요구사항 초안을 만들고, 사용자가 직접 유지할 것과 제외할 것을 결정합니다. 그 문서를 Codex에 전달해 프로젝트 분석과 변경 계획을 받고, 작은 단위로 구현한 뒤 로컬에서 확인합니다. 마지막으로 GitHub에 검증된 변경만 올리고 Vercel 배포 결과를 확인합니다.",
         ],
+        image: "/images/blog/chatgpt-codex-collaboration-steps.png",
+        imageAlt:
+          "아이디어 대화, 요구사항 체크리스트, 코드 구현, 사람의 최종 검토로 이어지는 네 단계 협업 흐름",
+        imageCaption:
+          "대화로 범위를 정하고, 요구사항을 확정한 뒤, 프로젝트에 구현하고, 사람이 최종 결과를 검토하는 순서입니다.",
         codeBlock: {
           label: "Codex로 넘길 때 사용할 요청 예시",
           code: "아래 요구사항을 현재 프로젝트 구조에 맞게 검토해줘.\n먼저 관련 파일과 변경 계획만 설명하고 아직 수정하지 마.\n기존 디자인과 메뉴는 유지해야 해.\n구현은 화면, 핵심 기능, 모바일 점검 순서로 나눠줘.\n각 단계 후 변경 파일과 확인 방법을 알려줘.",
@@ -710,6 +780,11 @@ export const blogPosts: BlogPost[] = [
           "실제 데이터가 없거나 오류가 날 때 안내가 있는지",
           "공식 문서가 필요한 최신 기능을 오래된 방식으로 단정하지 않았는지",
         ],
+        callout: {
+          type: "warning",
+          title: "최종 책임은 사용자에게 있습니다",
+          text: "AI가 만든 코드가 build에 성공해도 개인정보, 접근성, 서비스 정책과 실제 사용자 경험까지 자동으로 보장되지는 않습니다. 공개 전에는 사람이 화면과 데이터 흐름을 직접 확인해야 합니다.",
+        },
       },
     ],
     toolCta: {
