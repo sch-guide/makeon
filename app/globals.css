@@ -1053,7 +1053,7 @@ textarea {
 .article-header-inner {
   width: min(860px, calc(100% - 48px));
   margin-inline: auto;
-  padding-block: 56px 80px;
+  padding-block: 44px 60px;
   text-align: center;
 }
 
@@ -1071,15 +1071,60 @@ textarea {
 }
 
 .article-cover {
-  margin: 0;
+  width: min(100%, 960px);
+  margin-inline: auto;
 }
 
-.article-cover img,
-.article-section-image img {
+.article-image-link {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  background: var(--surface-muted);
+}
+
+.article-image-link img {
   display: block;
   width: 100%;
   height: auto;
+}
+
+.article-cover .article-image-link img {
+  max-height: 540px;
   object-fit: cover;
+}
+
+.article-section-image .article-image-link img {
+  max-height: 680px;
+  object-fit: contain;
+}
+
+.article-image-zoom {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  border-radius: 999px;
+  background: rgba(47, 51, 43, 0.82);
+  padding: 7px 10px;
+  color: white;
+  font-size: 11px;
+  font-weight: 750;
+  opacity: 0;
+  transform: translateY(4px);
+  transition:
+    opacity 160ms ease,
+    transform 160ms ease;
+}
+
+.article-image-link:hover .article-image-zoom,
+.article-image-link:focus-visible .article-image-zoom {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.article-image-link:focus-visible {
+  outline: 3px solid rgba(143, 179, 106, 0.42);
+  outline-offset: -3px;
 }
 
 .article-cover figcaption,
@@ -1152,8 +1197,8 @@ textarea {
 }
 
 .article-header h1 {
-  margin: 22px 0 0;
-  font-size: clamp(39px, 5.6vw, 64px);
+  margin: 16px 0 0;
+  font-size: clamp(37px, 4.8vw, 56px);
   font-weight: 850;
   letter-spacing: -0.06em;
   line-height: 1.2;
@@ -1162,7 +1207,7 @@ textarea {
 
 .article-summary {
   max-width: 720px;
-  margin: 24px auto 0;
+  margin: 20px auto 0;
   color: var(--text-soft);
   font-size: 18px;
   line-height: 1.8;
@@ -1175,7 +1220,7 @@ textarea {
   align-items: center;
   justify-content: center;
   gap: 9px;
-  margin-top: 28px;
+  margin-top: 22px;
   color: var(--text-subtle);
   font-size: 12px;
 }
@@ -2106,9 +2151,7 @@ textarea {
 
   .article-aside {
     position: static;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
+    display: block;
   }
 
   .ad-ready-note {
@@ -2342,7 +2385,7 @@ textarea {
 
   .article-header-inner {
     width: min(100% - 32px, 860px);
-    padding-block: 40px 62px;
+    padding-block: 34px 46px;
   }
 
   .breadcrumbs {
@@ -2350,7 +2393,7 @@ textarea {
   }
 
   .article-header h1 {
-    font-size: clamp(35px, 11vw, 48px);
+    font-size: clamp(32px, 9.5vw, 43px);
   }
 
   .article-summary {
@@ -2521,7 +2564,7 @@ textarea {
 
 @media (max-width: 640px) {
   .article-cover-wrap {
-    padding-top: 24px;
+    padding-top: 20px;
   }
 
   .article-cover,
@@ -2537,6 +2580,21 @@ textarea {
 
   .article-section-image {
     margin-block: 24px 28px;
+  }
+
+  .article-cover .article-image-link img {
+    max-height: 300px;
+  }
+
+  .article-section-image .article-image-link img {
+    max-height: 520px;
+  }
+
+  .article-image-zoom {
+    right: 9px;
+    bottom: 9px;
+    opacity: 1;
+    transform: none;
   }
 
   .article-callout {

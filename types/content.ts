@@ -1,19 +1,33 @@
+export type BlogImage = {
+  image: string;
+  imageAlt: string;
+  imageCaption?: string;
+  imageWidth?: number;
+  imageHeight?: number;
+};
+
+export type BlogCallout = {
+  type: "tip" | "warning" | "note";
+  title?: string;
+  text: string;
+};
+
 export type BlogSection = {
   heading: string;
   paragraphs: string[];
   image?: string;
   imageAlt?: string;
   imageCaption?: string;
-  callout?: {
-    type: "tip" | "warning" | "note";
-    title?: string;
-    text: string;
-  };
+  imageWidth?: number;
+  imageHeight?: number;
+  images?: BlogImage[];
+  callout?: BlogCallout;
   bullets?: string[];
   subsections?: {
     heading: string;
     paragraphs: string[];
     bullets?: string[];
+    images?: BlogImage[];
   }[];
   table?: {
     caption: string;

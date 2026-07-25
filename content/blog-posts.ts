@@ -479,6 +479,17 @@ export const blogPosts: BlogPost[] = [
         paragraphs: [
           "Vercel에 연결하기 전에 로컬 production build가 성공해야 합니다. package.json에 build 스크립트가 있는지 확인하고, 사용하지 않는 오류나 경고를 배포가 해결해 줄 것이라고 기대하지 마세요. 배포 환경은 운영 체제와 파일 시스템이 달라 로컬에서 지나친 문제도 발견할 수 있습니다.",
         ],
+        images: [
+          {
+            image: "/images/blog/nextjs-vercel-deployment/step-1-local-project.svg",
+            imageAlt:
+              "프로젝트 폴더 열기, package.json build script 확인, production build 성공을 보여주는 설명용 UI 모형",
+            imageCaption:
+              "실제 제품 화면이 아닌 설명용 UI 모형입니다. 프로젝트 루트를 열고 build 명령을 확인한 뒤 로컬 production build를 실행합니다.",
+            imageWidth: 1200,
+            imageHeight: 720,
+          },
+        ],
         codeBlock: {
           label: "배포 전 기본 검사",
           code: "npm install\nnpm run typecheck\nnpm run build",
@@ -497,11 +508,33 @@ export const blogPosts: BlogPost[] = [
           "원격 저장소를 만들고 로컬 프로젝트를 연결한 뒤, 필요한 소스 파일만 staging하고 커밋합니다. push 전에 git status와 staged diff를 확인하면 node_modules, 빌드 폴더, 환경변수 파일이 실수로 포함되는 것을 막을 수 있습니다.",
           "main을 운영 브랜치로 사용할 예정이라면 main이 현재 정상 빌드되는 상태인지 확인하세요. 팀 작업에서는 별도 브랜치와 미리보기 배포를 거쳐 main에 병합하는 흐름이 더 안전합니다.",
         ],
+        images: [
+          {
+            image: "/images/blog/nextjs-vercel-deployment/step-2-git-upload.svg",
+            imageAlt:
+              "gitignore 확인, commit 생성, main 브랜치 push와 원격 저장소 반영을 보여주는 설명용 UI 모형",
+            imageCaption:
+              "실제 GitHub 화면을 복제하지 않은 설명용 UI 모형입니다. 제외 파일을 확인한 뒤 commit과 push를 순서대로 진행합니다.",
+            imageWidth: 1200,
+            imageHeight: 720,
+          },
+        ],
       },
       {
         heading: "3단계: Vercel에서 GitHub 저장소를 가져옵니다",
         paragraphs: [
           "Vercel에서 새 프로젝트를 만들고 접근 권한이 있는 GitHub 저장소를 선택합니다. 프로젝트 이름, Framework Preset, Root Directory, Build 설정, 환경변수를 확인한 뒤 첫 배포를 시작합니다. 일반적인 단일 Next.js 저장소라면 프레임워크가 자동 감지되지만, 모노레포나 하위 폴더 프로젝트라면 Root Directory가 특히 중요합니다.",
+        ],
+        images: [
+          {
+            image: "/images/blog/nextjs-vercel-deployment/step-3-connect-project.svg",
+            imageAlt:
+              "저장소 선택, 프로젝트 가져오기, Framework와 Root Directory, 환경변수 확인을 보여주는 설명용 배포 서비스 UI 모형",
+            imageCaption:
+              "실제 Vercel 화면을 복제하지 않은 설명용 UI 모형입니다. 저장소를 선택하고 프로젝트와 환경변수 설정을 확인한 뒤 배포를 시작합니다.",
+            imageWidth: 1200,
+            imageHeight: 720,
+          },
         ],
         subsections: [
           {
@@ -521,6 +554,17 @@ export const blogPosts: BlogPost[] = [
         heading: "4단계: GitHub push와 자동 재배포 관계를 이해합니다",
         paragraphs: [
           "Vercel의 Git 연동에서는 저장소의 브랜치와 커밋이 배포를 트리거합니다. 공식 문서 기준으로 브랜치 push는 미리보기 배포를 만들 수 있고, 설정된 Production Branch의 최신 변경은 운영 배포로 이어집니다. 기본 production 브랜치는 보통 main이지만 프로젝트 설정에서 달라질 수 있습니다.",
+        ],
+        images: [
+          {
+            image: "/images/blog/nextjs-vercel-deployment/step-4-deployment-status.svg",
+            imageAlt:
+              "배포 진행, Ready 성공 상태, Build Error와 첫 오류 로그 위치를 보여주는 설명용 배포 상태 UI 모형",
+            imageCaption:
+              "실제 Vercel 화면을 복제하지 않은 설명용 UI 모형입니다. 배포가 성공하면 공개 주소를 확인하고, 실패하면 Build Logs의 첫 번째 실제 오류부터 확인합니다.",
+            imageWidth: 1200,
+            imageHeight: 720,
+          },
         ],
         table: {
           caption: "GitHub 변경과 Vercel 배포의 일반적인 관계",
@@ -550,11 +594,6 @@ export const blogPosts: BlogPost[] = [
         paragraphs: [
           "대시보드에 Ready가 표시되어도 공개 주소에서 실제 페이지를 확인해야 합니다. 운영 도메인이 최신 배포를 가리키는지, 주요 메뉴와 동적 글 경로가 열리는지, sitemap과 robots가 올바른 도메인을 사용하는지 확인하세요. Preview 주소만 보고 운영 반영이 끝났다고 오해하지 않는 것이 중요합니다.",
         ],
-        image: "/images/blog/nextjs-vercel-deployment-checklist.png",
-        imageAlt:
-          "로컬 빌드, Git push, 클라우드 build, 공개 화면, 링크 검증과 비밀키 제외를 나타낸 배포 체크리스트",
-        imageCaption:
-          "배포는 Ready 표시로 끝나지 않습니다. 공개 화면과 링크를 확인하고 비밀 정보가 저장소에 포함되지 않았는지 다시 점검하세요.",
         bullets: [
           "홈, 블로그, 도구, 소개, 문의 페이지 응답 확인",
           "동적 블로그 상세 URL과 canonical 확인",

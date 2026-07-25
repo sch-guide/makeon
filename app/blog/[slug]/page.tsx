@@ -7,10 +7,55 @@ import { NewsletterCta } from "@/components/newsletter-cta";
 import { blogPosts, getPostBySlug } from "@/content/blog-posts";
 import { formatDate } from "@/lib/format";
 import { siteConfig } from "@/lib/site";
+import type { BlogImage } from "@/types/content";
 
 type BlogPostPageProps = {
   params: Promise<{ slug: string }>;
 };
+
+type ArticleImageBlockProps = BlogImage & {
+  variant?: "cover" | "section";
+};
+
+function ArticleImageBlock({
+  image,
+  imageAlt,
+  imageCaption,
+  imageWidth = 1672,
+  imageHeight = 941,
+  variant = "section",
+}: ArticleImageBlockProps) {
+  const figureClassName = variant === "cover" ? "article-cover" : "article-section-image";
+
+  return (
+    <figure className={figureClassName}>
+      <a
+        className="article-image-link"
+        href={image}
+        target="_blank"
+        rel="noreferrer"
+        aria-label={`${imageAlt} 원본 이미지 새 탭에서 보기`}
+      >
+        <Image
+          src={image}
+          alt={imageAlt}
+          width={imageWidth}
+          height={imageHeight}
+          sizes={
+            variant === "cover"
+              ? "(max-width: 640px) calc(100vw - 32px), (max-width: 1200px) calc(100vw - 48px), 960px"
+              : "(max-width: 640px) calc(100vw - 32px), (max-width: 1024px) calc(100vw - 80px), 760px"
+          }
+          loading="lazy"
+        />
+        <span className="article-image-zoom" aria-hidden="true">
+          원본 크게 보기 ↗
+        </span>
+      </a>
+      {imageCaption ? <figcaption>{imageCaption}</figcaption> : null}
+    </figure>
+  );
+}
 
 export function generateStaticParams() {
   return blogPosts.map((post) => ({ slug: post.slug }));
@@ -133,17 +178,12 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
         {post.coverImage && post.coverImageAlt ? (
           <div className="site-container article-cover-wrap">
-            <figure className="article-cover">
-              <Image
-                src={post.coverImage}
-                alt={post.coverImageAlt}
-                width={1672}
-                height={941}
-                sizes="(max-width: 640px) calc(100vw - 32px), (max-width: 1200px) calc(100vw - 48px), 1120px"
-                loading="lazy"
-              />
-              {post.coverImageCaption ? <figcaption>{post.coverImageCaption}</figcaption> : null}
-            </figure>
+            <ArticleImageBlock
+              image={post.coverImage}
+              imageAlt={post.coverImageAlt}
+              imageCaption={post.coverImageCaption}
+              variant="cover"
+            />
           </div>
         ) : null}
 
@@ -180,18 +220,17 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                   <p key={paragraph}>{paragraph}</p>
                 ))}
                 {section.image && section.imageAlt ? (
-                  <figure className="article-section-image">
-                    <Image
-                      src={section.image}
-                      alt={section.imageAlt}
-                      width={1672}
-                      height={941}
-                      sizes="(max-width: 640px) calc(100vw - 32px), (max-width: 1024px) calc(100vw - 80px), 760px"
-                      loading="lazy"
-                    />
-                    {section.imageCaption ? <figcaption>{section.imageCaption}</figcaption> : null}
-                  </figure>
+                  <ArticleImageBlock
+                    image={section.image}
+                    imageAlt={section.imageAlt}
+                    imageCaption={section.imageCaption}
+                    imageWidth={section.imageWidth}
+                    imageHeight={section.imageHeight}
+                  />
                 ) : null}
+                {section.images?.map((image) => (
+                  <ArticleImageBlock {...image} key={image.image} />
+                ))}
                 {section.bullets ? (
                   <ul>
                     {section.bullets.map((bullet) => (
@@ -241,6 +280,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                         ))}
                       </ul>
                     ) : null}
+                    {subsection.images?.map((image) => (
+                      <ArticleImageBlock {...image} key={image.image} />
+                    ))}
                   </div>
                 ))}
                 {section.contextualLinks?.map((link) => (

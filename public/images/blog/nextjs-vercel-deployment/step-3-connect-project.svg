@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+  <title id="title">배포 서비스 프로젝트 연결 UI 모형</title>
+  <desc id="desc">저장소 선택, 프로젝트 설정, 환경변수 확인, 배포 시작을 설명하는 비브랜드 모형 화면</desc>
+  <rect width="1200" height="720" rx="36" fill="#FAF7F0"/>
+  <rect x="42" y="38" width="1116" height="84" rx="24" fill="#2F332B"/>
+  <circle cx="88" cy="80" r="20" fill="#A8C686"/>
+  <text x="88" y="87" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" font-weight="700" fill="#2F332B">3</text>
+  <text x="126" y="75" font-family="Arial, sans-serif" font-size="30" font-weight="700" fill="#FFFFFF">CONNECT PROJECT</text>
+  <text x="126" y="101" font-family="Arial, sans-serif" font-size="18" fill="#D9DDCF">저장소 선택 → 프로젝트 설정 → 환경변수 확인 → 배포</text>
+
+  <rect x="42" y="154" width="420" height="510" rx="26" fill="#FFFFFF" stroke="#DDD6C8" stroke-width="2"/>
+  <text x="70" y="202" font-family="Arial, sans-serif" font-size="23" font-weight="700" fill="#302C28">① SELECT REPOSITORY</text>
+  <rect x="70" y="230" width="364" height="76" rx="16" fill="#EFF5E7" stroke="#8FB36A" stroke-width="3"/>
+  <circle cx="106" cy="268" r="18" fill="#8FB36A"/>
+  <text x="142" y="263" font-family="Arial, sans-serif" font-size="19" font-weight="700" fill="#302C28">makeon / website</text>
+  <text x="142" y="286" font-family="Arial, sans-serif" font-size="15" fill="#6E7168">main · Next.js project</text>
+  <rect x="70" y="324" width="364" height="76" rx="16" fill="#FFFFFF" stroke="#DDD6C8" stroke-width="2"/>
+  <circle cx="106" cy="362" r="18" fill="#D7D0C3"/>
+  <text x="142" y="357" font-family="Arial, sans-serif" font-size="19" font-weight="700" fill="#302C28">sample / notes</text>
+  <text x="142" y="380" font-family="Arial, sans-serif" font-size="15" fill="#6E7168">not selected</text>
+  <rect x="250" y="452" width="184" height="56" rx="28" fill="#8FB36A"/>
+  <text x="342" y="487" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="700" fill="#FFFFFF">IMPORT →</text>
+  <rect x="70" y="548" width="364" height="68" rx="16" fill="#F3EDE1"/>
+  <text x="94" y="579" font-family="Arial, sans-serif" font-size="17" font-weight="700" fill="#52613F">선택한 저장소와 브랜치를 확인하세요</text>
+  <text x="94" y="602" font-family="Arial, sans-serif" font-size="15" fill="#6E7168">실제 제품 화면이 아닌 설명용 UI 모형</text>
+
+  <path d="M480 405h52" stroke="#8FB36A" stroke-width="8" stroke-linecap="round"/>
+  <path d="M518 389l18 16-18 16" fill="none" stroke="#8FB36A" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <rect x="558" y="154" width="600" height="510" rx="26" fill="#FFFFFF" stroke="#DDD6C8" stroke-width="2"/>
+  <text x="588" y="202" font-family="Arial, sans-serif" font-size="23" font-weight="700" fill="#302C28">② PROJECT SETTINGS</text>
+  <g font-family="Arial, sans-serif">
+    <text x="590" y="252" font-size="17" font-weight="700" fill="#6E7168">FRAMEWORK</text>
+    <rect x="590" y="266" width="250" height="58" rx="12" fill="#F3EDE1" stroke="#DDD6C8"/>
+    <text x="612" y="302" font-size="19" font-weight="700" fill="#302C28">Next.js</text>
+    <text x="810" y="302" font-size="18" fill="#6E7168">⌄</text>
+
+    <text x="868" y="252" font-size="17" font-weight="700" fill="#6E7168">ROOT DIRECTORY</text>
+    <rect x="868" y="266" width="260" height="58" rx="12" fill="#F3EDE1" stroke="#DDD6C8"/>
+    <text x="890" y="302" font-size="19" font-weight="700" fill="#302C28">./</text>
+
+    <text x="590" y="374" font-size="17" font-weight="700" fill="#6E7168">ENVIRONMENT VARIABLE</text>
+    <rect x="590" y="390" width="538" height="66" rx="12" fill="#FFF9F1" stroke="#B79F82" stroke-width="2"/>
+    <text x="614" y="430" font-size="19" font-weight="700" fill="#302C28">API_KEY</text>
+    <text x="790" y="430" font-size="22" fill="#8A7055">••••••••••••</text>
+    <rect x="1008" y="404" width="96" height="38" rx="19" fill="#EFE8D8"/>
+    <text x="1056" y="429" text-anchor="middle" font-size="16" font-weight="700" fill="#8A7055">HIDDEN</text>
+  </g>
+  <rect x="888" y="530" width="240" height="64" rx="32" fill="#8FB36A"/>
+  <text x="1008" y="570" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" font-weight="700" fill="#FFFFFF">DEPLOY PROJECT</text>
+  <circle cx="616" cy="558" r="22" fill="#8FB36A"/>
+  <path d="M606 558l7 7 15-18" fill="none" stroke="#FFF" stroke-width="5" stroke-linecap="round"/>
+  <text x="650" y="565" font-family="Arial, sans-serif" font-size="18" fill="#52613F">설정 확인 완료</text>
+</svg>
