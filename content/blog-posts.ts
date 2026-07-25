@@ -1,7 +1,9 @@
 import type { BlogPost } from "@/types/content";
 import { secondClusterPosts } from "@/content/blog-posts-second-cluster";
+import { thirdClusterPosts } from "@/content/blog-posts-third-cluster";
 
 export const blogPosts: BlogPost[] = [
+  ...thirdClusterPosts,
   ...secondClusterPosts,
   {
     slug: "build-a-website-with-ai-without-coding",
