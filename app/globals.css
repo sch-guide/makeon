@@ -2124,6 +2124,542 @@ textarea {
   word-break: keep-all;
 }
 
+.squishy-page-section {
+  overflow: hidden;
+  padding-block: 88px 120px;
+  background:
+    radial-gradient(circle at 8% 12%, rgba(183, 213, 154, 0.18), transparent 26%),
+    linear-gradient(180deg, var(--background), var(--surface-muted) 52%, var(--background));
+}
+
+.squishy-intro {
+  max-width: 780px;
+  margin-bottom: 40px;
+}
+
+.squishy-intro h2 {
+  margin: 0;
+  color: var(--deep);
+  font-size: clamp(30px, 4vw, 48px);
+  letter-spacing: -0.05em;
+  line-height: 1.25;
+}
+
+.squishy-intro > p:last-child {
+  margin: 16px 0 0;
+  color: var(--text-soft);
+  line-height: 1.9;
+  word-break: keep-all;
+}
+
+.squishy-app {
+  display: grid;
+  gap: 22px;
+}
+
+.squishy-toolbar,
+.squishy-stage-card,
+.squishy-guide,
+.squishy-faq,
+.squishy-related {
+  border: 1px solid var(--border-sage);
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: var(--shadow-soft);
+}
+
+.squishy-toolbar {
+  display: grid;
+  gap: 22px;
+  padding: 28px;
+}
+
+.squishy-option-group {
+  min-width: 0;
+  margin: 0;
+  border: 0;
+  padding: 0;
+}
+
+.squishy-option-group legend {
+  margin-bottom: 11px;
+  color: var(--deep);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.squishy-choice-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.squishy-choice {
+  min-height: 88px;
+  border: 1px solid var(--line);
+  border-radius: 17px;
+  background: var(--surface);
+  padding: 16px 18px;
+  color: var(--text);
+  text-align: left;
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    background 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.squishy-choice:hover {
+  transform: translateY(-2px);
+  border-color: var(--primary);
+  box-shadow: var(--shadow-sm);
+}
+
+.squishy-choice[aria-pressed="true"] {
+  border-color: var(--accent);
+  background: var(--primary-light);
+  box-shadow: inset 0 0 0 1px rgba(143, 179, 106, 0.2);
+}
+
+.squishy-choice strong,
+.squishy-choice span {
+  display: block;
+}
+
+.squishy-choice strong {
+  color: var(--deep);
+  font-size: 16px;
+}
+
+.squishy-choice span {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.squishy-secondary-options {
+  display: grid;
+  grid-template-columns: 0.85fr 1.15fr 1fr;
+  gap: 24px;
+  border-top: 1px solid var(--line);
+  padding-top: 22px;
+}
+
+.squishy-small-choices,
+.squishy-color-choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.squishy-small-choices button,
+.squishy-color-choices button {
+  display: inline-flex;
+  min-height: 39px;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  padding: 9px 12px;
+  color: var(--text-soft);
+  font-size: 12px;
+  font-weight: 730;
+}
+
+.squishy-small-choices button[aria-pressed="true"],
+.squishy-color-choices button[aria-pressed="true"] {
+  border-color: var(--accent);
+  background: var(--primary-light);
+  color: var(--deep);
+}
+
+.squishy-color-choices button > span {
+  width: 17px;
+  height: 17px;
+  border: 1px solid rgba(47, 51, 43, 0.13);
+  border-radius: 50%;
+  background: var(--choice-color);
+  box-shadow: inset 0 1px 3px rgba(255, 255, 255, 0.62);
+}
+
+.squishy-stage-card {
+  padding: 24px;
+}
+
+.squishy-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.squishy-stats > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface-muted);
+  padding: 13px 15px;
+}
+
+.squishy-stats span {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 720;
+}
+
+.squishy-stats strong {
+  color: var(--deep);
+  font-size: 20px;
+}
+
+.squishy-play-area {
+  position: relative;
+  display: grid;
+  min-height: clamp(390px, 48vw, 540px);
+  overflow: hidden;
+  place-items: center;
+  border: 1px solid var(--border-sage);
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 50% 48%, rgba(255, 255, 255, 0.96), rgba(239, 245, 231, 0.74) 55%, rgba(239, 232, 216, 0.8)),
+    var(--surface-muted);
+  cursor: grab;
+  isolation: isolate;
+  touch-action: none;
+  user-select: none;
+}
+
+.squishy-play-area:focus-visible {
+  outline: 3px solid rgba(143, 179, 106, 0.45);
+  outline-offset: 3px;
+}
+
+.squishy-play-area.is-pressed {
+  cursor: grabbing;
+}
+
+.squishy-ambient {
+  position: absolute;
+  inset: 10% 12%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(168, 198, 134, 0.15), transparent 67%);
+  filter: blur(6px);
+}
+
+.squishy-visual {
+  position: relative;
+  z-index: 2;
+  width: min(500px, 67vw);
+  transform-origin: var(--origin-x) var(--origin-y);
+  transition: transform 470ms cubic-bezier(0.2, 1.45, 0.38, 1);
+  will-change: transform;
+}
+
+.squishy-play-area.is-slime .squishy-visual {
+  transition-duration: 900ms;
+  transition-timing-function: cubic-bezier(0.2, 0.76, 0.2, 1);
+}
+
+.squishy-play-area.is-pressed .squishy-visual {
+  transition-duration: 80ms;
+  transition-timing-function: ease-out;
+}
+
+.squishy-visual svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.squishy-main-shape {
+  stroke: rgba(47, 51, 43, 0.08);
+  stroke-width: 2;
+}
+
+.squishy-leaf {
+  fill: #789a5d;
+  filter: drop-shadow(0 5px 6px rgba(49, 69, 42, 0.14));
+}
+
+.squishy-highlight {
+  fill: rgba(255, 255, 255, 0.42);
+  filter: blur(2px);
+  pointer-events: none;
+  transition: cx 120ms ease, cy 120ms ease;
+}
+
+.squishy-materials {
+  fill: rgba(255, 255, 255, 0.72);
+  stroke: rgba(47, 51, 43, 0.12);
+  stroke-width: 1;
+}
+
+.squishy-materials text {
+  fill: rgba(255, 255, 255, 0.82);
+  stroke: rgba(72, 90, 62, 0.22);
+  font-size: 17px;
+  text-anchor: middle;
+}
+
+.squishy-particle {
+  position: absolute;
+  z-index: 4;
+  color: var(--accent-strong);
+  font-size: 20px;
+  pointer-events: none;
+  animation: squishy-particle-pop 760ms ease-out forwards;
+}
+
+.squishy-surprise {
+  position: absolute;
+  z-index: 5;
+  color: #c4788d;
+  font-size: clamp(54px, 10vw, 92px);
+  pointer-events: none;
+  animation: squishy-surprise-pop 900ms cubic-bezier(0.2, 1.4, 0.3, 1) forwards;
+}
+
+.squishy-stage-hint {
+  position: absolute;
+  right: 18px;
+  bottom: 15px;
+  left: 18px;
+  z-index: 6;
+  margin: 0;
+  color: var(--text-subtle);
+  font-size: 12px;
+  font-weight: 650;
+  text-align: center;
+  pointer-events: none;
+}
+
+.squishy-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.squishy-actions .button:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.squishy-medical-note {
+  margin: 14px 0 0;
+  color: var(--text-subtle);
+  font-size: 12px;
+  line-height: 1.7;
+  text-align: center;
+}
+
+.squishy-result {
+  margin-top: 22px;
+  border: 1px solid var(--border-sage);
+  border-radius: 20px;
+  background: var(--primary-light);
+  padding: 26px;
+  text-align: center;
+}
+
+.squishy-result h2 {
+  margin: 5px 0 18px;
+  color: var(--deep);
+  font-size: clamp(24px, 3vw, 34px);
+}
+
+.squishy-result > div {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.squishy-result > div p {
+  min-width: 190px;
+  margin: 0;
+  border-radius: 13px;
+  background: rgba(255, 255, 255, 0.76);
+  padding: 14px;
+}
+
+.squishy-result span,
+.squishy-result strong {
+  display: block;
+}
+
+.squishy-result span {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.squishy-result strong {
+  margin-top: 4px;
+  color: var(--deep);
+}
+
+.squishy-guide,
+.squishy-faq,
+.squishy-related {
+  margin-top: 24px;
+  padding: 38px;
+}
+
+.squishy-guide h2,
+.squishy-faq h2,
+.squishy-related h2 {
+  margin: 3px 0 0;
+  color: var(--deep);
+  font-size: clamp(26px, 3vw, 36px);
+  letter-spacing: -0.04em;
+}
+
+.squishy-guide {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.7fr) minmax(0, 1.3fr);
+  gap: 46px;
+}
+
+.squishy-guide ol {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  counter-reset: squishy-guide;
+  gap: 10px;
+  list-style: none;
+}
+
+.squishy-guide li {
+  position: relative;
+  border-bottom: 1px solid var(--line);
+  padding: 4px 0 15px 46px;
+  counter-increment: squishy-guide;
+}
+
+.squishy-guide li::before {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: grid;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  border-radius: 10px;
+  background: var(--primary-light);
+  color: var(--accent-strong);
+  content: counter(squishy-guide);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.squishy-guide li strong,
+.squishy-guide li span {
+  display: block;
+}
+
+.squishy-guide li strong {
+  color: var(--text);
+  font-size: 14px;
+}
+
+.squishy-guide li span {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.squishy-faq > div {
+  display: grid;
+  margin-top: 24px;
+  gap: 10px;
+}
+
+.squishy-faq details {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface);
+  padding: 0 18px;
+}
+
+.squishy-faq summary {
+  cursor: pointer;
+  padding: 18px 30px 18px 0;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 760;
+}
+
+.squishy-faq details p {
+  margin: 0;
+  border-top: 1px solid var(--line);
+  padding: 15px 0 18px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+.squishy-related {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+  background: var(--deep);
+}
+
+.squishy-related .eyebrow,
+.squishy-related h2 {
+  color: white;
+}
+
+.squishy-related > div:last-child {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 9px;
+}
+
+.squishy-related .button-secondary {
+  border-color: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.08);
+  color: white;
+}
+
+@keyframes squishy-particle-pop {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(var(--particle-angle)) translateY(0) scale(0.4);
+  }
+  28% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(var(--particle-angle)) translateY(calc(var(--particle-distance) * -1)) scale(1.15);
+  }
+}
+
+@keyframes squishy-surprise-pop {
+  0% {
+    opacity: 0;
+    transform: translateY(28px) scale(0.35) rotate(-12deg);
+  }
+  45% {
+    opacity: 1;
+    transform: translateY(-10px) scale(1.08) rotate(5deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-70px) scale(0.9) rotate(12deg);
+  }
+}
+
 @media (max-width: 1024px) {
   .hero-grid {
     min-height: auto;
@@ -2177,6 +2713,23 @@ textarea {
     display: grid;
     margin-top: 0;
     place-content: center;
+  }
+
+  .squishy-secondary-options {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .squishy-secondary-options > :last-child {
+    grid-column: 1 / -1;
+  }
+
+  .squishy-related {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .squishy-related > div:last-child {
+    justify-content: flex-start;
   }
 }
 
@@ -2269,6 +2822,20 @@ textarea {
   .prompt-output-card {
     position: static;
   }
+
+  .squishy-choice-row,
+  .squishy-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .squishy-choice-row .squishy-choice:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .squishy-guide {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
 }
 
 @media (max-width: 640px) {
@@ -2354,6 +2921,90 @@ textarea {
   }
 
   .tool-card .button {
+    width: 100%;
+  }
+
+  .squishy-page-section {
+    padding-block: 62px 82px;
+  }
+
+  .squishy-toolbar,
+  .squishy-stage-card,
+  .squishy-guide,
+  .squishy-faq,
+  .squishy-related {
+    border-radius: 20px;
+  }
+
+  .squishy-toolbar,
+  .squishy-stage-card {
+    padding: 16px;
+  }
+
+  .squishy-choice-row,
+  .squishy-secondary-options {
+    grid-template-columns: 1fr;
+  }
+
+  .squishy-choice-row .squishy-choice:last-child,
+  .squishy-secondary-options > :last-child {
+    grid-column: auto;
+  }
+
+  .squishy-choice {
+    min-height: 70px;
+  }
+
+  .squishy-stats {
+    gap: 7px;
+  }
+
+  .squishy-stats > div {
+    padding: 10px 11px;
+  }
+
+  .squishy-stats strong {
+    font-size: 17px;
+  }
+
+  .squishy-play-area {
+    min-height: 350px;
+    border-radius: 20px;
+  }
+
+  .squishy-visual {
+    width: min(320px, 100%);
+  }
+
+  .squishy-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .squishy-actions .button {
+    width: 100%;
+  }
+
+  .squishy-result {
+    padding: 20px 14px;
+  }
+
+  .squishy-result > div {
+    flex-direction: column;
+  }
+
+  .squishy-result > div p {
+    min-width: 0;
+  }
+
+  .squishy-guide,
+  .squishy-faq,
+  .squishy-related {
+    padding: 26px 20px;
+  }
+
+  .squishy-related > div:last-child,
+  .squishy-related .button {
     width: 100%;
   }
 
@@ -2649,6 +3300,14 @@ textarea {
   *::before,
   *::after {
     scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .squishy-particle,
+  .squishy-surprise,
+  .squishy-visual {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
 }

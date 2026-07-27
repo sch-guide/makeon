@@ -101,4 +101,5 @@ export type Tool = {
   category: string;
   status: "coming-soon" | "available";
   icon: string;
+  actionLabel?: string;
 };

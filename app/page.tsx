@@ -127,17 +127,9 @@ export default function Home() {
             linkLabel="도구 모아보기"
           />
           <div className="tools-showcase">
-            <ToolCard tool={tools[0]} />
-            <div className="tool-promise">
-              <span className="promise-number">01</span>
-              <div>
-                <h3>작지만 분명하게 유용한 도구</h3>
-                <p>
-                  복잡한 가입 없이 바로 사용할 수 있는 도구를 목표로 합니다. 새로운 도구가
-                  준비되는 과정을 블로그에서 먼저 공유합니다.
-                </p>
-              </div>
-            </div>
+            {tools.map((tool) => (
+              <ToolCard tool={tool} key={tool.slug} />
+            ))}
           </div>
         </div>
       </section>

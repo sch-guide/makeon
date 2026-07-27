@@ -19,7 +19,7 @@ export function ToolCard({ tool }: { tool: Tool }) {
       </div>
       {isAvailable ? (
         <Link className="button button-primary" href={`/tools/${tool.slug}`}>
-          도구 사용하기
+          {tool.actionLabel ?? "도구 사용하기"}
         </Link>
       ) : (
         <button className="button button-muted" type="button" disabled>

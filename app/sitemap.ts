@@ -8,6 +8,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/blog",
     "/tools",
     "/tools/ai-prompt-generator",
+    "/tools/digital-squishy-playground",
     "/about",
     "/contact",
     "/privacy",
