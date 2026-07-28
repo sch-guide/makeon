@@ -9,6 +9,7 @@ export const tools: Tool[] = [
     category: "AI 도구",
     status: "available",
     icon: "✦",
+    featuredOnHome: true,
   },
   {
     slug: "digital-squishy-playground",
@@ -18,5 +19,17 @@ export const tools: Tool[] = [
     status: "available",
     icon: "☁",
     actionLabel: "놀러 가기",
+    featuredOnHome: true,
+  },
+  {
+    slug: "sensory-toy-playground",
+    name: "디지털 촉감 놀이터",
+    description:
+      "말랑이·슬랑이·크런치 말랑이·왁뿌볼을 누르고 늘리고 깨뜨려보는 무료 미니앱",
+    category: "재미 도구",
+    status: "available",
+    icon: "◉",
+    actionLabel: "놀러 가기",
+    featuredOnHome: false,
   },
 ];

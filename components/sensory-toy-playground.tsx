@@ -1,0 +1,1259 @@
+"use client";
+
+import {
+  type CSSProperties,
+  type KeyboardEvent,
+  type PointerEvent as ReactPointerEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import {
+  type SensoryMode,
+  type SoundStyle,
+  useSensoryAudio,
+} from "@/components/sensory-toy/use-sensory-audio";
+
+type ToyShape = "peach" | "cloud" | "paw" | "bread" | "pudding";
+type ToyColor = "cream" | "sage" | "pink" | "purple" | "blue";
+type RecoverySpeed = "slow" | "normal" | "fast";
+type SlimeTexture = "chewy" | "water" | "butter" | "bouncy";
+type Decoration = "sparkles" | "stars" | "hearts" | "clear-beads";
+type CrunchBase = "clear" | "milk" | "pink" | "purple";
+type CrunchTopping = "foam" | "beads" | "stars" | "hearts" | "sparkles" | "flakes";
+type WaxColor = "apple" | "strawberry" | "grape" | "vanilla" | "soda";
+type BackgroundColor = "cream" | "sage" | "lavender";
+type ChallengePhase = "idle" | "countdown" | "running" | "result";
+
+type BurstParticle = {
+  id: number;
+  x: number;
+  y: number;
+  dx: number;
+  dy: number;
+  symbol: string;
+};
+
+type WaxCrack = {
+  id: number;
+  x: number;
+  y: number;
+  angle: number;
+  length: number;
+};
+
+type ChallengeResult = {
+  interactions: number;
+  bestCombo: number;
+  favoriteMode: string;
+  waxPercent: number;
+  waxPieces: number;
+  message: string;
+};
+
+const modes: { id: SensoryMode; label: string; hint: string }[] = [
+  { id: "squishy", label: "말랑이", hint: "폭신하게 누르고 복원해요." },
+  { id: "slime", label: "슬랑이", hint: "길게 늘리고 빙글 섞어요." },
+  { id: "crunch", label: "크런치 말랑이", hint: "재료를 섞고 톡톡 눌러요." },
+  { id: "wax", label: "왁뿌볼", hint: "여러 번 눌러 껍질을 깨요." },
+];
+
+const shapes: { id: ToyShape; label: string }[] = [
+  { id: "peach", label: "복숭아" },
+  { id: "cloud", label: "구름" },
+  { id: "paw", label: "고양이 발" },
+  { id: "bread", label: "빵" },
+  { id: "pudding", label: "푸딩" },
+];
+
+const colors: { id: ToyColor; label: string; value: string; shade: string }[] = [
+  { id: "cream", label: "크림", value: "#f3e4c8", shade: "#d1b483" },
+  { id: "sage", label: "세이지", value: "#b8d49c", shade: "#789e5a" },
+  { id: "pink", label: "연분홍", value: "#efb7c5", shade: "#c7778c" },
+  { id: "purple", label: "연보라", value: "#cbb9df", shade: "#917bb0" },
+  { id: "blue", label: "하늘색", value: "#add8e0", shade: "#659da9" },
+];
+
+const recoveryOptions: { id: RecoverySpeed; label: string; duration: number }[] = [
+  { id: "slow", label: "천천히", duration: 900 },
+  { id: "normal", label: "보통", duration: 560 },
+  { id: "fast", label: "빠르게", duration: 300 },
+];
+
+const slimeTextures: { id: SlimeTexture; label: string }[] = [
+  { id: "chewy", label: "쫀득" },
+  { id: "water", label: "워터" },
+  { id: "butter", label: "버터" },
+  { id: "bouncy", label: "탱글" },
+];
+
+const decorations: { id: Decoration; label: string; symbol: string }[] = [
+  { id: "sparkles", label: "반짝이", symbol: "✦" },
+  { id: "stars", label: "별", symbol: "★" },
+  { id: "hearts", label: "작은 하트", symbol: "♥" },
+  { id: "clear-beads", label: "투명 구슬", symbol: "○" },
+];
+
+const crunchBases: { id: CrunchBase; label: string; value: string }[] = [
+  { id: "clear", label: "투명 젤", value: "rgba(235, 244, 222, 0.64)" },
+  { id: "milk", label: "우유 젤", value: "rgba(255, 250, 237, 0.9)" },
+  { id: "pink", label: "핑크 젤", value: "rgba(244, 184, 200, 0.72)" },
+  { id: "purple", label: "보라 젤", value: "rgba(205, 185, 225, 0.72)" },
+];
+
+const crunchToppings: { id: CrunchTopping; label: string; symbol: string }[] = [
+  { id: "foam", label: "폼볼", symbol: "●" },
+  { id: "beads", label: "작은 구슬", symbol: "○" },
+  { id: "stars", label: "별", symbol: "★" },
+  { id: "hearts", label: "하트", symbol: "♥" },
+  { id: "sparkles", label: "반짝이", symbol: "✦" },
+  { id: "flakes", label: "얇은 조각", symbol: "▱" },
+];
+
+const waxColors: {
+  id: WaxColor;
+  label: string;
+  shell: string;
+  shellShade: string;
+  inside: string;
+}[] = [
+  { id: "apple", label: "청사과", shell: "#a9cc73", shellShade: "#688f45", inside: "#f1c2d0" },
+  { id: "strawberry", label: "딸기 우유", shell: "#e9a7b8", shellShade: "#bd667f", inside: "#c8dca7" },
+  { id: "grape", label: "포도", shell: "#a889bd", shellShade: "#705380", inside: "#f0c3cf" },
+  { id: "vanilla", label: "바닐라", shell: "#ead8af", shellShade: "#b69869", inside: "#b6d5dd" },
+  { id: "soda", label: "소다", shell: "#9fcfd8", shellShade: "#5e98a5", inside: "#ded0eb" },
+];
+
+const backgrounds: { id: BackgroundColor; label: string; value: string }[] = [
+  { id: "cream", label: "크림", value: "#f8f2e5" },
+  { id: "sage", label: "세이지", value: "#edf4e5" },
+  { id: "lavender", label: "라벤더", value: "#f1ecf5" },
+];
+
+const modeTextures: Record<Exclude<SensoryMode, "wax">, string> = {
+  squishy: "/images/tools/digital-squishy-playground/soft-gel-texture.webp",
+  slime: "/images/tools/digital-squishy-playground/slime-texture.webp",
+  crunch: "/images/tools/digital-squishy-playground/crunch-texture.webp",
+};
+
+const shapePaths: Record<ToyShape, string> = {
+  peach:
+    "M182 53C210 32 247 41 268 70C294 106 289 160 261 198C239 228 203 239 180 216C158 239 122 228 99 198C71 161 65 107 91 71C112 42 150 33 182 53Z",
+  cloud:
+    "M67 178C35 169 27 132 48 108C60 94 78 88 96 91C104 57 137 39 168 51C190 29 230 34 246 64C276 58 303 80 304 110C335 124 335 164 307 180C284 193 258 185 235 188C213 208 178 205 158 187C131 204 91 199 67 178Z",
+  paw:
+    "M79 124C56 117 49 86 66 69C81 53 107 59 116 79C119 48 144 31 166 43C182 52 186 73 180 91C192 62 222 53 239 70C255 86 247 113 228 125C254 119 279 137 278 160C276 185 247 196 225 187C213 213 187 227 157 222C126 218 109 195 104 175C82 185 56 171 55 148C54 138 63 129 79 124Z",
+  bread:
+    "M73 88C73 53 105 37 139 49C159 25 201 25 221 49C255 37 287 53 287 88L282 203C281 224 257 235 180 235C103 235 79 224 78 203L73 88Z",
+  pudding:
+    "M83 85C86 59 118 44 180 44C242 44 274 59 277 85L295 190C299 216 269 231 180 231C91 231 61 216 65 190L83 85Z",
+};
+
+const materialPositions = Array.from({ length: 28 }, (_, index) => ({
+  x: 78 + ((index * 53) % 218),
+  y: 72 + ((index * 71) % 136),
+  size: 4 + (index % 4),
+}));
+
+const favoriteLabel = (counts: Record<SensoryMode, number>) => {
+  const winner = modes.reduce((best, item) =>
+    counts[item.id] > counts[best.id] ? item : best,
+  );
+  return counts[winner.id] > 0 ? winner.label : "아직 없음";
+};
+
+const pick = <T,>(items: readonly T[]) =>
+  items[Math.floor(Math.random() * items.length)];
+
+export function SensoryToyPlayground() {
+  const [mode, setMode] = useState<SensoryMode>("squishy");
+  const [shape, setShape] = useState<ToyShape>("peach");
+  const [color, setColor] = useState<ToyColor>("sage");
+  const [recovery, setRecovery] = useState<RecoverySpeed>("normal");
+  const [slimeTexture, setSlimeTexture] = useState<SlimeTexture>("chewy");
+  const [decoration, setDecoration] = useState<Decoration>("sparkles");
+  const [crunchBase, setCrunchBase] = useState<CrunchBase>("clear");
+  const [toppings, setToppings] = useState<CrunchTopping[]>(["foam", "beads"]);
+  const [waxColor, setWaxColor] = useState<WaxColor>("apple");
+  const [background, setBackground] = useState<BackgroundColor>("cream");
+  const [transparency, setTransparency] = useState(82);
+  const [gloss, setGloss] = useState(72);
+  const [soundStyle, setSoundStyle] = useState<SoundStyle>("soft");
+  const [soundEnabled, setSoundEnabled] = useState(false);
+  const [volume, setVolume] = useState(0.3);
+  const [vibrationEnabled, setVibrationEnabled] = useState(false);
+  const [vibrationSupported, setVibrationSupported] = useState(false);
+  const [reducedMotion, setReducedMotion] = useState(false);
+  const [lowPowerMode, setLowPowerMode] = useState(false);
+
+  const [isPressed, setIsPressed] = useState(false);
+  const [pressOrigin, setPressOrigin] = useState({ x: 50, y: 50 });
+  const [drag, setDrag] = useState({ x: 0, y: 0 });
+  const [holdDepth, setHoldDepth] = useState(0);
+  const [swirling, setSwirling] = useState(false);
+  const [burstParticles, setBurstParticles] = useState<BurstParticle[]>([]);
+  const [totalInteractions, setTotalInteractions] = useState(0);
+  const [combo, setCombo] = useState(0);
+  const [bestCombo, setBestCombo] = useState(0);
+  const [modeCounts, setModeCounts] = useState<Record<SensoryMode, number>>({
+    squishy: 0,
+    slime: 0,
+    crunch: 0,
+    wax: 0,
+  });
+  const [movedParticles, setMovedParticles] = useState(0);
+  const [comboMessage, setComboMessage] = useState("");
+
+  const [waxProgress, setWaxProgress] = useState(0);
+  const [waxCracks, setWaxCracks] = useState<WaxCrack[]>([]);
+  const [waxPieces, setWaxPieces] = useState(0);
+
+  const [challengePhase, setChallengePhase] = useState<ChallengePhase>("idle");
+  const [countdown, setCountdown] = useState(3);
+  const [timeLeft, setTimeLeft] = useState(30);
+  const [challengeResult, setChallengeResult] = useState<ChallengeResult | null>(null);
+
+  const playAreaRef = useRef<HTMLDivElement>(null);
+  const pointerRef = useRef({
+    x: 0,
+    y: 0,
+    lastX: 0,
+    lastY: 0,
+    lastAt: 0,
+    downAt: 0,
+    distance: 0,
+    angle: 0,
+    angleTravel: 0,
+    speed: 0,
+  });
+  const lastPressRef = useRef(0);
+  const comboRef = useRef(0);
+  const waxProgressRef = useRef(0);
+  const particleIdRef = useRef(0);
+  const crackIdRef = useRef(0);
+  const animationFrameRef = useRef<number | null>(null);
+  const lastDragSoundRef = useRef(0);
+  const comboTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const cleanupTimersRef = useRef<Set<ReturnType<typeof setTimeout>>>(new Set());
+
+  const { play, getContext } = useSensoryAudio(soundEnabled, volume, soundStyle);
+
+  const selectedColor = colors.find((item) => item.id === color) ?? colors[1];
+  const selectedRecovery =
+    recoveryOptions.find((item) => item.id === recovery) ?? recoveryOptions[1];
+  const selectedDecoration =
+    decorations.find((item) => item.id === decoration) ?? decorations[0];
+  const selectedBase =
+    crunchBases.find((item) => item.id === crunchBase) ?? crunchBases[0];
+  const selectedWax =
+    waxColors.find((item) => item.id === waxColor) ?? waxColors[0];
+  const selectedBackground =
+    backgrounds.find((item) => item.id === background) ?? backgrounds[0];
+
+  useEffect(() => {
+    setVibrationSupported("vibrate" in navigator);
+    const deviceMemory = (navigator as Navigator & { deviceMemory?: number }).deviceMemory;
+    setLowPowerMode(
+      navigator.hardwareConcurrency <= 4 ||
+        (typeof deviceMemory === "number" && deviceMemory <= 4),
+    );
+    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const updateMotion = () => setReducedMotion(media.matches);
+    updateMotion();
+    media.addEventListener("change", updateMotion);
+    return () => media.removeEventListener("change", updateMotion);
+  }, []);
+
+  const vibrate = useCallback(
+    (pattern: number | number[]) => {
+      if (!vibrationEnabled || !vibrationSupported) return;
+      navigator.vibrate(pattern);
+    },
+    [vibrationEnabled, vibrationSupported],
+  );
+
+  const scheduleCleanup = useCallback((callback: () => void, delay: number) => {
+    const timer = setTimeout(() => {
+      callback();
+      cleanupTimersRef.current.delete(timer);
+    }, delay);
+    cleanupTimersRef.current.add(timer);
+  }, []);
+
+  const createBurst = useCallback(
+    (x: number, y: number, symbol?: string, amount = 7) => {
+      const limitedAmount = Math.min(reducedMotion || lowPowerMode ? 4 : 12, amount);
+      const next = Array.from({ length: limitedAmount }, (_, index) => ({
+        id: particleIdRef.current + index,
+        x,
+        y,
+        dx: (Math.cos((Math.PI * 2 * index) / limitedAmount) * (38 + Math.random() * 40)),
+        dy: (Math.sin((Math.PI * 2 * index) / limitedAmount) * (38 + Math.random() * 40)),
+        symbol: symbol ?? (mode === "slime" ? "●" : "✦"),
+      }));
+      particleIdRef.current += limitedAmount;
+      setBurstParticles((current) => [...current.slice(-20), ...next]);
+      const ids = new Set(next.map((item) => item.id));
+      scheduleCleanup(
+        () => setBurstParticles((current) => current.filter((item) => !ids.has(item.id))),
+        reducedMotion ? 180 : 720,
+      );
+    },
+    [lowPowerMode, mode, reducedMotion, scheduleCleanup],
+  );
+
+  const showComboMessage = useCallback(
+    (nextCombo: number) => {
+      const message =
+        nextCombo === 30
+          ? "Secret Mix"
+          : nextCombo === 20
+            ? "Super Crunch"
+            : nextCombo === 10
+              ? "Crunch"
+              : nextCombo === 5
+                ? "Nice"
+                : "";
+      if (!message) return;
+      setComboMessage(message);
+      scheduleCleanup(() => setComboMessage(""), 850);
+    },
+    [scheduleCleanup],
+  );
+
+  const handleWaxHit = useCallback(
+    (x: number, y: number, intensity: number) => {
+      if (waxProgressRef.current >= 100) return;
+      const closeToCrack = waxCracks.some(
+        (crack) => Math.hypot(crack.x - x, crack.y - y) < 14,
+      );
+      const increase = Math.round(
+        (closeToCrack ? 7 : 4) + intensity * 5 + Math.random() * 2,
+      );
+      const previous = waxProgressRef.current;
+      const next = Math.min(100, previous + increase);
+      waxProgressRef.current = next;
+      setWaxProgress(next);
+      setWaxCracks((current) => [
+        ...current.slice(-28),
+        {
+          id: crackIdRef.current++,
+          x,
+          y,
+          angle: Math.random() * 360,
+          length: 7 + increase * 0.75,
+        },
+      ]);
+
+      const previousPieces = Math.floor(previous / 12);
+      const nextPieces = Math.floor(next / 12);
+      if (nextPieces > previousPieces) {
+        setWaxPieces((current) => current + (nextPieces - previousPieces));
+        createBurst(x, y, "◆", 5);
+        vibrate([9, 32, 9]);
+        void play("wax", "crack", { intensity });
+      } else {
+        vibrate(5);
+        void play("wax", closeToCrack ? "release" : "press", { intensity });
+      }
+
+      if (next === 100) {
+        createBurst(x, y, "✦", 12);
+        vibrate([24, 35, 48]);
+        void play("wax", "complete", { intensity: 1 });
+      }
+    },
+    [createBurst, play, vibrate, waxCracks],
+  );
+
+  const registerInteraction = useCallback(
+    (x: number, y: number, intensity: number) => {
+      const now = Date.now();
+      const rapid = now - lastPressRef.current < 480;
+      const nextCombo = rapid ? comboRef.current + 1 : 1;
+      lastPressRef.current = now;
+      comboRef.current = nextCombo;
+      setCombo(nextCombo);
+      setBestCombo((current) => Math.max(current, nextCombo));
+      setTotalInteractions((current) => current + 1);
+      setModeCounts((current) => ({ ...current, [mode]: current[mode] + 1 }));
+
+      if (comboTimerRef.current) clearTimeout(comboTimerRef.current);
+      comboTimerRef.current = setTimeout(() => {
+        comboRef.current = 0;
+        setCombo(0);
+      }, 950);
+
+      if (mode === "wax") {
+        handleWaxHit(x, y, intensity);
+      } else {
+        const topping = toppings[0];
+        void play(mode, "press", { intensity, topping });
+        vibrate(mode === "crunch" ? 7 : 5);
+        if (rapid || mode === "crunch") {
+          const symbol =
+            mode === "crunch"
+              ? crunchToppings.find((item) => item.id === topping)?.symbol
+              : undefined;
+          createBurst(x, y, symbol, mode === "crunch" ? 8 : 5);
+        }
+      }
+
+      if (mode === "crunch") showComboMessage(nextCombo);
+    },
+    [createBurst, handleWaxHit, mode, play, showComboMessage, toppings, vibrate],
+  );
+
+  const startHoldAnimation = useCallback(() => {
+    const run = () => {
+      if (document.visibilityState === "hidden") {
+        animationFrameRef.current = requestAnimationFrame(run);
+        return;
+      }
+      const heldFor = Date.now() - pointerRef.current.downAt;
+      setHoldDepth(Math.min(1, heldFor / 850));
+      animationFrameRef.current = requestAnimationFrame(run);
+    };
+    if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
+    animationFrameRef.current = requestAnimationFrame(run);
+  }, []);
+
+  const handlePointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const x = ((event.clientX - rect.left) / rect.width) * 100;
+    const y = ((event.clientY - rect.top) / rect.height) * 100;
+    const now = Date.now();
+    event.currentTarget.setPointerCapture(event.pointerId);
+    pointerRef.current = {
+      x: event.clientX,
+      y: event.clientY,
+      lastX: event.clientX,
+      lastY: event.clientY,
+      lastAt: now,
+      downAt: now,
+      distance: 0,
+      angle: 0,
+      angleTravel: 0,
+      speed: 0,
+    };
+    setPressOrigin({ x, y });
+    setDrag({ x: 0, y: 0 });
+    setHoldDepth(event.pressure > 0 ? Math.min(1, event.pressure) : 0.18);
+    setIsPressed(true);
+    registerInteraction(x, y, event.pressure > 0 ? event.pressure : 0.42);
+    startHoldAnimation();
+  };
+
+  const handlePointerMove = (event: ReactPointerEvent<HTMLDivElement>) => {
+    if (!isPressed) return;
+    const now = Date.now();
+    const deltaX = event.clientX - pointerRef.current.lastX;
+    const deltaY = event.clientY - pointerRef.current.lastY;
+    const elapsed = Math.max(8, now - pointerRef.current.lastAt);
+    const distance = Math.hypot(deltaX, deltaY);
+    const speed = distance / elapsed;
+    const totalX = event.clientX - pointerRef.current.x;
+    const totalY = event.clientY - pointerRef.current.y;
+    const limit = mode === "slime" ? 130 : 52;
+    setDrag({
+      x: Math.max(-limit, Math.min(limit, totalX)),
+      y: Math.max(-limit, Math.min(limit, totalY)),
+    });
+
+    const angle = Math.atan2(totalY, totalX);
+    let angleDelta = Math.abs(angle - pointerRef.current.angle);
+    if (angleDelta > Math.PI) angleDelta = Math.PI * 2 - angleDelta;
+    pointerRef.current.angleTravel += angleDelta;
+    pointerRef.current.angle = angle;
+    pointerRef.current.distance += distance;
+    pointerRef.current.speed = speed;
+    pointerRef.current.lastX = event.clientX;
+    pointerRef.current.lastY = event.clientY;
+    pointerRef.current.lastAt = now;
+
+    if (mode === "slime" && pointerRef.current.angleTravel > Math.PI * 2.2) {
+      setSwirling(true);
+      pointerRef.current.angleTravel = 0;
+      createBurst(50, 50, selectedDecoration.symbol, 5);
+      scheduleCleanup(() => setSwirling(false), reducedMotion ? 120 : 780);
+    }
+
+    if (mode === "crunch" && distance > 5) {
+      setMovedParticles((current) => current + Math.round(distance));
+    }
+
+    if (now - lastDragSoundRef.current > 180 && distance > 4) {
+      lastDragSoundRef.current = now;
+      const rect = event.currentTarget.getBoundingClientRect();
+      const x = ((event.clientX - rect.left) / rect.width) * 100;
+      const y = ((event.clientY - rect.top) / rect.height) * 100;
+      if (mode === "wax" && waxProgressRef.current < 100) {
+        if (pointerRef.current.distance > 48) {
+          handleWaxHit(x, y, Math.min(1, speed + 0.25));
+          pointerRef.current.distance = 0;
+        }
+      } else {
+        void play(mode, "drag", {
+          intensity: Math.min(1, speed + 0.2),
+          topping: toppings[0],
+        });
+      }
+    }
+  };
+
+  const releasePointer = (event?: ReactPointerEvent<HTMLDivElement>) => {
+    if (event?.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+    if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
+    animationFrameRef.current = null;
+    if (!isPressed) return;
+
+    const releaseIntensity = Math.min(
+      1,
+      holdDepth * 0.65 + pointerRef.current.speed * 0.5 + 0.2,
+    );
+    if (mode === "slime" && pointerRef.current.speed > 0.65) {
+      createBurst(pressOrigin.x, pressOrigin.y, selectedDecoration.symbol, 6);
+    }
+    if (mode !== "wax" || waxProgressRef.current >= 100) {
+      void play(mode === "wax" ? "squishy" : mode, "release", {
+        intensity: releaseIntensity,
+        topping: toppings[0],
+      });
+    }
+    vibrate(holdDepth > 0.62 ? 14 : 6);
+    setIsPressed(false);
+    setHoldDepth(0);
+    setDrag({ x: 0, y: 0 });
+  };
+
+  const handleKeyboard = (event: KeyboardEvent<HTMLDivElement>) => {
+    if (event.key !== "Enter" && event.key !== " ") return;
+    event.preventDefault();
+    setPressOrigin({ x: 50, y: 50 });
+    setIsPressed(true);
+    setHoldDepth(0.48);
+    registerInteraction(50, 50, 0.5);
+    scheduleCleanup(() => {
+      setIsPressed(false);
+      setHoldDepth(0);
+    }, 180);
+  };
+
+  const resetWax = useCallback(() => {
+    waxProgressRef.current = 0;
+    setWaxProgress(0);
+    setWaxCracks([]);
+    setWaxPieces(0);
+  }, []);
+
+  const resetMetrics = useCallback(() => {
+    setTotalInteractions(0);
+    setCombo(0);
+    comboRef.current = 0;
+    lastPressRef.current = 0;
+    setBestCombo(0);
+    setModeCounts({ squishy: 0, slime: 0, crunch: 0, wax: 0 });
+    setMovedParticles(0);
+    setComboMessage("");
+  }, []);
+
+  const resetAll = useCallback(() => {
+    if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
+    setIsPressed(false);
+    setDrag({ x: 0, y: 0 });
+    setHoldDepth(0);
+    setSwirling(false);
+    setBurstParticles([]);
+    resetMetrics();
+    resetWax();
+    setChallengePhase("idle");
+    setCountdown(3);
+    setTimeLeft(30);
+    setChallengeResult(null);
+  }, [resetMetrics, resetWax]);
+
+  const randomize = () => {
+    const nextMode = pick(modes).id;
+    setMode(nextMode);
+    setShape(pick(shapes).id);
+    setColor(pick(colors).id);
+    setRecovery(pick(recoveryOptions).id);
+    setSlimeTexture(pick(slimeTextures).id);
+    setDecoration(pick(decorations).id);
+    setCrunchBase(pick(crunchBases).id);
+    setToppings(
+      [...crunchToppings]
+        .sort(() => Math.random() - 0.5)
+        .slice(0, 3)
+        .map((item) => item.id),
+    );
+    setWaxColor(pick(waxColors).id);
+    setBackground(pick(backgrounds).id);
+    setTransparency(68 + Math.floor(Math.random() * 28));
+    setGloss(48 + Math.floor(Math.random() * 48));
+    resetWax();
+  };
+
+  const startChallenge = () => {
+    resetMetrics();
+    resetWax();
+    setChallengeResult(null);
+    setCountdown(3);
+    setTimeLeft(30);
+    setChallengePhase("countdown");
+  };
+
+  useEffect(() => {
+    if (challengePhase !== "countdown") return;
+    if (countdown <= 0) {
+      setChallengePhase("running");
+      return;
+    }
+    const timer = window.setTimeout(() => setCountdown((current) => current - 1), 780);
+    return () => window.clearTimeout(timer);
+  }, [challengePhase, countdown]);
+
+  useEffect(() => {
+    if (challengePhase !== "running") return;
+    const interval = window.setInterval(
+      () => setTimeLeft((current) => Math.max(0, current - 1)),
+      1000,
+    );
+    return () => window.clearInterval(interval);
+  }, [challengePhase]);
+
+  useEffect(() => {
+    if (challengePhase !== "running" || timeLeft > 0) return;
+    const favorite = favoriteLabel(modeCounts);
+    const messages: Record<string, string> = {
+      말랑이: "오늘은 폭신한 말랑이가 잘 맞았어요!",
+      슬랑이: "슬랑이를 길게 늘리며 즐겼어요!",
+      "크런치 말랑이": "오늘은 바삭한 크런치가 필요한 날!",
+      왁뿌볼: `왁스 껍질을 ${waxProgress}% 깨뜨렸어요!`,
+      "아직 없음": "다음에는 원하는 촉감 장난감을 눌러보세요!",
+    };
+    setChallengeResult({
+      interactions: totalInteractions,
+      bestCombo,
+      favoriteMode: favorite,
+      waxPercent: waxProgress,
+      waxPieces,
+      message: messages[favorite],
+    });
+    setChallengePhase("result");
+  }, [
+    bestCombo,
+    challengePhase,
+    modeCounts,
+    timeLeft,
+    totalInteractions,
+    waxPieces,
+    waxProgress,
+  ]);
+
+  useEffect(
+    () => () => {
+      if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
+      if (comboTimerRef.current) clearTimeout(comboTimerRef.current);
+      cleanupTimersRef.current.forEach((timer) => clearTimeout(timer));
+      cleanupTimersRef.current.clear();
+      if (vibrationSupported) navigator.vibrate(0);
+    },
+    [vibrationSupported],
+  );
+
+  useEffect(() => {
+    const handleVisibility = () => {
+      if (document.visibilityState === "hidden" && animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+        animationFrameRef.current = null;
+      } else if (document.visibilityState === "visible" && isPressed) {
+        startHoldAnimation();
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibility);
+    return () => document.removeEventListener("visibilitychange", handleVisibility);
+  }, [isPressed, startHoldAnimation]);
+
+  const deformation = useMemo(() => {
+    if (!isPressed) return "translate3d(0, 0, 0) scale(1) rotate(0deg)";
+    if (mode === "wax" && waxProgress < 100) {
+      return `translate3d(${drag.x * 0.03}px, 4px, 0) scale(${1 + holdDepth * 0.018}, ${1 - holdDepth * 0.028})`;
+    }
+    if (mode === "slime") {
+      const textureFactor =
+        slimeTexture === "water"
+          ? 1.24
+          : slimeTexture === "butter"
+            ? 0.86
+            : slimeTexture === "bouncy"
+              ? 0.72
+              : 1;
+      const stretchX = 1 + Math.min(Math.abs(drag.x) / 145, 0.82) * textureFactor;
+      const stretchY = 1 + Math.min(Math.abs(drag.y) / 180, 0.52) * textureFactor;
+      return `translate3d(${drag.x * 0.48}px, ${drag.y * 0.42}px, 0) scale(${stretchX}, ${Math.max(0.64, stretchY - Math.abs(drag.x) / 300)}) rotate(${drag.x * 0.065}deg)`;
+    }
+    const flatten = mode === "squishy" ? 0.24 + holdDepth * 0.16 : 0.18 + holdDepth * 0.1;
+    return `translate3d(${drag.x * 0.1}px, ${5 + holdDepth * 6}px, 0) scale(${1.05 + holdDepth * 0.1}, ${1 - flatten}) rotate(${drag.x * 0.025}deg)`;
+  }, [drag.x, drag.y, holdDepth, isPressed, mode, slimeTexture, waxProgress]);
+
+  const visualStyle = {
+    "--toy-color": selectedColor.value,
+    "--toy-shade": selectedColor.shade,
+    "--toy-opacity": transparency / 100,
+    "--toy-gloss": gloss / 100,
+    "--press-x": `${pressOrigin.x}%`,
+    "--press-y": `${pressOrigin.y}%`,
+    "--recovery-duration": `${mode === "slime" ? selectedRecovery.duration + 420 : selectedRecovery.duration}ms`,
+    transform: deformation,
+  } as CSSProperties;
+
+  const toggleTopping = (next: CrunchTopping) => {
+    setToppings((current) => {
+      if (current.includes(next)) return current.filter((item) => item !== next);
+      if (current.length >= 3) return current;
+      return [...current, next];
+    });
+  };
+
+  const currentTexture =
+    mode === "wax" ? modeTextures.squishy : modeTextures[mode];
+  const currentShape = mode === "slime" ? shapePaths.cloud : shapePaths[shape];
+  const waxBroken = waxProgress >= 100;
+
+  return (
+    <div className="sensory-app">
+      <section className="sensory-mode-panel" aria-label="촉감 놀이 모드">
+        <div className="sensory-mode-grid">
+          {modes.map((item) => (
+            <button
+              type="button"
+              className="sensory-mode-button"
+              aria-pressed={mode === item.id}
+              onClick={() => setMode(item.id)}
+              key={item.id}
+            >
+              <strong>{item.label}</strong>
+              <span>{item.hint}</span>
+            </button>
+          ))}
+        </div>
+      </section>
+
+      <div className="sensory-workspace">
+        <details className="sensory-settings" open>
+          <summary>촉감 장난감 꾸미기</summary>
+          <div className="sensory-settings-body">
+            {mode === "squishy" ? (
+              <>
+                <OptionButtons
+                  legend="말랑이 모양"
+                  items={shapes}
+                  value={shape}
+                  onChange={setShape}
+                />
+                <OptionButtons
+                  legend="복원 속도"
+                  items={recoveryOptions}
+                  value={recovery}
+                  onChange={setRecovery}
+                />
+              </>
+            ) : null}
+
+            {mode === "slime" ? (
+              <>
+                <OptionButtons
+                  legend="슬랑이 질감"
+                  items={slimeTextures}
+                  value={slimeTexture}
+                  onChange={setSlimeTexture}
+                />
+                <OptionButtons
+                  legend="장식 재료"
+                  items={decorations}
+                  value={decoration}
+                  onChange={setDecoration}
+                />
+              </>
+            ) : null}
+
+            {mode === "crunch" ? (
+              <>
+                <OptionButtons
+                  legend="크런치 베이스"
+                  items={crunchBases}
+                  value={crunchBase}
+                  onChange={setCrunchBase}
+                />
+                <fieldset className="sensory-fieldset">
+                  <legend>토핑 최대 3종</legend>
+                  <div className="sensory-option-list">
+                    {crunchToppings.map((item) => (
+                      <button
+                        type="button"
+                        aria-pressed={toppings.includes(item.id)}
+                        onClick={() => toggleTopping(item.id)}
+                        key={item.id}
+                      >
+                        <span aria-hidden="true">{item.symbol}</span>
+                        {item.label}
+                      </button>
+                    ))}
+                  </div>
+                  <p className="sensory-field-help">{toppings.length}/3 선택</p>
+                </fieldset>
+              </>
+            ) : null}
+
+            {mode === "wax" ? (
+              <OptionButtons
+                legend="왁스 색상"
+                items={waxColors}
+                value={waxColor}
+                onChange={(next) => {
+                  setWaxColor(next);
+                  resetWax();
+                }}
+              />
+            ) : null}
+
+            {mode !== "wax" && mode !== "crunch" ? (
+              <fieldset className="sensory-fieldset">
+                <legend>기본 색상</legend>
+                <div className="sensory-color-list">
+                  {colors.map((item) => (
+                    <button
+                      type="button"
+                      aria-label={`${item.label} 색상`}
+                      aria-pressed={color === item.id}
+                      onClick={() => setColor(item.id)}
+                      key={item.id}
+                    >
+                      <span style={{ background: item.value }} aria-hidden="true" />
+                      {item.label}
+                    </button>
+                  ))}
+                </div>
+              </fieldset>
+            ) : null}
+
+            <div className="sensory-range-grid">
+              <label>
+                <span>투명도 <strong>{transparency}%</strong></span>
+                <input
+                  type="range"
+                  min="45"
+                  max="100"
+                  value={transparency}
+                  onChange={(event) => setTransparency(Number(event.target.value))}
+                />
+              </label>
+              <label>
+                <span>광택 <strong>{gloss}%</strong></span>
+                <input
+                  type="range"
+                  min="25"
+                  max="100"
+                  value={gloss}
+                  onChange={(event) => setGloss(Number(event.target.value))}
+                />
+              </label>
+            </div>
+
+            <label className="sensory-select-label">
+              <span>배경색</span>
+              <select
+                value={background}
+                onChange={(event) => setBackground(event.target.value as BackgroundColor)}
+              >
+                {backgrounds.map((item) => (
+                  <option value={item.id} key={item.id}>{item.label}</option>
+                ))}
+              </select>
+            </label>
+
+            <button type="button" className="button button-secondary" onClick={randomize}>
+              랜덤 만들기
+            </button>
+          </div>
+        </details>
+
+        <div className="sensory-play-column">
+          <div className="sensory-stats" aria-live="polite">
+            <div><span>전체 누르기</span><strong>{totalInteractions}</strong></div>
+            <div><span>현재 콤보</span><strong>{combo}</strong></div>
+            <div><span>최고 콤보</span><strong>{bestCombo}</strong></div>
+            <div>
+              <span>{challengePhase === "running" ? "남은 시간" : "챌린지"}</span>
+              <strong>{challengePhase === "running" ? `${timeLeft}초` : "30초"}</strong>
+            </div>
+          </div>
+
+          <div
+            className={`sensory-play-area is-${mode} ${isPressed ? "is-pressed" : ""} ${swirling ? "is-swirling" : ""}`}
+            ref={playAreaRef}
+            role="application"
+            tabIndex={0}
+            aria-label={`${modes.find((item) => item.id === mode)?.label} 놀이 영역. 마우스나 손가락으로 누르고 드래그하세요.`}
+            style={{ "--play-background": selectedBackground.value } as CSSProperties}
+            onPointerDown={handlePointerDown}
+            onPointerMove={handlePointerMove}
+            onPointerUp={releasePointer}
+            onPointerCancel={releasePointer}
+            onKeyDown={handleKeyboard}
+          >
+            {challengePhase === "countdown" ? (
+              <div className="sensory-countdown" aria-live="assertive">
+                {countdown || "시작!"}
+              </div>
+            ) : null}
+
+            <div className="sensory-toy-visual" style={visualStyle}>
+              <svg viewBox="0 0 360 280" role="img" aria-label={`${modes.find((item) => item.id === mode)?.label} 모형`}>
+                <defs>
+                  <linearGradient id="sensory-gel" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0" stopColor="white" stopOpacity="0.72" />
+                    <stop offset="0.35" stopColor="var(--toy-color)" />
+                    <stop offset="1" stopColor="var(--toy-shade)" />
+                  </linearGradient>
+                  <radialGradient id="sensory-wax-shell" cx="35%" cy="26%" r="72%">
+                    <stop offset="0" stopColor="white" stopOpacity="0.52" />
+                    <stop offset="0.28" stopColor={selectedWax.shell} />
+                    <stop offset="1" stopColor={selectedWax.shellShade} />
+                  </radialGradient>
+                  <radialGradient id="sensory-wax-inside" cx="38%" cy="30%" r="70%">
+                    <stop offset="0" stopColor="white" stopOpacity="0.72" />
+                    <stop offset="0.36" stopColor={selectedWax.inside} />
+                    <stop offset="1" stopColor={selectedColor.shade} />
+                  </radialGradient>
+                  <filter id="sensory-shadow" x="-30%" y="-30%" width="160%" height="180%">
+                    <feDropShadow dx="0" dy="14" stdDeviation="11" floodColor="#31452a" floodOpacity="0.18" />
+                  </filter>
+                  <clipPath id="sensory-toy-clip">
+                    {mode === "wax" ? <circle cx="180" cy="140" r="104" /> : <path d={currentShape} />}
+                  </clipPath>
+                </defs>
+
+                {mode === "wax" ? (
+                  <>
+                    <circle
+                      cx="180"
+                      cy="140"
+                      r="104"
+                      fill="url(#sensory-wax-inside)"
+                      filter="url(#sensory-shadow)"
+                    />
+                    <image
+                      className="sensory-texture-image"
+                      href={modeTextures.squishy}
+                      x="55"
+                      y="15"
+                      width="250"
+                      height="250"
+                      preserveAspectRatio="xMidYMid slice"
+                      clipPath="url(#sensory-toy-clip)"
+                      opacity={waxBroken ? 0.88 : 0.22}
+                      aria-hidden="true"
+                    />
+                    {!waxBroken ? (
+                      <circle
+                        className="sensory-wax-shell"
+                        cx="180"
+                        cy="140"
+                        r="104"
+                        fill="url(#sensory-wax-shell)"
+                        opacity={Math.max(0.08, 1 - waxProgress / 112)}
+                      />
+                    ) : null}
+                    <g className="sensory-wax-cracks" clipPath="url(#sensory-toy-clip)">
+                      {waxCracks.map((crack) => {
+                        const radians = (crack.angle * Math.PI) / 180;
+                        const x = 78 + crack.x * 2.04;
+                        const y = 38 + crack.y * 2.04;
+                        return (
+                          <g key={crack.id}>
+                            <line
+                              x1={x}
+                              y1={y}
+                              x2={x + Math.cos(radians) * crack.length}
+                              y2={y + Math.sin(radians) * crack.length}
+                            />
+                            <line
+                              x1={x + Math.cos(radians) * crack.length * 0.52}
+                              y1={y + Math.sin(radians) * crack.length * 0.52}
+                              x2={x + Math.cos(radians + 0.65) * crack.length * 0.9}
+                              y2={y + Math.sin(radians + 0.65) * crack.length * 0.9}
+                            />
+                          </g>
+                        );
+                      })}
+                    </g>
+                    <ellipse className="sensory-highlight" cx="142" cy="90" rx="48" ry="18" />
+                  </>
+                ) : (
+                  <>
+                    <path
+                      className="sensory-main-shape"
+                      d={currentShape}
+                      fill={mode === "crunch" ? selectedBase.value : "url(#sensory-gel)"}
+                      filter="url(#sensory-shadow)"
+                    />
+                    <image
+                      className={`sensory-texture-image is-${mode}`}
+                      href={currentTexture}
+                      x="0"
+                      y="0"
+                      width="360"
+                      height="280"
+                      preserveAspectRatio="xMidYMid slice"
+                      clipPath="url(#sensory-toy-clip)"
+                      aria-hidden="true"
+                    />
+                    <path
+                      className="sensory-color-wash"
+                      d={currentShape}
+                      fill={mode === "crunch" ? selectedBase.value : selectedColor.value}
+                    />
+
+                    {mode === "slime" ? (
+                      <g className="sensory-slime-decoration" clipPath="url(#sensory-toy-clip)">
+                        {materialPositions.slice(0, reducedMotion || lowPowerMode ? 10 : 18).map((position, index) => (
+                          <text x={position.x} y={position.y} key={index}>
+                            {selectedDecoration.symbol}
+                          </text>
+                        ))}
+                      </g>
+                    ) : null}
+
+                    {mode === "crunch" ? (
+                      <g className="sensory-crunch-materials" clipPath="url(#sensory-toy-clip)">
+                        {materialPositions.slice(0, reducedMotion || lowPowerMode ? 14 : 28).map((position, index) => {
+                          const topping = crunchToppings.find(
+                            (item) => item.id === toppings[index % Math.max(1, toppings.length)],
+                          );
+                          const pushX =
+                            isPressed
+                              ? (position.x - (70 + pressOrigin.x * 2.15)) * 0.08 * holdDepth
+                              : 0;
+                          const pushY =
+                            isPressed
+                              ? (position.y - (45 + pressOrigin.y * 1.75)) * 0.08 * holdDepth
+                              : 0;
+                          return (
+                            <text
+                              x={position.x + pushX + drag.x * 0.08}
+                              y={position.y + pushY + drag.y * 0.08}
+                              fontSize={position.size * 2.2}
+                              key={index}
+                            >
+                              {topping?.symbol ?? "●"}
+                            </text>
+                          );
+                        })}
+                      </g>
+                    ) : null}
+
+                    {shape === "peach" && mode === "squishy" ? (
+                      <path className="sensory-leaf" d="M181 57C186 27 213 15 237 25C225 51 205 64 181 57Z" />
+                    ) : null}
+                    <ellipse
+                      className="sensory-highlight"
+                      cx={112 + pressOrigin.x * 0.4}
+                      cy={61 + pressOrigin.y * 0.17}
+                      rx="51"
+                      ry="18"
+                    />
+                  </>
+                )}
+              </svg>
+            </div>
+
+            {burstParticles.map((particle) => (
+              <span
+                className="sensory-burst-particle"
+                style={
+                  {
+                    left: `${particle.x}%`,
+                    top: `${particle.y}%`,
+                    "--particle-x": `${particle.dx}px`,
+                    "--particle-y": `${particle.dy}px`,
+                  } as CSSProperties
+                }
+                aria-hidden="true"
+                key={particle.id}
+              >
+                {particle.symbol}
+              </span>
+            ))}
+
+            {comboMessage ? (
+              <span className="sensory-combo-message" aria-live="polite">{comboMessage}</span>
+            ) : null}
+
+            <p className="sensory-play-hint">
+              {mode === "wax"
+                ? waxBroken
+                  ? "껍질을 모두 깼어요. 내부 말랑이를 눌러보세요."
+                  : "같은 곳을 여러 번 누르거나 드래그해 금을 넓혀보세요."
+                : mode === "slime"
+                  ? "누른 채 길게 당기거나 원을 그려보세요."
+                  : mode === "crunch"
+                    ? "빠르게 누르고 드래그해 재료를 움직여보세요."
+                    : "짧게 누르거나 길게 눌러 압축 정도를 비교해보세요."}
+            </p>
+          </div>
+
+          {mode === "wax" ? (
+            <div className="sensory-wax-progress">
+              <div>
+                <span>균열 진행률</span>
+                <strong>{waxProgress}%</strong>
+              </div>
+              <progress max="100" value={waxProgress}>{waxProgress}%</progress>
+              <button type="button" className="button button-secondary" onClick={resetWax}>
+                새 왁스 입히기
+              </button>
+            </div>
+          ) : null}
+        </div>
+
+        <aside className="sensory-control-panel" aria-label="놀이 설정과 기록">
+          <div className="sensory-control-buttons">
+            <button
+              type="button"
+              className="button button-secondary"
+              aria-pressed={soundEnabled}
+              onClick={() => {
+                const next = !soundEnabled;
+                setSoundEnabled(next);
+                if (next) {
+                  void getContext();
+                  void play(mode, "press", { force: true, intensity: 0.42 });
+                }
+              }}
+            >
+              {soundEnabled ? "소리 끄기" : "소리 켜기"}
+            </button>
+            <button
+              type="button"
+              className="button button-secondary"
+              aria-pressed={vibrationEnabled}
+              disabled={!vibrationSupported}
+              onClick={() => setVibrationEnabled((current) => !current)}
+            >
+              {vibrationSupported
+                ? vibrationEnabled
+                  ? "진동 끄기"
+                  : "진동 켜기"
+                : "진동 미지원"}
+            </button>
+          </div>
+          <p className="sensory-audio-note">소리는 첫 터치 후 재생됩니다.</p>
+
+          <label className="sensory-volume-label">
+            <span>기본 음량 <strong>{Math.round(volume * 100)}%</strong></span>
+            <input
+              type="range"
+              min="0"
+              max="0.7"
+              step="0.05"
+              value={volume}
+              onChange={(event) => setVolume(Number(event.target.value))}
+            />
+          </label>
+
+          <label className="sensory-select-label">
+            <span>소리 질감</span>
+            <select
+              value={soundStyle}
+              onChange={(event) => setSoundStyle(event.target.value as SoundStyle)}
+            >
+              <option value="soft">부드럽게</option>
+              <option value="deep">낮고 묵직하게</option>
+              <option value="crisp">선명하게</option>
+            </select>
+          </label>
+
+          <div className="sensory-challenge-card">
+            <p className="eyebrow">30 SECOND CHALLENGE</p>
+            <h3>30초 촉감 챌린지</h3>
+            <p>카운트다운 후 원하는 모드를 자유롭게 바꿔가며 즐겨보세요.</p>
+            <button
+              type="button"
+              className="button button-primary"
+              onClick={startChallenge}
+              disabled={challengePhase === "countdown" || challengePhase === "running"}
+            >
+              {challengePhase === "countdown"
+                ? `${countdown || 0}초 후 시작`
+                : challengePhase === "running"
+                  ? `${timeLeft}초 진행 중`
+                  : "30초 촉감 챌린지"}
+            </button>
+          </div>
+
+          <div className="sensory-secondary-actions">
+            <button type="button" className="button button-muted" onClick={resetAll}>
+              전체 초기화
+            </button>
+          </div>
+
+          <dl className="sensory-detail-stats">
+            <div><dt>움직인 입자</dt><dd>{movedParticles}</dd></div>
+            <div><dt>깨뜨린 왁스 조각</dt><dd>{waxPieces}</dd></div>
+          </dl>
+        </aside>
+      </div>
+
+      {challengeResult ? (
+        <section className="sensory-result" aria-live="polite">
+          <p className="eyebrow">CHALLENGE RESULT</p>
+          <h2>{challengeResult.message}</h2>
+          <div>
+            <p><span>총 상호작용</span><strong>{challengeResult.interactions}회</strong></p>
+            <p><span>최고 콤보</span><strong>{challengeResult.bestCombo}회</strong></p>
+            <p><span>가장 많이 사용한 모드</span><strong>{challengeResult.favoriteMode}</strong></p>
+            <p><span>왁뿌볼 파괴율</span><strong>{challengeResult.waxPercent}%</strong></p>
+            <p><span>깨뜨린 왁스 조각</span><strong>{challengeResult.waxPieces}개</strong></p>
+          </div>
+          <small>결과는 재미를 위한 놀이 기록이며 심리 또는 건강 상태를 분석하지 않습니다.</small>
+        </section>
+      ) : null}
+    </div>
+  );
+}
+
+function OptionButtons<T extends string>({
+  legend,
+  items,
+  value,
+  onChange,
+}: {
+  legend: string;
+  items: readonly { id: T; label: string }[];
+  value: T;
+  onChange: (value: T) => void;
+}) {
+  return (
+    <fieldset className="sensory-fieldset">
+      <legend>{legend}</legend>
+      <div className="sensory-option-list">
+        {items.map((item) => (
+          <button
+            type="button"
+            aria-pressed={value === item.id}
+            onClick={() => onChange(item.id)}
+            key={item.id}
+          >
+            {item.label}
+          </button>
+        ))}
+      </div>
+    </fieldset>
+  );
+}

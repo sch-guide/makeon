@@ -127,7 +127,7 @@ export default function Home() {
             linkLabel="도구 모아보기"
           />
           <div className="tools-showcase">
-            {tools.map((tool) => (
+            {tools.filter((tool) => tool.featuredOnHome !== false).map((tool) => (
               <ToolCard tool={tool} key={tool.slug} />
             ))}
           </div>

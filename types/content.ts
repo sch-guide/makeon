@@ -102,4 +102,5 @@ export type Tool = {
   status: "coming-soon" | "available";
   icon: string;
   actionLabel?: string;
+  featuredOnHome?: boolean;
 };

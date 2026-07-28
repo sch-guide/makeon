@@ -3335,3 +3335,838 @@ textarea {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Digital sensory toy playground */
+.sensory-page-section {
+  padding-block: 74px 110px;
+  background:
+    radial-gradient(circle at 10% 8%, rgba(183, 213, 154, 0.18), transparent 30%),
+    linear-gradient(180deg, var(--background), var(--surface-muted));
+}
+
+.sensory-intro {
+  max-width: 760px;
+  margin: 0 auto 30px;
+  text-align: center;
+}
+
+.sensory-intro h2,
+.sensory-safety h2,
+.sensory-faq h2,
+.sensory-related h2 {
+  margin: 5px 0 13px;
+  color: var(--deep);
+  font-size: clamp(27px, 3.5vw, 42px);
+  letter-spacing: -0.045em;
+  line-height: 1.25;
+}
+
+.sensory-intro > p:last-child,
+.sensory-safety > p,
+.sensory-faq details p {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.85;
+  word-break: keep-all;
+}
+
+.sensory-app {
+  display: grid;
+  gap: 18px;
+}
+
+.sensory-mode-panel,
+.sensory-settings,
+.sensory-control-panel,
+.sensory-play-column,
+.sensory-result,
+.sensory-safety,
+.sensory-faq,
+.sensory-related {
+  border: 1px solid var(--border-sage);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: var(--shadow-sm);
+}
+
+.sensory-mode-panel {
+  padding: 18px;
+}
+
+.sensory-mode-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.sensory-mode-button {
+  display: grid;
+  min-height: 76px;
+  place-items: center;
+  gap: 4px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface);
+  padding: 12px;
+  color: var(--text);
+  cursor: pointer;
+  text-align: center;
+  transition:
+    border-color 160ms ease,
+    background 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms ease;
+}
+
+.sensory-mode-button strong {
+  font-size: 14px;
+}
+
+.sensory-mode-button span {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.sensory-mode-button:hover {
+  border-color: var(--primary);
+  transform: translateY(-1px);
+}
+
+.sensory-mode-button[aria-pressed="true"] {
+  border-color: var(--primary);
+  background: var(--primary-light);
+  box-shadow: inset 0 0 0 1px rgba(143, 179, 106, 0.18);
+}
+
+.sensory-mode-button[aria-pressed="true"] strong {
+  color: var(--accent-strong);
+}
+
+.sensory-workspace {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.72fr) minmax(390px, 1.6fr) minmax(230px, 0.72fr);
+  align-items: start;
+  gap: 18px;
+}
+
+.sensory-settings {
+  overflow: hidden;
+}
+
+.sensory-settings > summary {
+  padding: 20px;
+  color: var(--deep);
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 780;
+  list-style-position: inside;
+}
+
+.sensory-settings[open] > summary {
+  border-bottom: 1px solid var(--line);
+}
+
+.sensory-settings-body {
+  display: grid;
+  padding: 20px;
+  gap: 22px;
+}
+
+.sensory-fieldset {
+  min-width: 0;
+  margin: 0;
+  border: 0;
+  padding: 0;
+}
+
+.sensory-fieldset legend,
+.sensory-select-label > span,
+.sensory-volume-label > span,
+.sensory-range-grid label > span {
+  display: block;
+  margin-bottom: 9px;
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 760;
+}
+
+.sensory-option-list,
+.sensory-color-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.sensory-option-list button,
+.sensory-color-list button {
+  display: inline-flex;
+  min-height: 42px;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  background: var(--surface);
+  padding: 8px 10px;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.sensory-option-list button[aria-pressed="true"],
+.sensory-color-list button[aria-pressed="true"] {
+  border-color: var(--primary);
+  background: var(--primary-light);
+  color: var(--accent-strong);
+}
+
+.sensory-color-list button span {
+  width: 15px;
+  height: 15px;
+  border: 1px solid rgba(47, 51, 43, 0.12);
+  border-radius: 50%;
+}
+
+.sensory-field-help,
+.sensory-audio-note {
+  margin: 7px 0 0;
+  color: var(--text-subtle);
+  font-size: 10px;
+}
+
+.sensory-range-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.sensory-range-grid label,
+.sensory-volume-label {
+  display: block;
+}
+
+.sensory-range-grid strong,
+.sensory-volume-label strong {
+  color: var(--accent-strong);
+}
+
+.sensory-range-grid input,
+.sensory-volume-label input {
+  width: 100%;
+  accent-color: var(--accent);
+}
+
+.sensory-select-label {
+  display: grid;
+}
+
+.sensory-select-label select {
+  width: 100%;
+  min-height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  background: var(--surface);
+  padding: 0 11px;
+  color: var(--text);
+}
+
+.sensory-play-column {
+  min-width: 0;
+  padding: 18px;
+}
+
+.sensory-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  overflow: hidden;
+  margin-bottom: 13px;
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  background: var(--surface-muted);
+}
+
+.sensory-stats div {
+  padding: 11px 7px;
+  text-align: center;
+}
+
+.sensory-stats div + div {
+  border-left: 1px solid var(--line);
+}
+
+.sensory-stats span,
+.sensory-stats strong {
+  display: block;
+}
+
+.sensory-stats span {
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.sensory-stats strong {
+  margin-top: 3px;
+  color: var(--deep);
+  font-size: 17px;
+}
+
+.sensory-play-area {
+  position: relative;
+  display: grid;
+  width: 100%;
+  min-height: clamp(360px, 42vw, 470px);
+  overflow: hidden;
+  place-items: center;
+  border: 1px solid var(--border-sage);
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 50% 46%, rgba(255, 255, 255, 0.9), transparent 62%),
+    var(--play-background);
+  cursor: grab;
+  isolation: isolate;
+  touch-action: none;
+  user-select: none;
+}
+
+.sensory-play-area::before {
+  position: absolute;
+  inset: 12%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(168, 198, 134, 0.18), transparent 70%);
+  content: "";
+  filter: blur(8px);
+}
+
+.sensory-play-area:focus-visible {
+  outline: 3px solid rgba(143, 179, 106, 0.48);
+  outline-offset: 3px;
+}
+
+.sensory-play-area.is-pressed {
+  cursor: grabbing;
+}
+
+.sensory-toy-visual {
+  position: relative;
+  z-index: 2;
+  width: min(520px, 94%);
+  transform-origin: var(--press-x) var(--press-y);
+  transition: transform var(--recovery-duration) cubic-bezier(0.18, 1.36, 0.35, 1);
+  will-change: transform;
+}
+
+.sensory-play-area.is-slime .sensory-toy-visual {
+  transition-timing-function: cubic-bezier(0.16, 0.78, 0.2, 1);
+}
+
+.sensory-play-area.is-pressed .sensory-toy-visual {
+  transition-duration: 70ms;
+  transition-timing-function: ease-out;
+}
+
+.sensory-play-area.is-swirling .sensory-toy-visual {
+  animation: sensory-swirl 760ms ease-out;
+}
+
+.sensory-toy-visual svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.sensory-main-shape {
+  stroke: rgba(47, 51, 43, 0.1);
+  stroke-width: 2;
+}
+
+.sensory-texture-image {
+  opacity: calc(var(--toy-opacity) * 0.95);
+  filter: saturate(0.78) contrast(1.03) brightness(1.04);
+  pointer-events: none;
+}
+
+.sensory-texture-image.is-slime {
+  filter: saturate(0.88) contrast(1.08);
+}
+
+.sensory-texture-image.is-crunch {
+  filter: saturate(0.74) contrast(1.04) brightness(1.08);
+}
+
+.sensory-color-wash {
+  opacity: calc((1 - var(--toy-opacity)) * 0.45 + 0.16);
+  mix-blend-mode: color;
+  pointer-events: none;
+}
+
+.sensory-highlight {
+  fill: rgba(255, 255, 255, calc(var(--toy-gloss) * 0.5));
+  filter: blur(2px);
+  pointer-events: none;
+}
+
+.sensory-leaf {
+  fill: #718f55;
+  filter: drop-shadow(0 4px 6px rgba(49, 69, 42, 0.15));
+}
+
+.sensory-slime-decoration text,
+.sensory-crunch-materials text {
+  fill: rgba(255, 255, 255, 0.8);
+  stroke: rgba(47, 51, 43, 0.16);
+  stroke-width: 0.8px;
+  text-anchor: middle;
+}
+
+.sensory-slime-decoration text {
+  font-size: 13px;
+}
+
+.sensory-crunch-materials text {
+  transition: x 180ms ease, y 180ms ease;
+}
+
+.sensory-wax-shell {
+  stroke: rgba(47, 51, 43, 0.16);
+  stroke-width: 2;
+  transition: opacity 180ms ease;
+}
+
+.sensory-wax-cracks {
+  fill: none;
+  stroke: rgba(65, 52, 43, 0.76);
+  stroke-linecap: round;
+  stroke-width: 2.3;
+}
+
+.sensory-burst-particle {
+  position: absolute;
+  z-index: 5;
+  color: var(--accent-strong);
+  font-size: 18px;
+  pointer-events: none;
+  animation: sensory-particle 720ms ease-out forwards;
+}
+
+.sensory-combo-message {
+  position: absolute;
+  z-index: 6;
+  top: 20%;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.86);
+  padding: 7px 14px;
+  box-shadow: var(--shadow-sm);
+  color: var(--accent-strong);
+  font-size: 13px;
+  font-weight: 800;
+  pointer-events: none;
+  animation: sensory-message 850ms ease both;
+}
+
+.sensory-countdown {
+  position: absolute;
+  z-index: 9;
+  display: grid;
+  inset: 0;
+  place-items: center;
+  background: rgba(250, 247, 240, 0.82);
+  color: var(--accent-strong);
+  font-size: clamp(68px, 14vw, 110px);
+  font-weight: 850;
+  backdrop-filter: blur(5px);
+}
+
+.sensory-play-hint {
+  position: absolute;
+  z-index: 7;
+  right: 14px;
+  bottom: 13px;
+  left: 14px;
+  margin: 0;
+  color: var(--text-subtle);
+  font-size: 11px;
+  font-weight: 650;
+  text-align: center;
+  pointer-events: none;
+}
+
+.sensory-wax-progress {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 9px 14px;
+  margin-top: 14px;
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  background: var(--surface-muted);
+  padding: 14px;
+}
+
+.sensory-wax-progress > div {
+  display: flex;
+  justify-content: space-between;
+}
+
+.sensory-wax-progress span {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.sensory-wax-progress strong {
+  color: var(--accent-strong);
+  font-size: 12px;
+}
+
+.sensory-wax-progress progress {
+  width: 100%;
+  height: 9px;
+  accent-color: var(--accent);
+}
+
+.sensory-wax-progress .button {
+  grid-row: 1 / span 2;
+  grid-column: 2;
+}
+
+.sensory-control-panel {
+  display: grid;
+  padding: 20px;
+  gap: 19px;
+}
+
+.sensory-control-buttons {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+.sensory-control-buttons .button,
+.sensory-secondary-actions .button,
+.sensory-challenge-card .button {
+  width: 100%;
+}
+
+.sensory-control-buttons .button:disabled {
+  cursor: not-allowed;
+  opacity: 0.58;
+}
+
+.sensory-challenge-card {
+  border: 1px solid var(--border-sage);
+  border-radius: 16px;
+  background: var(--primary-light);
+  padding: 17px;
+}
+
+.sensory-challenge-card h3 {
+  margin: 4px 0 8px;
+  color: var(--deep);
+  font-size: 18px;
+}
+
+.sensory-challenge-card > p:not(.eyebrow) {
+  margin: 0 0 14px;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.65;
+}
+
+.sensory-detail-stats {
+  display: grid;
+  margin: 0;
+  border-top: 1px solid var(--line);
+  padding-top: 13px;
+  gap: 8px;
+}
+
+.sensory-detail-stats div {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.sensory-detail-stats dt {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.sensory-detail-stats dd {
+  margin: 0;
+  color: var(--deep);
+  font-size: 12px;
+  font-weight: 760;
+}
+
+.sensory-result {
+  padding: 30px;
+  text-align: center;
+}
+
+.sensory-result h2 {
+  margin: 6px 0 20px;
+  color: var(--deep);
+  font-size: clamp(25px, 3.4vw, 38px);
+  letter-spacing: -0.04em;
+}
+
+.sensory-result > div {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px;
+}
+
+.sensory-result > div p {
+  margin: 0;
+  border-radius: 13px;
+  background: var(--primary-light);
+  padding: 14px 10px;
+}
+
+.sensory-result span,
+.sensory-result strong {
+  display: block;
+}
+
+.sensory-result span {
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.sensory-result strong {
+  margin-top: 5px;
+  color: var(--accent-strong);
+  font-size: 14px;
+}
+
+.sensory-result small {
+  display: block;
+  margin-top: 16px;
+  color: var(--text-subtle);
+}
+
+.sensory-safety,
+.sensory-faq,
+.sensory-related {
+  margin-top: 22px;
+  padding: 36px;
+}
+
+.sensory-safety {
+  background: linear-gradient(140deg, var(--primary-light), rgba(255, 255, 255, 0.88));
+}
+
+.sensory-faq > div {
+  display: grid;
+  margin-top: 22px;
+  gap: 9px;
+}
+
+.sensory-faq details {
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: var(--surface);
+  padding-inline: 17px;
+}
+
+.sensory-faq summary {
+  padding-block: 16px;
+  color: var(--text);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 740;
+}
+
+.sensory-faq details p {
+  margin: -3px 0 17px;
+}
+
+.sensory-related {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.sensory-related > div:last-child {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+@keyframes sensory-particle {
+  from {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(0.45);
+  }
+  to {
+    opacity: 0;
+    transform: translate(calc(-50% + var(--particle-x)), calc(-50% + var(--particle-y))) scale(1.15) rotate(160deg);
+  }
+}
+
+@keyframes sensory-message {
+  0% { opacity: 0; transform: translateY(8px) scale(0.88); }
+  30% { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(-8px) scale(0.96); }
+}
+
+@keyframes sensory-swirl {
+  0% { filter: none; }
+  48% { filter: saturate(1.12); }
+  100% { filter: none; }
+}
+
+@media (max-width: 1120px) {
+  .sensory-workspace {
+    grid-template-columns: minmax(220px, 0.72fr) minmax(390px, 1.35fr);
+  }
+
+  .sensory-control-panel {
+    grid-column: 1 / -1;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .sensory-control-buttons,
+  .sensory-audio-note {
+    grid-column: 1;
+  }
+
+  .sensory-challenge-card {
+    grid-row: 1 / span 4;
+    grid-column: 4;
+  }
+
+  .sensory-detail-stats {
+    grid-column: 3;
+  }
+}
+
+@media (max-width: 780px) {
+  .sensory-page-section {
+    padding-block: 54px 82px;
+  }
+
+  .sensory-mode-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .sensory-workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .sensory-play-column {
+    order: 1;
+  }
+
+  .sensory-settings {
+    order: 2;
+  }
+
+  .sensory-control-panel {
+    order: 3;
+    grid-template-columns: 1fr;
+  }
+
+  .sensory-control-buttons,
+  .sensory-audio-note,
+  .sensory-challenge-card,
+  .sensory-detail-stats {
+    grid-row: auto;
+    grid-column: auto;
+  }
+
+  .sensory-play-area {
+    min-height: 390px;
+  }
+
+  .sensory-toy-visual {
+    width: min(340px, 100%);
+  }
+
+  .sensory-result > div {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .sensory-related {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .sensory-related > div:last-child {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 480px) {
+  .sensory-mode-panel,
+  .sensory-play-column,
+  .sensory-settings-body,
+  .sensory-control-panel {
+    padding: 14px;
+  }
+
+  .sensory-mode-button {
+    min-height: 72px;
+    padding: 10px 8px;
+  }
+
+  .sensory-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .sensory-stats div:nth-child(3),
+  .sensory-stats div:nth-child(4) {
+    border-top: 1px solid var(--line);
+  }
+
+  .sensory-stats div:nth-child(3) {
+    border-left: 0;
+  }
+
+  .sensory-play-area {
+    min-height: 330px;
+    border-radius: 19px;
+  }
+
+  .sensory-toy-visual {
+    width: min(300px, 100%);
+  }
+
+  .sensory-wax-progress {
+    grid-template-columns: 1fr;
+  }
+
+  .sensory-wax-progress .button {
+    grid-row: auto;
+    grid-column: auto;
+    width: 100%;
+  }
+
+  .sensory-result,
+  .sensory-safety,
+  .sensory-faq,
+  .sensory-related {
+    padding: 24px 18px;
+  }
+
+  .sensory-related > div:last-child,
+  .sensory-related .button {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sensory-toy-visual,
+  .sensory-burst-particle,
+  .sensory-combo-message,
+  .sensory-wax-shell {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
