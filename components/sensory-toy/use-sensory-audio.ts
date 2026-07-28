@@ -239,6 +239,79 @@ export function useSensoryAudio(
     [registerVoice],
   );
 
+  const createViscousPulse = useCallback(
+    (
+      context: AudioContext,
+      duration: number,
+      gainValue: number,
+      startAt: number,
+      speed: number,
+      texturePitch: number,
+      merging: boolean,
+    ) => {
+      if (!compressorRef.current) return;
+      const safeDuration = clamp(duration, 0.12, 0.5);
+      const source = context.createBufferSource();
+      const buffer = context.createBuffer(
+        1,
+        Math.max(1, Math.floor(context.sampleRate * safeDuration)),
+        context.sampleRate,
+      );
+      const data = buffer.getChannelData(0);
+      const baseFrequency = (merging ? 148 : 132 + speed * 48) * texturePitch;
+      let viscousDrift = 0;
+
+      for (let index = 0; index < data.length; index += 1) {
+        const time = index / context.sampleRate;
+        const progress = index / data.length;
+        const rawDrift = Math.random() * 2 - 1;
+        viscousDrift = viscousDrift * 0.988 + rawDrift * 0.012;
+        const frequencyWobble =
+          Math.sin(time * Math.PI * (3.2 + speed * 2.4)) * 13;
+        const body = Math.sin(
+          time * Math.PI * 2 * (baseFrequency + frequencyWobble),
+        );
+        const softFold = Math.sin(
+          time * Math.PI * 2 * baseFrequency * 0.53 +
+            Math.sin(time * Math.PI * 3.1) * 0.8,
+        );
+        const movementPulse = merging
+          ? 0.72 + Math.sin(progress * Math.PI * 2) * 0.18
+          : 0.7 +
+            Math.sin(time * Math.PI * 2 * (2.1 + speed * 2.2)) * 0.22;
+        const attack = Math.min(1, progress / 0.11);
+        const release = Math.pow(Math.max(0, 1 - progress), 0.72);
+        data[index] =
+          (body * 0.42 + softFold * 0.25 + viscousDrift * 0.72) *
+          movementPulse *
+          attack *
+          release;
+      }
+      source.buffer = buffer;
+      source.playbackRate.value = 0.98 + Math.random() * 0.04;
+
+      const filter = context.createBiquadFilter();
+      filter.type = "lowpass";
+      filter.frequency.value = 460 + speed * 110;
+      filter.Q.value = 0.35;
+      const gain = context.createGain();
+      gain.gain.setValueAtTime(0.0001, startAt);
+      gain.gain.exponentialRampToValueAtTime(
+        Math.max(0.0002, gainValue),
+        startAt + 0.028,
+      );
+      gain.gain.exponentialRampToValueAtTime(0.0001, startAt + safeDuration);
+
+      source.connect(filter);
+      filter.connect(gain);
+      gain.connect(compressorRef.current);
+      registerVoice(source, gain, [filter, gain]);
+      source.start(startAt);
+      source.stop(startAt + safeDuration + 0.015);
+    },
+    [registerVoice],
+  );
+
   const playSoftBody = useCallback(
     (
       context: AudioContext,
@@ -364,34 +437,24 @@ export function useSensoryAudio(
               : options.slimeTexture === "bouncy"
                 ? 1.04
                 : 0.96;
-        createNoise(
+        createViscousPulse(
           context,
           duration,
-          "bandpass",
-          (185 + speed * 235) * variation * texturePitch,
-          (0.07 + intensity * 0.06) * variation,
+          (0.055 + intensity * 0.045) * variation,
           now,
-          "wet",
-          0.5,
-        );
-        createTone(
-          context,
-          (phase === "release" ? 194 : 168) * variation * stylePitch,
-          (phase === "release" ? 152 : 126) * variation * stylePitch,
-          duration * 0.9,
-          (0.026 + intensity * 0.028) * variation,
-          "sine",
-          now,
+          speed,
+          texturePitch * stylePitch,
+          phase === "release",
         );
         if (phase === "drag" && speed > 0.58) {
-          createNoise(
+          createViscousPulse(
             context,
-            0.065 + speed * 0.035,
-            "lowpass",
-            430 * variation,
-            0.026 * variation,
-            now + 0.018,
-            "wet",
+            0.12 + speed * 0.06,
+            0.018 * variation,
+            now + 0.045,
+            speed,
+            texturePitch * 1.08,
+            false,
           );
         }
         return;
@@ -516,6 +579,7 @@ export function useSensoryAudio(
     [
       createNoise,
       createTone,
+      createViscousPulse,
       enabled,
       getContext,
       playSoftBody,
