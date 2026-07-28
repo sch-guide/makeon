@@ -6,7 +6,6 @@ import {
   type PointerEvent as ReactPointerEvent,
   useCallback,
   useEffect,
-  useMemo,
   useRef,
   useState,
 } from "react";
@@ -15,6 +14,11 @@ import {
   type SoundStyle,
   useSensoryAudio,
 } from "@/components/sensory-toy/use-sensory-audio";
+import {
+  DeformableSquishy,
+  type DeformableSquishyHandle,
+} from "@/components/sensory-toy/deformable-squishy";
+import type { SquishySurface } from "@/components/sensory-toy/squishy-physics";
 
 type ToyShape = "peach" | "cloud" | "paw" | "bread" | "pudding";
 type ToyColor = "cream" | "sage" | "pink" | "purple" | "blue";
@@ -82,6 +86,13 @@ const recoveryOptions: { id: RecoverySpeed; label: string; duration: number }[] 
   { id: "fast", label: "빠르게", duration: 300 },
 ];
 
+const surfaceOptions: { id: SquishySurface; label: string }[] = [
+  { id: "foam", label: "소프트 폼" },
+  { id: "gel", label: "젤" },
+  { id: "mochi", label: "모찌" },
+  { id: "clear-crunch", label: "투명 크런치" },
+];
+
 const slimeTextures: { id: SlimeTexture; label: string }[] = [
   { id: "chewy", label: "쫀득" },
   { id: "water", label: "워터" },
@@ -138,25 +149,6 @@ const modeTextures: Record<Exclude<SensoryMode, "wax">, string> = {
   crunch: "/images/tools/digital-squishy-playground/crunch-texture.webp",
 };
 
-const shapePaths: Record<ToyShape, string> = {
-  peach:
-    "M182 53C210 32 247 41 268 70C294 106 289 160 261 198C239 228 203 239 180 216C158 239 122 228 99 198C71 161 65 107 91 71C112 42 150 33 182 53Z",
-  cloud:
-    "M67 178C35 169 27 132 48 108C60 94 78 88 96 91C104 57 137 39 168 51C190 29 230 34 246 64C276 58 303 80 304 110C335 124 335 164 307 180C284 193 258 185 235 188C213 208 178 205 158 187C131 204 91 199 67 178Z",
-  paw:
-    "M79 124C56 117 49 86 66 69C81 53 107 59 116 79C119 48 144 31 166 43C182 52 186 73 180 91C192 62 222 53 239 70C255 86 247 113 228 125C254 119 279 137 278 160C276 185 247 196 225 187C213 213 187 227 157 222C126 218 109 195 104 175C82 185 56 171 55 148C54 138 63 129 79 124Z",
-  bread:
-    "M73 88C73 53 105 37 139 49C159 25 201 25 221 49C255 37 287 53 287 88L282 203C281 224 257 235 180 235C103 235 79 224 78 203L73 88Z",
-  pudding:
-    "M83 85C86 59 118 44 180 44C242 44 274 59 277 85L295 190C299 216 269 231 180 231C91 231 61 216 65 190L83 85Z",
-};
-
-const materialPositions = Array.from({ length: 28 }, (_, index) => ({
-  x: 78 + ((index * 53) % 218),
-  y: 72 + ((index * 71) % 136),
-  size: 4 + (index % 4),
-}));
-
 const favoriteLabel = (counts: Record<SensoryMode, number>) => {
   const winner = modes.reduce((best, item) =>
     counts[item.id] > counts[best.id] ? item : best,
@@ -172,6 +164,7 @@ export function SensoryToyPlayground() {
   const [shape, setShape] = useState<ToyShape>("peach");
   const [color, setColor] = useState<ToyColor>("sage");
   const [recovery, setRecovery] = useState<RecoverySpeed>("normal");
+  const [squishySurface, setSquishySurface] = useState<SquishySurface>("mochi");
   const [slimeTexture, setSlimeTexture] = useState<SlimeTexture>("chewy");
   const [decoration, setDecoration] = useState<Decoration>("sparkles");
   const [crunchBase, setCrunchBase] = useState<CrunchBase>("clear");
@@ -190,8 +183,6 @@ export function SensoryToyPlayground() {
 
   const [isPressed, setIsPressed] = useState(false);
   const [pressOrigin, setPressOrigin] = useState({ x: 50, y: 50 });
-  const [drag, setDrag] = useState({ x: 0, y: 0 });
-  const [holdDepth, setHoldDepth] = useState(0);
   const [swirling, setSwirling] = useState(false);
   const [burstParticles, setBurstParticles] = useState<BurstParticle[]>([]);
   const [totalInteractions, setTotalInteractions] = useState(0);
@@ -216,6 +207,7 @@ export function SensoryToyPlayground() {
   const [challengeResult, setChallengeResult] = useState<ChallengeResult | null>(null);
 
   const playAreaRef = useRef<HTMLDivElement>(null);
+  const deformableSquishyRef = useRef<DeformableSquishyHandle>(null);
   const pointerRef = useRef({
     x: 0,
     y: 0,
@@ -227,13 +219,14 @@ export function SensoryToyPlayground() {
     angle: 0,
     angleTravel: 0,
     speed: 0,
+    velocityX: 0,
+    velocityY: 0,
   });
   const lastPressRef = useRef(0);
   const comboRef = useRef(0);
   const waxProgressRef = useRef(0);
   const particleIdRef = useRef(0);
   const crackIdRef = useRef(0);
-  const animationFrameRef = useRef<number | null>(null);
   const lastDragSoundRef = useRef(0);
   const comboTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const cleanupTimersRef = useRef<Set<ReturnType<typeof setTimeout>>>(new Set());
@@ -371,7 +364,9 @@ export function SensoryToyPlayground() {
   const registerInteraction = useCallback(
     (x: number, y: number, intensity: number) => {
       const now = Date.now();
-      const rapid = now - lastPressRef.current < 480;
+      const interval = lastPressRef.current ? now - lastPressRef.current : 0;
+      const rapid = interval > 0 && interval < 480;
+      const comboSpeed = interval > 0 ? Math.min(1, 480 / interval) : 0;
       const nextCombo = rapid ? comboRef.current + 1 : 1;
       lastPressRef.current = now;
       comboRef.current = nextCombo;
@@ -386,11 +381,18 @@ export function SensoryToyPlayground() {
         setCombo(0);
       }, 950);
 
-      if (mode === "wax") {
+      if (mode === "wax" && waxProgressRef.current < 100) {
         handleWaxHit(x, y, intensity);
       } else {
         const topping = toppings[0];
-        void play(mode, "press", { intensity, topping });
+        const soundMode = mode === "wax" ? "squishy" : mode;
+        void play(soundMode, "press", {
+          intensity,
+          topping,
+          comboSpeed,
+          surface:
+            mode === "squishy" || mode === "wax" ? squishySurface : undefined,
+        });
         vibrate(mode === "crunch" ? 7 : 5);
         if (rapid || mode === "crunch") {
           const symbol =
@@ -403,22 +405,17 @@ export function SensoryToyPlayground() {
 
       if (mode === "crunch") showComboMessage(nextCombo);
     },
-    [createBurst, handleWaxHit, mode, play, showComboMessage, toppings, vibrate],
+    [
+      createBurst,
+      handleWaxHit,
+      mode,
+      play,
+      showComboMessage,
+      squishySurface,
+      toppings,
+      vibrate,
+    ],
   );
-
-  const startHoldAnimation = useCallback(() => {
-    const run = () => {
-      if (document.visibilityState === "hidden") {
-        animationFrameRef.current = requestAnimationFrame(run);
-        return;
-      }
-      const heldFor = Date.now() - pointerRef.current.downAt;
-      setHoldDepth(Math.min(1, heldFor / 850));
-      animationFrameRef.current = requestAnimationFrame(run);
-    };
-    if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
-    animationFrameRef.current = requestAnimationFrame(run);
-  }, []);
 
   const handlePointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
     const rect = event.currentTarget.getBoundingClientRect();
@@ -437,13 +434,17 @@ export function SensoryToyPlayground() {
       angle: 0,
       angleTravel: 0,
       speed: 0,
+      velocityX: 0,
+      velocityY: 0,
     };
     setPressOrigin({ x, y });
-    setDrag({ x: 0, y: 0 });
-    setHoldDepth(event.pressure > 0 ? Math.min(1, event.pressure) : 0.18);
     setIsPressed(true);
     registerInteraction(x, y, event.pressure > 0 ? event.pressure : 0.42);
-    startHoldAnimation();
+    deformableSquishyRef.current?.press(
+      x,
+      y,
+      event.pressure > 0 ? event.pressure : 0.42,
+    );
   };
 
   const handlePointerMove = (event: ReactPointerEvent<HTMLDivElement>) => {
@@ -457,10 +458,18 @@ export function SensoryToyPlayground() {
     const totalX = event.clientX - pointerRef.current.x;
     const totalY = event.clientY - pointerRef.current.y;
     const limit = mode === "slime" ? 130 : 52;
-    setDrag({
+    const nextDrag = {
       x: Math.max(-limit, Math.min(limit, totalX)),
       y: Math.max(-limit, Math.min(limit, totalY)),
-    });
+    };
+    const rect = event.currentTarget.getBoundingClientRect();
+    deformableSquishyRef.current?.move(
+      ((event.clientX - rect.left) / rect.width) * 100,
+      ((event.clientY - rect.top) / rect.height) * 100,
+      nextDrag.x,
+      nextDrag.y,
+      speed,
+    );
 
     const angle = Math.atan2(totalY, totalX);
     let angleDelta = Math.abs(angle - pointerRef.current.angle);
@@ -469,6 +478,8 @@ export function SensoryToyPlayground() {
     pointerRef.current.angle = angle;
     pointerRef.current.distance += distance;
     pointerRef.current.speed = speed;
+    pointerRef.current.velocityX = deltaX / elapsed;
+    pointerRef.current.velocityY = deltaY / elapsed;
     pointerRef.current.lastX = event.clientX;
     pointerRef.current.lastY = event.clientY;
     pointerRef.current.lastAt = now;
@@ -495,9 +506,17 @@ export function SensoryToyPlayground() {
           pointerRef.current.distance = 0;
         }
       } else {
-        void play(mode, "drag", {
+        void play(mode === "wax" ? "squishy" : mode, "drag", {
           intensity: Math.min(1, speed + 0.2),
           topping: toppings[0],
+          pressDuration: now - pointerRef.current.downAt,
+          pointerSpeed: speed,
+          dragDistance: Math.hypot(totalX, totalY),
+          deformationAmount: Math.min(
+            1,
+            0.28 + Math.hypot(totalX, totalY) / 90 + speed * 0.25,
+          ),
+          surface: mode === "squishy" ? squishySurface : undefined,
         });
       }
     }
@@ -507,13 +526,13 @@ export function SensoryToyPlayground() {
     if (event?.currentTarget.hasPointerCapture(event.pointerId)) {
       event.currentTarget.releasePointerCapture(event.pointerId);
     }
-    if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
-    animationFrameRef.current = null;
     if (!isPressed) return;
 
     const releaseIntensity = Math.min(
       1,
-      holdDepth * 0.65 + pointerRef.current.speed * 0.5 + 0.2,
+      ((Date.now() - pointerRef.current.downAt) / 1200) * 0.65 +
+        pointerRef.current.speed * 0.5 +
+        0.2,
     );
     if (mode === "slime" && pointerRef.current.speed > 0.65) {
       createBurst(pressOrigin.x, pressOrigin.y, selectedDecoration.symbol, 6);
@@ -522,12 +541,23 @@ export function SensoryToyPlayground() {
       void play(mode === "wax" ? "squishy" : mode, "release", {
         intensity: releaseIntensity,
         topping: toppings[0],
+        pressDuration: Date.now() - pointerRef.current.downAt,
+        pointerSpeed: pointerRef.current.speed,
+        dragDistance: pointerRef.current.distance,
+        deformationAmount: releaseIntensity,
+        releaseVelocity: Math.hypot(
+          pointerRef.current.velocityX,
+          pointerRef.current.velocityY,
+        ),
+        surface: mode === "squishy" ? squishySurface : undefined,
       });
     }
-    vibrate(holdDepth > 0.62 ? 14 : 6);
+    deformableSquishyRef.current?.release(
+      pointerRef.current.velocityX,
+      pointerRef.current.velocityY,
+    );
+    vibrate(releaseIntensity > 0.62 ? 14 : 6);
     setIsPressed(false);
-    setHoldDepth(0);
-    setDrag({ x: 0, y: 0 });
   };
 
   const handleKeyboard = (event: KeyboardEvent<HTMLDivElement>) => {
@@ -535,11 +565,11 @@ export function SensoryToyPlayground() {
     event.preventDefault();
     setPressOrigin({ x: 50, y: 50 });
     setIsPressed(true);
-    setHoldDepth(0.48);
+    deformableSquishyRef.current?.press(50, 50, 0.5);
     registerInteraction(50, 50, 0.5);
     scheduleCleanup(() => {
+      deformableSquishyRef.current?.release(0, 0.4);
       setIsPressed(false);
-      setHoldDepth(0);
     }, 180);
   };
 
@@ -562,12 +592,10 @@ export function SensoryToyPlayground() {
   }, []);
 
   const resetAll = useCallback(() => {
-    if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
     setIsPressed(false);
-    setDrag({ x: 0, y: 0 });
-    setHoldDepth(0);
     setSwirling(false);
     setBurstParticles([]);
+    deformableSquishyRef.current?.reset();
     resetMetrics();
     resetWax();
     setChallengePhase("idle");
@@ -582,6 +610,7 @@ export function SensoryToyPlayground() {
     setShape(pick(shapes).id);
     setColor(pick(colors).id);
     setRecovery(pick(recoveryOptions).id);
+    setSquishySurface(pick(surfaceOptions).id);
     setSlimeTexture(pick(slimeTextures).id);
     setDecoration(pick(decorations).id);
     setCrunchBase(pick(crunchBases).id);
@@ -657,7 +686,6 @@ export function SensoryToyPlayground() {
 
   useEffect(
     () => () => {
-      if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
       if (comboTimerRef.current) clearTimeout(comboTimerRef.current);
       cleanupTimersRef.current.forEach((timer) => clearTimeout(timer));
       cleanupTimersRef.current.clear();
@@ -665,41 +693,6 @@ export function SensoryToyPlayground() {
     },
     [vibrationSupported],
   );
-
-  useEffect(() => {
-    const handleVisibility = () => {
-      if (document.visibilityState === "hidden" && animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
-        animationFrameRef.current = null;
-      } else if (document.visibilityState === "visible" && isPressed) {
-        startHoldAnimation();
-      }
-    };
-    document.addEventListener("visibilitychange", handleVisibility);
-    return () => document.removeEventListener("visibilitychange", handleVisibility);
-  }, [isPressed, startHoldAnimation]);
-
-  const deformation = useMemo(() => {
-    if (!isPressed) return "translate3d(0, 0, 0) scale(1) rotate(0deg)";
-    if (mode === "wax" && waxProgress < 100) {
-      return `translate3d(${drag.x * 0.03}px, 4px, 0) scale(${1 + holdDepth * 0.018}, ${1 - holdDepth * 0.028})`;
-    }
-    if (mode === "slime") {
-      const textureFactor =
-        slimeTexture === "water"
-          ? 1.24
-          : slimeTexture === "butter"
-            ? 0.86
-            : slimeTexture === "bouncy"
-              ? 0.72
-              : 1;
-      const stretchX = 1 + Math.min(Math.abs(drag.x) / 145, 0.82) * textureFactor;
-      const stretchY = 1 + Math.min(Math.abs(drag.y) / 180, 0.52) * textureFactor;
-      return `translate3d(${drag.x * 0.48}px, ${drag.y * 0.42}px, 0) scale(${stretchX}, ${Math.max(0.64, stretchY - Math.abs(drag.x) / 300)}) rotate(${drag.x * 0.065}deg)`;
-    }
-    const flatten = mode === "squishy" ? 0.24 + holdDepth * 0.16 : 0.18 + holdDepth * 0.1;
-    return `translate3d(${drag.x * 0.1}px, ${5 + holdDepth * 6}px, 0) scale(${1.05 + holdDepth * 0.1}, ${1 - flatten}) rotate(${drag.x * 0.025}deg)`;
-  }, [drag.x, drag.y, holdDepth, isPressed, mode, slimeTexture, waxProgress]);
 
   const visualStyle = {
     "--toy-color": selectedColor.value,
@@ -709,7 +702,7 @@ export function SensoryToyPlayground() {
     "--press-x": `${pressOrigin.x}%`,
     "--press-y": `${pressOrigin.y}%`,
     "--recovery-duration": `${mode === "slime" ? selectedRecovery.duration + 420 : selectedRecovery.duration}ms`,
-    transform: deformation,
+    transform: "translate3d(0, 0, 0)",
   } as CSSProperties;
 
   const toggleTopping = (next: CrunchTopping) => {
@@ -720,9 +713,6 @@ export function SensoryToyPlayground() {
     });
   };
 
-  const currentTexture =
-    mode === "wax" ? modeTextures.squishy : modeTextures[mode];
-  const currentShape = mode === "slime" ? shapePaths.cloud : shapePaths[shape];
   const waxBroken = waxProgress >= 100;
 
   return (
@@ -761,6 +751,12 @@ export function SensoryToyPlayground() {
                   items={recoveryOptions}
                   value={recovery}
                   onChange={setRecovery}
+                />
+                <OptionButtons
+                  legend="표면 유형"
+                  items={surfaceOptions}
+                  value={squishySurface}
+                  onChange={setSquishySurface}
                 />
               </>
             ) : null}
@@ -914,163 +910,47 @@ export function SensoryToyPlayground() {
             ) : null}
 
             <div className="sensory-toy-visual" style={visualStyle}>
-              <svg viewBox="0 0 360 280" role="img" aria-label={`${modes.find((item) => item.id === mode)?.label} 모형`}>
-                <defs>
-                  <linearGradient id="sensory-gel" x1="0" y1="0" x2="1" y2="1">
-                    <stop offset="0" stopColor="white" stopOpacity="0.72" />
-                    <stop offset="0.35" stopColor="var(--toy-color)" />
-                    <stop offset="1" stopColor="var(--toy-shade)" />
-                  </linearGradient>
-                  <radialGradient id="sensory-wax-shell" cx="35%" cy="26%" r="72%">
-                    <stop offset="0" stopColor="white" stopOpacity="0.52" />
-                    <stop offset="0.28" stopColor={selectedWax.shell} />
-                    <stop offset="1" stopColor={selectedWax.shellShade} />
-                  </radialGradient>
-                  <radialGradient id="sensory-wax-inside" cx="38%" cy="30%" r="70%">
-                    <stop offset="0" stopColor="white" stopOpacity="0.72" />
-                    <stop offset="0.36" stopColor={selectedWax.inside} />
-                    <stop offset="1" stopColor={selectedColor.shade} />
-                  </radialGradient>
-                  <filter id="sensory-shadow" x="-30%" y="-30%" width="160%" height="180%">
-                    <feDropShadow dx="0" dy="14" stdDeviation="11" floodColor="#31452a" floodOpacity="0.18" />
-                  </filter>
-                  <clipPath id="sensory-toy-clip">
-                    {mode === "wax" ? <circle cx="180" cy="140" r="104" /> : <path d={currentShape} />}
-                  </clipPath>
-                </defs>
-
-                {mode === "wax" ? (
-                  <>
-                    <circle
-                      cx="180"
-                      cy="140"
-                      r="104"
-                      fill="url(#sensory-wax-inside)"
-                      filter="url(#sensory-shadow)"
-                    />
-                    <image
-                      className="sensory-texture-image"
-                      href={modeTextures.squishy}
-                      x="55"
-                      y="15"
-                      width="250"
-                      height="250"
-                      preserveAspectRatio="xMidYMid slice"
-                      clipPath="url(#sensory-toy-clip)"
-                      opacity={waxBroken ? 0.88 : 0.22}
-                      aria-hidden="true"
-                    />
-                    {!waxBroken ? (
-                      <circle
-                        className="sensory-wax-shell"
-                        cx="180"
-                        cy="140"
-                        r="104"
-                        fill="url(#sensory-wax-shell)"
-                        opacity={Math.max(0.08, 1 - waxProgress / 112)}
-                      />
-                    ) : null}
-                    <g className="sensory-wax-cracks" clipPath="url(#sensory-toy-clip)">
-                      {waxCracks.map((crack) => {
-                        const radians = (crack.angle * Math.PI) / 180;
-                        const x = 78 + crack.x * 2.04;
-                        const y = 38 + crack.y * 2.04;
-                        return (
-                          <g key={crack.id}>
-                            <line
-                              x1={x}
-                              y1={y}
-                              x2={x + Math.cos(radians) * crack.length}
-                              y2={y + Math.sin(radians) * crack.length}
-                            />
-                            <line
-                              x1={x + Math.cos(radians) * crack.length * 0.52}
-                              y1={y + Math.sin(radians) * crack.length * 0.52}
-                              x2={x + Math.cos(radians + 0.65) * crack.length * 0.9}
-                              y2={y + Math.sin(radians + 0.65) * crack.length * 0.9}
-                            />
-                          </g>
-                        );
-                      })}
-                    </g>
-                    <ellipse className="sensory-highlight" cx="142" cy="90" rx="48" ry="18" />
-                  </>
-                ) : (
-                  <>
-                    <path
-                      className="sensory-main-shape"
-                      d={currentShape}
-                      fill={mode === "crunch" ? selectedBase.value : "url(#sensory-gel)"}
-                      filter="url(#sensory-shadow)"
-                    />
-                    <image
-                      className={`sensory-texture-image is-${mode}`}
-                      href={currentTexture}
-                      x="0"
-                      y="0"
-                      width="360"
-                      height="280"
-                      preserveAspectRatio="xMidYMid slice"
-                      clipPath="url(#sensory-toy-clip)"
-                      aria-hidden="true"
-                    />
-                    <path
-                      className="sensory-color-wash"
-                      d={currentShape}
-                      fill={mode === "crunch" ? selectedBase.value : selectedColor.value}
-                    />
-
-                    {mode === "slime" ? (
-                      <g className="sensory-slime-decoration" clipPath="url(#sensory-toy-clip)">
-                        {materialPositions.slice(0, reducedMotion || lowPowerMode ? 10 : 18).map((position, index) => (
-                          <text x={position.x} y={position.y} key={index}>
-                            {selectedDecoration.symbol}
-                          </text>
-                        ))}
-                      </g>
-                    ) : null}
-
-                    {mode === "crunch" ? (
-                      <g className="sensory-crunch-materials" clipPath="url(#sensory-toy-clip)">
-                        {materialPositions.slice(0, reducedMotion || lowPowerMode ? 14 : 28).map((position, index) => {
-                          const topping = crunchToppings.find(
-                            (item) => item.id === toppings[index % Math.max(1, toppings.length)],
-                          );
-                          const pushX =
-                            isPressed
-                              ? (position.x - (70 + pressOrigin.x * 2.15)) * 0.08 * holdDepth
-                              : 0;
-                          const pushY =
-                            isPressed
-                              ? (position.y - (45 + pressOrigin.y * 1.75)) * 0.08 * holdDepth
-                              : 0;
-                          return (
-                            <text
-                              x={position.x + pushX + drag.x * 0.08}
-                              y={position.y + pushY + drag.y * 0.08}
-                              fontSize={position.size * 2.2}
-                              key={index}
-                            >
-                              {topping?.symbol ?? "●"}
-                            </text>
-                          );
-                        })}
-                      </g>
-                    ) : null}
-
-                    {shape === "peach" && mode === "squishy" ? (
-                      <path className="sensory-leaf" d="M181 57C186 27 213 15 237 25C225 51 205 64 181 57Z" />
-                    ) : null}
-                    <ellipse
-                      className="sensory-highlight"
-                      cx={112 + pressOrigin.x * 0.4}
-                      cy={61 + pressOrigin.y * 0.17}
-                      rx="51"
-                      ry="18"
-                    />
-                  </>
+              <DeformableSquishy
+                ref={deformableSquishyRef}
+                mode={mode}
+                shape={mode === "wax" ? "orb" : mode === "slime" ? "cloud" : shape}
+                surface={
+                  mode === "crunch"
+                    ? "clear-crunch"
+                    : mode === "slime"
+                      ? "gel"
+                      : squishySurface
+                }
+                color={
+                  mode === "crunch"
+                    ? selectedBase.value
+                    : mode === "wax"
+                      ? selectedWax.inside
+                      : selectedColor.value
+                }
+                shade={mode === "wax" ? selectedColor.shade : selectedColor.shade}
+                transparency={transparency}
+                gloss={gloss}
+                reducedMotion={reducedMotion}
+                lowPowerMode={lowPowerMode}
+                recovery={recovery}
+                slimeTexture={slimeTexture}
+                texturePath={
+                  mode === "wax"
+                    ? modeTextures.squishy
+                    : modeTextures[mode]
+                }
+                decorationSymbol={selectedDecoration.symbol}
+                particleSymbols={toppings.map(
+                  (topping) =>
+                    crunchToppings.find((item) => item.id === topping)?.symbol ?? "●",
                 )}
-              </svg>
+                particleColor={selectedColor.shade}
+                waxProgress={waxProgress}
+                waxShell={selectedWax.shell}
+                waxShellShade={selectedWax.shellShade}
+                waxCracks={waxCracks}
+              />
             </div>
 
             {burstParticles.map((particle) => (
