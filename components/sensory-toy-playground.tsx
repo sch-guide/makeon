@@ -17,6 +17,8 @@ import {
 import {
   DeformableSquishy,
   type DeformableSquishyHandle,
+  type FreeDecoration,
+  type WaxShellPiece,
 } from "@/components/sensory-toy/deformable-squishy";
 import type { SquishySurface } from "@/components/sensory-toy/squishy-physics";
 
@@ -30,6 +32,7 @@ type CrunchTopping = "foam" | "beads" | "stars" | "hearts" | "sparkles" | "flake
 type WaxColor = "apple" | "strawberry" | "grape" | "vanilla" | "soda";
 type BackgroundColor = "cream" | "sage" | "lavender";
 type ChallengePhase = "idle" | "countdown" | "running" | "result";
+type DecorationCategory = FreeDecoration["category"];
 
 type BurstParticle = {
   id: number;
@@ -106,6 +109,39 @@ const decorations: { id: Decoration; label: string; symbol: string }[] = [
   { id: "hearts", label: "작은 하트", symbol: "♥" },
   { id: "clear-beads", label: "투명 구슬", symbol: "○" },
 ];
+
+const decorationCategories: { id: DecorationCategory; label: string }[] = [
+  { id: "face", label: "얼굴" },
+  { id: "ribbon", label: "리본" },
+  { id: "parts", label: "파츠" },
+  { id: "topping", label: "토핑" },
+  { id: "text", label: "텍스트" },
+  { id: "other", label: "기타" },
+];
+
+const freeDecorationCatalog: Array<{
+  symbol: string;
+  label: string;
+  category: Exclude<DecorationCategory, "text">;
+}> = [
+  { symbol: "👀", label: "눈", category: "face" },
+  { symbol: "😊", label: "웃는 얼굴", category: "face" },
+  { symbol: "😺", label: "고양이 얼굴", category: "face" },
+  { symbol: "✨", label: "볼터치", category: "face" },
+  { symbol: "🎀", label: "핑크 리본", category: "ribbon" },
+  { symbol: "🪢", label: "매듭 리본", category: "ribbon" },
+  { symbol: "⭐", label: "별", category: "parts" },
+  { symbol: "💚", label: "하트", category: "parts" },
+  { symbol: "🍑", label: "복숭아", category: "parts" },
+  { symbol: "🍓", label: "딸기", category: "parts" },
+  { symbol: "●", label: "구슬", category: "topping" },
+  { symbol: "🍬", label: "작은 사탕", category: "topping" },
+  { symbol: "🧁", label: "크림", category: "topping" },
+  { symbol: "✦", label: "반짝이", category: "other" },
+  { symbol: "🌿", label: "잎사귀", category: "other" },
+];
+
+const DECORATION_STORAGE_KEY = "makeon-sensory-decorations-v1";
 
 const crunchBases: { id: CrunchBase; label: string; value: string }[] = [
   { id: "clear", label: "투명 젤", value: "rgba(235, 244, 222, 0.64)" },
@@ -200,6 +236,21 @@ export function SensoryToyPlayground() {
   const [waxProgress, setWaxProgress] = useState(0);
   const [waxCracks, setWaxCracks] = useState<WaxCrack[]>([]);
   const [waxPieces, setWaxPieces] = useState(0);
+  const [waxShellPieces, setWaxShellPieces] = useState<WaxShellPiece[]>([]);
+
+  const [freeDecorations, setFreeDecorations] = useState<FreeDecoration[]>([]);
+  const [selectedDecorationId, setSelectedDecorationId] = useState<number | null>(
+    null,
+  );
+  const [decorationCategory, setDecorationCategory] =
+    useState<DecorationCategory>("face");
+  const [pendingDecoration, setPendingDecoration] = useState<{
+    symbol: string;
+    label: string;
+    category: DecorationCategory;
+  } | null>(null);
+  const [decorationText, setDecorationText] = useState("");
+  const [decorationSaveMessage, setDecorationSaveMessage] = useState("");
 
   const [challengePhase, setChallengePhase] = useState<ChallengePhase>("idle");
   const [countdown, setCountdown] = useState(3);
@@ -227,11 +278,21 @@ export function SensoryToyPlayground() {
   const waxProgressRef = useRef(0);
   const particleIdRef = useRef(0);
   const crackIdRef = useRef(0);
+  const waxPieceIdRef = useRef(0);
+  const decorationIdRef = useRef(0);
   const lastDragSoundRef = useRef(0);
   const comboTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const cleanupTimersRef = useRef<Set<ReturnType<typeof setTimeout>>>(new Set());
 
   const { play, getContext } = useSensoryAudio(soundEnabled, volume, soundStyle);
+
+  const scheduleCleanup = useCallback((callback: () => void, delay: number) => {
+    const timer = setTimeout(() => {
+      callback();
+      cleanupTimersRef.current.delete(timer);
+    }, delay);
+    cleanupTimersRef.current.add(timer);
+  }, []);
 
   const selectedColor = colors.find((item) => item.id === color) ?? colors[1];
   const selectedRecovery =
@@ -244,6 +305,140 @@ export function SensoryToyPlayground() {
     waxColors.find((item) => item.id === waxColor) ?? waxColors[0];
   const selectedBackground =
     backgrounds.find((item) => item.id === background) ?? backgrounds[0];
+  const decorationLimit = lowPowerMode ? 18 : 28;
+  const selectedFreeDecoration =
+    freeDecorations.find((item) => item.id === selectedDecorationId) ?? null;
+
+  const showDecorationMessage = useCallback(
+    (message: string) => {
+      setDecorationSaveMessage(message);
+      scheduleCleanup(() => setDecorationSaveMessage(""), 1800);
+    },
+    [scheduleCleanup],
+  );
+
+  const addFreeDecoration = useCallback(
+    (
+      template: {
+        symbol: string;
+        label: string;
+        category: DecorationCategory;
+      },
+      x: number,
+      y: number,
+    ) => {
+      if (freeDecorations.length >= decorationLimit) {
+        showDecorationMessage(`장식은 최대 ${decorationLimit}개까지 추가할 수 있어요.`);
+        return;
+      }
+      const nextId = decorationIdRef.current++;
+      const nextDecoration: FreeDecoration = {
+        id: nextId,
+        symbol: template.symbol,
+        label: template.label,
+        category: template.category,
+        x: Math.min(92, Math.max(8, x)),
+        y: Math.min(90, Math.max(10, y)),
+        scale: 1,
+        rotation: 0,
+        flipped: false,
+        zIndex:
+          freeDecorations.reduce(
+            (highest, decoration) => Math.max(highest, decoration.zIndex),
+            0,
+          ) + 1,
+      };
+      setFreeDecorations((current) => [...current, nextDecoration]);
+      setSelectedDecorationId(nextId);
+      setPendingDecoration(null);
+      showDecorationMessage(`${template.label} 장식을 추가했어요.`);
+    },
+    [decorationLimit, freeDecorations, showDecorationMessage],
+  );
+
+  const updateFreeDecoration = useCallback(
+    (decorationId: number, patch: Partial<FreeDecoration>) => {
+      setFreeDecorations((current) =>
+        current.map((decoration) =>
+          decoration.id === decorationId
+            ? {
+                ...decoration,
+                ...patch,
+                scale:
+                  patch.scale === undefined
+                    ? decoration.scale
+                    : Math.min(2.1, Math.max(0.55, patch.scale)),
+                rotation:
+                  patch.rotation === undefined
+                    ? decoration.rotation
+                    : ((patch.rotation % 360) + 360) % 360,
+              }
+            : decoration,
+        ),
+      );
+    },
+    [],
+  );
+
+  const saveDecorations = () => {
+    try {
+      localStorage.setItem(
+        DECORATION_STORAGE_KEY,
+        JSON.stringify(freeDecorations),
+      );
+      showDecorationMessage("현재 꾸미기를 이 브라우저에 저장했어요.");
+    } catch {
+      showDecorationMessage("저장 공간을 사용할 수 없어 저장하지 못했어요.");
+    }
+  };
+
+  const loadDecorations = () => {
+    try {
+      const stored = localStorage.getItem(DECORATION_STORAGE_KEY);
+      if (!stored) {
+        showDecorationMessage("저장된 꾸미기가 없어요.");
+        return;
+      }
+      const parsed = JSON.parse(stored) as unknown;
+      if (!Array.isArray(parsed)) throw new Error("Invalid decoration data");
+      const restored = parsed
+        .filter(
+          (item): item is FreeDecoration =>
+            typeof item === "object" &&
+            item !== null &&
+            typeof (item as FreeDecoration).symbol === "string" &&
+            typeof (item as FreeDecoration).label === "string" &&
+            typeof (item as FreeDecoration).x === "number" &&
+            typeof (item as FreeDecoration).y === "number" &&
+            typeof (item as FreeDecoration).scale === "number" &&
+            typeof (item as FreeDecoration).rotation === "number",
+        )
+        .slice(0, decorationLimit)
+        .map((item, index) => ({
+          ...item,
+          id: index,
+          x: Math.min(92, Math.max(8, item.x)),
+          y: Math.min(90, Math.max(10, item.y)),
+          scale: Math.min(2.1, Math.max(0.55, item.scale)),
+          rotation: ((item.rotation % 360) + 360) % 360,
+          flipped: Boolean(item.flipped),
+          zIndex: Number.isFinite(item.zIndex) ? item.zIndex : index,
+        }));
+      decorationIdRef.current = restored.length;
+      setFreeDecorations(restored);
+      setSelectedDecorationId(restored.at(-1)?.id ?? null);
+      showDecorationMessage(`${restored.length}개의 장식을 불러왔어요.`);
+    } catch {
+      showDecorationMessage("저장된 꾸미기 데이터를 읽을 수 없어요.");
+    }
+  };
+
+  const clearDecorations = () => {
+    setFreeDecorations([]);
+    setSelectedDecorationId(null);
+    setPendingDecoration(null);
+    showDecorationMessage("장식을 모두 지웠어요.");
+  };
 
   useEffect(() => {
     setVibrationSupported("vibrate" in navigator);
@@ -266,14 +461,6 @@ export function SensoryToyPlayground() {
     },
     [vibrationEnabled, vibrationSupported],
   );
-
-  const scheduleCleanup = useCallback((callback: () => void, delay: number) => {
-    const timer = setTimeout(() => {
-      callback();
-      cleanupTimersRef.current.delete(timer);
-    }, delay);
-    cleanupTimersRef.current.add(timer);
-  }, []);
 
   const createBurst = useCallback(
     (x: number, y: number, symbol?: string, amount = 7) => {
@@ -343,22 +530,49 @@ export function SensoryToyPlayground() {
       const previousPieces = Math.floor(previous / 12);
       const nextPieces = Math.floor(next / 12);
       if (nextPieces > previousPieces) {
-        setWaxPieces((current) => current + (nextPieces - previousPieces));
+        const detachedCount = nextPieces - previousPieces;
+        const detached = Array.from({ length: detachedCount }, (_, index) => ({
+          id: waxPieceIdRef.current++,
+          x: Math.min(92, Math.max(8, x + (Math.random() - 0.5) * 9)),
+          y: Math.min(88, Math.max(10, y + (Math.random() - 0.5) * 8)),
+          size: 15 + Math.random() * 10,
+          rotation: Math.random() * 70 - 35,
+          velocityX:
+            (x < 50 ? -1 : 1) * (0.7 + Math.random() * 1.2) +
+            (Math.random() - 0.5) * 0.8,
+          velocityY: -1.2 - Math.random() * 1.4,
+        }));
+        setWaxPieces((current) => current + detachedCount);
+        setWaxShellPieces((current) => [...current, ...detached].slice(-24));
         createBurst(x, y, "◆", 5);
         vibrate([9, 32, 9]);
         void play("wax", "crack", { intensity });
+        scheduleCleanup(() => {
+          void play("wax", "piece", { intensity: Math.max(0.25, intensity * 0.7) });
+        }, 42 + detachedCount * 12);
       } else {
         vibrate(5);
         void play("wax", closeToCrack ? "release" : "press", { intensity });
       }
 
       if (next === 100) {
+        const finalPieces = Array.from({ length: 3 }, (_, index) => ({
+          id: waxPieceIdRef.current++,
+          x: Math.min(90, Math.max(10, x + (index - 1) * 9)),
+          y: Math.min(86, Math.max(12, y + Math.random() * 7)),
+          size: 14 + Math.random() * 9,
+          rotation: -28 + index * 28,
+          velocityX: (index - 1) * 1.2 + (Math.random() - 0.5) * 0.5,
+          velocityY: -1.4 - Math.random() * 1.1,
+        }));
+        setWaxShellPieces((current) => [...current, ...finalPieces].slice(-24));
+        setWaxPieces((current) => current + finalPieces.length);
         createBurst(x, y, "✦", 12);
         vibrate([24, 35, 48]);
         void play("wax", "complete", { intensity: 1 });
       }
     },
-    [createBurst, play, vibrate, waxCracks],
+    [createBurst, play, scheduleCleanup, vibrate, waxCracks],
   );
 
   const registerInteraction = useCallback(
@@ -422,6 +636,10 @@ export function SensoryToyPlayground() {
     const x = ((event.clientX - rect.left) / rect.width) * 100;
     const y = ((event.clientY - rect.top) / rect.height) * 100;
     const now = Date.now();
+    if (pendingDecoration) {
+      addFreeDecoration(pendingDecoration, x, y);
+      return;
+    }
     event.currentTarget.setPointerCapture(event.pointerId);
     pointerRef.current = {
       x: event.clientX,
@@ -578,6 +796,8 @@ export function SensoryToyPlayground() {
     setWaxProgress(0);
     setWaxCracks([]);
     setWaxPieces(0);
+    setWaxShellPieces([]);
+    waxPieceIdRef.current = 0;
   }, []);
 
   const resetMetrics = useCallback(() => {
@@ -595,6 +815,10 @@ export function SensoryToyPlayground() {
     setIsPressed(false);
     setSwirling(false);
     setBurstParticles([]);
+    setFreeDecorations([]);
+    setSelectedDecorationId(null);
+    setPendingDecoration(null);
+    decorationIdRef.current = 0;
     deformableSquishyRef.current?.reset();
     resetMetrics();
     resetWax();
@@ -891,7 +1115,7 @@ export function SensoryToyPlayground() {
           </div>
 
           <div
-            className={`sensory-play-area is-${mode} ${isPressed ? "is-pressed" : ""} ${swirling ? "is-swirling" : ""}`}
+            className={`sensory-play-area is-${mode} ${isPressed ? "is-pressed" : ""} ${swirling ? "is-swirling" : ""} ${pendingDecoration ? "is-decoration-placement" : ""}`}
             ref={playAreaRef}
             role="application"
             tabIndex={0}
@@ -950,6 +1174,13 @@ export function SensoryToyPlayground() {
                 waxShell={selectedWax.shell}
                 waxShellShade={selectedWax.shellShade}
                 waxCracks={waxCracks}
+                waxPieces={waxShellPieces}
+                decorations={freeDecorations}
+                selectedDecorationId={selectedDecorationId}
+                onDecorationSelect={setSelectedDecorationId}
+                onDecorationMove={(decorationId, x, y) =>
+                  updateFreeDecoration(decorationId, { x, y })
+                }
               />
             </div>
 
@@ -1013,7 +1244,16 @@ export function SensoryToyPlayground() {
                 setSoundEnabled(next);
                 if (next) {
                   void getContext();
-                  void play(mode, "press", { force: true, intensity: 0.42 });
+                  const soundMode =
+                    mode === "wax" && waxProgressRef.current >= 100
+                      ? "squishy"
+                      : mode;
+                  void play(soundMode, "press", {
+                    force: true,
+                    intensity: 0.42,
+                    surface:
+                      soundMode === "squishy" ? squishySurface : undefined,
+                  });
                 }
               }}
             >
@@ -1031,6 +1271,28 @@ export function SensoryToyPlayground() {
                   ? "진동 끄기"
                   : "진동 켜기"
                 : "진동 미지원"}
+            </button>
+            <button
+              type="button"
+              className="button button-secondary"
+              onClick={() => {
+                void getContext();
+                const previewMode =
+                  mode === "wax" && waxProgressRef.current >= 100
+                    ? "squishy"
+                    : mode;
+                void play(previewMode, previewMode === "wax" ? "crack" : "press", {
+                  force: true,
+                  intensity: 0.46,
+                  topping: toppings[0],
+                  pressDuration: 420,
+                  deformationAmount: 0.48,
+                  surface:
+                    previewMode === "squishy" ? squishySurface : undefined,
+                });
+              }}
+            >
+              현재 소리 미리듣기
             </button>
           </div>
           <p className="sensory-audio-note">소리는 첫 터치 후 재생됩니다.</p>
@@ -1089,6 +1351,241 @@ export function SensoryToyPlayground() {
           </dl>
         </aside>
       </div>
+
+      <details className="sensory-decoration-panel" open>
+        <summary>
+          자유 장식 꾸미기
+          <span>{freeDecorations.length}/{decorationLimit}</span>
+        </summary>
+        <div className="sensory-decoration-body">
+          <div
+            className="sensory-decoration-tabs"
+            role="tablist"
+            aria-label="장식 카테고리"
+          >
+            {decorationCategories.map((category) => (
+              <button
+                type="button"
+                role="tab"
+                aria-selected={decorationCategory === category.id}
+                onClick={() => setDecorationCategory(category.id)}
+                key={category.id}
+              >
+                {category.label}
+              </button>
+            ))}
+          </div>
+
+          {decorationCategory === "text" ? (
+            <div className="sensory-decoration-text">
+              <label htmlFor="sensory-decoration-text-input">짧은 글자 또는 이모지</label>
+              <div>
+                <input
+                  id="sensory-decoration-text-input"
+                  type="text"
+                  maxLength={8}
+                  value={decorationText}
+                  placeholder="예: MAKEON"
+                  onChange={(event) => setDecorationText(event.target.value)}
+                />
+                <button
+                  type="button"
+                  className="button button-secondary"
+                  disabled={!decorationText.trim()}
+                  onClick={() => {
+                    const text = decorationText.trim();
+                    if (!text) return;
+                    setPendingDecoration({
+                      symbol: text,
+                      label: `${text} 텍스트`,
+                      category: "text",
+                    });
+                  }}
+                >
+                  배치 준비
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="sensory-decoration-catalog">
+              {freeDecorationCatalog
+                .filter((item) => item.category === decorationCategory)
+                .map((item) => (
+                  <button
+                    type="button"
+                    aria-pressed={
+                      pendingDecoration?.symbol === item.symbol &&
+                      pendingDecoration.label === item.label
+                    }
+                    onClick={() => setPendingDecoration(item)}
+                    key={`${item.category}-${item.label}`}
+                  >
+                    <span aria-hidden="true">{item.symbol}</span>
+                    {item.label}
+                  </button>
+                ))}
+            </div>
+          )}
+
+          <p className="sensory-decoration-instruction" aria-live="polite">
+            {pendingDecoration
+              ? `${pendingDecoration.label} 선택됨 — 놀이 영역에서 원하는 위치를 눌러 배치하세요.`
+              : "장식을 선택한 뒤 놀이 영역에 배치하고, 장식을 직접 드래그해 이동하세요."}
+          </p>
+          {pendingDecoration ? (
+            <button
+              type="button"
+              className="button button-muted sensory-decoration-cancel"
+              onClick={() => setPendingDecoration(null)}
+            >
+              배치 취소
+            </button>
+          ) : null}
+
+          {selectedFreeDecoration ? (
+            <div className="sensory-decoration-editor">
+              <div>
+                <strong>
+                  <span aria-hidden="true">{selectedFreeDecoration.symbol}</span>
+                  {selectedFreeDecoration.label}
+                </strong>
+                <button
+                  type="button"
+                  className="button button-muted"
+                  onClick={() => {
+                    setFreeDecorations((current) =>
+                      current.filter(
+                        (decoration) => decoration.id !== selectedFreeDecoration.id,
+                      ),
+                    );
+                    setSelectedDecorationId(null);
+                  }}
+                >
+                  삭제
+                </button>
+              </div>
+
+              <label>
+                <span>크기 {Math.round(selectedFreeDecoration.scale * 100)}%</span>
+                <input
+                  type="range"
+                  min="0.55"
+                  max="2.1"
+                  step="0.05"
+                  value={selectedFreeDecoration.scale}
+                  onChange={(event) =>
+                    updateFreeDecoration(selectedFreeDecoration.id, {
+                      scale: Number(event.target.value),
+                    })
+                  }
+                />
+              </label>
+              <label>
+                <span>회전 {Math.round(selectedFreeDecoration.rotation)}°</span>
+                <input
+                  type="range"
+                  min="0"
+                  max="359"
+                  step="1"
+                  value={selectedFreeDecoration.rotation}
+                  onChange={(event) =>
+                    updateFreeDecoration(selectedFreeDecoration.id, {
+                      rotation: Number(event.target.value),
+                    })
+                  }
+                />
+              </label>
+
+              <div className="sensory-decoration-actions">
+                <button
+                  type="button"
+                  onClick={() =>
+                    updateFreeDecoration(selectedFreeDecoration.id, {
+                      flipped: !selectedFreeDecoration.flipped,
+                    })
+                  }
+                >
+                  좌우반전
+                </button>
+                <button
+                  type="button"
+                  onClick={() =>
+                    updateFreeDecoration(selectedFreeDecoration.id, {
+                      zIndex:
+                        Math.max(
+                          ...freeDecorations.map(
+                            (decoration) => decoration.zIndex,
+                          ),
+                        ) + 1,
+                    })
+                  }
+                >
+                  맨 앞으로
+                </button>
+                <button
+                  type="button"
+                  onClick={() =>
+                    updateFreeDecoration(selectedFreeDecoration.id, {
+                      zIndex:
+                        Math.min(
+                          ...freeDecorations.map(
+                            (decoration) => decoration.zIndex,
+                          ),
+                        ) - 1,
+                    })
+                  }
+                >
+                  맨 뒤로
+                </button>
+                <button
+                  type="button"
+                  disabled={freeDecorations.length >= decorationLimit}
+                  onClick={() => {
+                    const nextId = decorationIdRef.current++;
+                    const duplicate: FreeDecoration = {
+                      ...selectedFreeDecoration,
+                      id: nextId,
+                      x: Math.min(92, selectedFreeDecoration.x + 5),
+                      y: Math.min(90, selectedFreeDecoration.y + 5),
+                      zIndex:
+                        Math.max(
+                          ...freeDecorations.map(
+                            (decoration) => decoration.zIndex,
+                          ),
+                        ) + 1,
+                    };
+                    setFreeDecorations((current) => [...current, duplicate]);
+                    setSelectedDecorationId(nextId);
+                  }}
+                >
+                  복제
+                </button>
+              </div>
+            </div>
+          ) : null}
+
+          <div className="sensory-decoration-storage">
+            <button type="button" className="button button-secondary" onClick={saveDecorations}>
+              내 꾸미기 저장
+            </button>
+            <button type="button" className="button button-secondary" onClick={loadDecorations}>
+              불러오기
+            </button>
+            <button type="button" className="button button-muted" onClick={clearDecorations}>
+              장식 전체 지우기
+            </button>
+          </div>
+          <p className="sensory-decoration-note">
+            장식은 내부 본체에 붙는 규칙으로 동작해 왁스 껍질 조각이 떨어져도
+            본체에 남습니다. 저장 정보는 현재 브라우저에만 보관됩니다.
+          </p>
+          {decorationSaveMessage ? (
+            <p className="sensory-decoration-message" aria-live="polite">
+              {decorationSaveMessage}
+            </p>
+          ) : null}
+        </div>
+      </details>
 
       {challengeResult ? (
         <section className="sensory-result" aria-live="polite">

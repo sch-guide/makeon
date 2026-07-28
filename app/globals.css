@@ -3648,6 +3648,10 @@ textarea {
   cursor: grabbing;
 }
 
+.sensory-play-area.is-decoration-placement {
+  cursor: crosshair;
+}
+
 .sensory-toy-visual {
   position: relative;
   z-index: 2;
@@ -3832,8 +3836,248 @@ textarea {
   filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.28));
 }
 
+.deformable-falling-pieces {
+  pointer-events: none;
+}
+
+.deformable-falling-pieces path {
+  stroke: rgba(68, 71, 59, 0.28);
+  stroke-width: 1.2;
+  filter: drop-shadow(0 3px 3px rgba(51, 59, 46, 0.24));
+}
+
 .deformable-squishy.is-wax-broken .deformable-base {
   opacity: var(--deform-opacity);
+}
+
+.deformable-free-decorations {
+  pointer-events: none;
+}
+
+.deformable-free-decorations > g {
+  cursor: grab;
+  outline: none;
+  pointer-events: all;
+  touch-action: none;
+}
+
+.deformable-free-decorations > g:active {
+  cursor: grabbing;
+}
+
+.decoration-hit-area {
+  fill: transparent;
+}
+
+.decoration-selection-ring {
+  fill: rgba(255, 255, 255, 0.12);
+  stroke: transparent;
+  stroke-dasharray: 3 3;
+  stroke-width: 1.5;
+}
+
+.deformable-free-decorations > g.is-selected .decoration-selection-ring,
+.deformable-free-decorations > g:focus-visible .decoration-selection-ring {
+  fill: rgba(239, 245, 231, 0.32);
+  stroke: var(--primary-strong);
+}
+
+.decoration-symbol {
+  font-family: Pretendard, "Noto Sans KR", "Apple SD Gothic Neo", Inter, system-ui,
+    sans-serif;
+  font-size: 26px;
+  font-weight: 800;
+  paint-order: stroke;
+  pointer-events: none;
+  stroke: rgba(255, 255, 255, 0.76);
+  stroke-linejoin: round;
+  stroke-width: 2.4px;
+  user-select: none;
+}
+
+.sensory-decoration-panel {
+  margin-top: 22px;
+  overflow: hidden;
+  border: 1px solid var(--border-sage);
+  border-radius: 24px;
+  background: rgba(255, 253, 247, 0.92);
+  box-shadow: 0 14px 36px rgba(63, 78, 52, 0.08);
+}
+
+.sensory-decoration-panel > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 22px;
+  color: var(--text);
+  cursor: pointer;
+  font-weight: 800;
+  list-style-position: inside;
+}
+
+.sensory-decoration-panel > summary span {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.sensory-decoration-body {
+  display: grid;
+  gap: 17px;
+  padding: 0 22px 22px;
+  border-top: 1px solid var(--line);
+}
+
+.sensory-decoration-tabs {
+  display: flex;
+  gap: 7px;
+  padding-top: 18px;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.sensory-decoration-tabs button,
+.sensory-decoration-catalog button,
+.sensory-decoration-actions button {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 750;
+}
+
+.sensory-decoration-tabs button {
+  flex: 0 0 auto;
+  padding: 8px 13px;
+}
+
+.sensory-decoration-tabs button[aria-selected="true"],
+.sensory-decoration-catalog button[aria-pressed="true"] {
+  border-color: var(--primary-strong);
+  background: var(--primary-light);
+  color: var(--deep);
+}
+
+.sensory-decoration-catalog {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
+  gap: 9px;
+}
+
+.sensory-decoration-catalog button {
+  display: grid;
+  min-height: 70px;
+  padding: 9px;
+  place-items: center;
+  border-radius: 15px;
+}
+
+.sensory-decoration-catalog button span {
+  font-size: 24px;
+}
+
+.sensory-decoration-text label,
+.sensory-decoration-editor label {
+  display: grid;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 750;
+}
+
+.sensory-decoration-text > div {
+  display: flex;
+  gap: 9px;
+  margin-top: 8px;
+}
+
+.sensory-decoration-text input {
+  width: 100%;
+  min-width: 0;
+  padding: 11px 13px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+}
+
+.sensory-decoration-instruction {
+  margin: 0;
+  padding: 11px 13px;
+  border-radius: 12px;
+  background: var(--primary-light);
+  color: var(--deep);
+  font-size: 14px;
+}
+
+.sensory-decoration-cancel {
+  width: fit-content;
+}
+
+.sensory-decoration-editor {
+  display: grid;
+  grid-template-columns: minmax(140px, 0.55fr) repeat(2, minmax(170px, 1fr));
+  gap: 14px;
+  padding: 15px;
+  border: 1px solid var(--border-sage);
+  border-radius: 16px;
+  background: var(--surface-muted);
+}
+
+.sensory-decoration-editor > div:first-child {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 9px;
+}
+
+.sensory-decoration-editor > div:first-child strong span {
+  margin-right: 6px;
+  font-size: 22px;
+}
+
+.sensory-decoration-editor input[type="range"] {
+  width: 100%;
+  accent-color: var(--primary-strong);
+}
+
+.sensory-decoration-actions {
+  display: flex;
+  grid-column: 1 / -1;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.sensory-decoration-actions button {
+  padding: 8px 12px;
+}
+
+.sensory-decoration-actions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.46;
+}
+
+.sensory-decoration-storage {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+.sensory-decoration-note,
+.sensory-decoration-message {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.sensory-decoration-message {
+  color: var(--deep);
+  font-weight: 750;
 }
 
 .sensory-main-shape {
@@ -4259,6 +4503,14 @@ textarea {
   .sensory-related > div:last-child {
     justify-content: flex-start;
   }
+
+  .sensory-decoration-editor {
+    grid-template-columns: 1fr;
+  }
+
+  .sensory-decoration-actions {
+    grid-column: auto;
+  }
 }
 
 @media (max-width: 480px) {
@@ -4315,6 +4567,33 @@ textarea {
 
   .sensory-related > div:last-child,
   .sensory-related .button {
+    width: 100%;
+  }
+
+  .sensory-decoration-panel {
+    border-radius: 19px;
+  }
+
+  .sensory-decoration-panel > summary {
+    padding: 15px;
+  }
+
+  .sensory-decoration-body {
+    padding: 0 14px 16px;
+  }
+
+  .sensory-decoration-catalog {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .sensory-decoration-text > div,
+  .sensory-decoration-storage {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .sensory-decoration-text .button,
+  .sensory-decoration-storage .button {
     width: 100%;
   }
 }

@@ -3,6 +3,7 @@
 import {
   forwardRef,
   type CSSProperties,
+  type PointerEvent as ReactPointerEvent,
   useEffect,
   useId,
   useImperativeHandle,
@@ -35,6 +36,29 @@ export type DeformableSquishyHandle = {
   reset: () => void;
 };
 
+export type FreeDecoration = {
+  id: number;
+  symbol: string;
+  label: string;
+  category: "face" | "ribbon" | "parts" | "topping" | "text" | "other";
+  x: number;
+  y: number;
+  scale: number;
+  rotation: number;
+  flipped: boolean;
+  zIndex: number;
+};
+
+export type WaxShellPiece = {
+  id: number;
+  x: number;
+  y: number;
+  size: number;
+  rotation: number;
+  velocityX: number;
+  velocityY: number;
+};
+
 type DeformableSquishyProps = {
   mode?: "squishy" | "slime" | "crunch" | "wax";
   shape: DeformableShape;
@@ -61,6 +85,11 @@ type DeformableSquishyProps = {
     angle: number;
     length: number;
   }>;
+  waxPieces?: WaxShellPiece[];
+  decorations?: FreeDecoration[];
+  selectedDecorationId?: number | null;
+  onDecorationSelect?: (id: number) => void;
+  onDecorationMove?: (id: number, x: number, y: number) => void;
 };
 
 const texturePath =
@@ -73,6 +102,15 @@ type MaterialParticle = {
   vy: number;
   radius: number;
   opacity: number;
+};
+
+type FallingPieceState = WaxShellPiece & {
+  xPosition: number;
+  yPosition: number;
+  rotationPosition: number;
+  opacity: number;
+  settled: boolean;
+  age: number;
 };
 
 const createParticles = (count: number): MaterialParticle[] =>
@@ -118,6 +156,11 @@ export const DeformableSquishy = forwardRef<
     waxShell = "#a9cc73",
     waxShellShade = "#688f45",
     waxCracks = [],
+    waxPieces = [],
+    decorations = [],
+    selectedDecorationId = null,
+    onDecorationSelect,
+    onDecorationMove,
   },
   ref,
 ) {
@@ -151,6 +194,19 @@ export const DeformableSquishy = forwardRef<
   const wrinkleRefs = useRef<Array<SVGPathElement | null>>([]);
   const clipPathRefs = useRef<Array<SVGPathElement | null>>([]);
   const particleRefs = useRef<Array<SVGTextElement | null>>([]);
+  const fallingPieceRefs = useRef<Map<number, SVGGElement>>(new Map());
+  const fallingPiecesRef = useRef<Map<number, FallingPieceState>>(new Map());
+  const decorationRefs = useRef<Map<number, SVGGElement>>(new Map());
+  const decorationDragRef = useRef<{
+    id: number;
+    pointerId: number;
+  } | null>(null);
+  const decorationMoveFrameRef = useRef<number | null>(null);
+  const pendingDecorationMoveRef = useRef<{
+    id: number;
+    x: number;
+    y: number;
+  } | null>(null);
   const particlesRef = useRef<MaterialParticle[]>(
     createParticles(particleCount),
   );
@@ -196,6 +252,75 @@ export const DeformableSquishy = forwardRef<
             : {};
     return { ...base, ...slimeTuning, ...recoveryTuning };
   }, [mode, recovery, slimeTexture, surface, waxBroken]);
+
+  const stepFallingPieces = (deltaSeconds: number) => {
+    const frameScale = Math.min(2, Math.max(0.45, deltaSeconds * 60));
+    fallingPiecesRef.current.forEach((piece, pieceId) => {
+      if (piece.opacity <= 0.01) return;
+      piece.age += deltaSeconds;
+      if (!piece.settled) {
+        piece.velocityY += 0.34 * frameScale;
+        piece.velocityX *= Math.pow(0.992, frameScale);
+        piece.xPosition += piece.velocityX * frameScale;
+        piece.yPosition += piece.velocityY * frameScale;
+        piece.rotationPosition +=
+          (piece.velocityX * 1.7 + Math.sign(piece.velocityX || 1) * 0.8) *
+          frameScale;
+
+        const floor = 242 - piece.size * 0.18;
+        if (piece.yPosition >= floor) {
+          piece.yPosition = floor;
+          if (Math.abs(piece.velocityY) > 1.1) {
+            piece.velocityY *= -0.24;
+            piece.velocityX *= 0.72;
+          } else {
+            piece.velocityY = 0;
+            piece.velocityX *= 0.6;
+            piece.settled = true;
+          }
+        }
+      }
+      if (piece.age > 1.45) {
+        piece.opacity = Math.max(0, piece.opacity - 0.035 * frameScale);
+      }
+
+      const node = fallingPieceRefs.current.get(pieceId);
+      node?.setAttribute(
+        "transform",
+        `translate(${piece.xPosition.toFixed(2)} ${piece.yPosition.toFixed(2)}) rotate(${piece.rotationPosition.toFixed(2)})`,
+      );
+      node?.setAttribute("opacity", piece.opacity.toFixed(3));
+    });
+  };
+
+  const hasActiveFallingPieces = () =>
+    Array.from(fallingPiecesRef.current.values()).some(
+      (piece) => piece.opacity > 0.01,
+    );
+
+  const updateDecorationPositions = () => {
+    const allPoints = meshRef.current.loops.flatMap((loop) => loop.points);
+    decorations.forEach((decoration) => {
+      const anchor = toViewBoxPoint(decoration.x, decoration.y);
+      let nearest = allPoints[0];
+      let nearestDistance = Number.POSITIVE_INFINITY;
+      allPoints.forEach((point) => {
+        const distance = Math.hypot(point.baseX - anchor.x, point.baseY - anchor.y);
+        if (distance < nearestDistance) {
+          nearest = point;
+          nearestDistance = distance;
+        }
+      });
+      const influence = Math.exp(-Math.pow(nearestDistance / 95, 2));
+      const offsetX = nearest ? (nearest.x - nearest.baseX) * influence * 0.76 : 0;
+      const offsetY = nearest ? (nearest.y - nearest.baseY) * influence * 0.76 : 0;
+      const node = decorationRefs.current.get(decoration.id);
+      node?.setAttribute(
+        "transform",
+        `translate(${(anchor.x + offsetX).toFixed(2)} ${(anchor.y + offsetY).toFixed(2)}) rotate(${decoration.rotation}) scale(${decoration.flipped ? -decoration.scale : decoration.scale} ${decoration.scale})`,
+      );
+    });
+  };
 
   const updateSvg = () => {
     meshRef.current.loops.forEach((loop, index) => {
@@ -254,6 +379,7 @@ export const DeformableSquishy = forwardRef<
         }
       });
     }
+    updateDecorationPositions();
 
     const contact = contactRef.current;
     if (contact) {
@@ -345,9 +471,14 @@ export const DeformableSquishy = forwardRef<
       physicsValues,
       deltaSeconds,
     );
+    stepFallingPieces(deltaSeconds);
     updateSvg();
 
-    if (pointerRef.current.active || !meshIsSettled(meshRef.current)) {
+    if (
+      pointerRef.current.active ||
+      !meshIsSettled(meshRef.current) ||
+      hasActiveFallingPieces()
+    ) {
       animationRef.current = requestAnimationFrame(runPhysics);
     } else {
       animationRef.current = null;
@@ -423,6 +554,8 @@ export const DeformableSquishy = forwardRef<
         particlesRef.current = createParticles(
           particleCount,
         );
+        fallingPiecesRef.current.clear();
+        fallingPieceRefs.current.clear();
         updateSvg();
       },
     }),
@@ -442,13 +575,40 @@ export const DeformableSquishy = forwardRef<
   }, [mesh, mode, particleCount]);
 
   useEffect(() => {
+    const incomingIds = new Set(waxPieces.map((piece) => piece.id));
+    fallingPiecesRef.current.forEach((_, pieceId) => {
+      if (!incomingIds.has(pieceId)) fallingPiecesRef.current.delete(pieceId);
+    });
+    waxPieces.forEach((piece) => {
+      if (fallingPiecesRef.current.has(piece.id)) return;
+      const start = toViewBoxPoint(piece.x, piece.y);
+      fallingPiecesRef.current.set(piece.id, {
+        ...piece,
+        xPosition: start.x,
+        yPosition: start.y,
+        rotationPosition: piece.rotation,
+        opacity: 1,
+        settled: false,
+        age: 0,
+      });
+    });
+    if (waxPieces.length > 0) ensureAnimation();
+  }, [waxPieces]);
+
+  useEffect(() => {
+    updateDecorationPositions();
+  }, [decorations]);
+
+  useEffect(() => {
     const handleVisibility = () => {
       if (document.visibilityState === "hidden" && animationRef.current) {
         cancelAnimationFrame(animationRef.current);
         animationRef.current = null;
       } else if (
         document.visibilityState === "visible" &&
-        (pointerRef.current.active || !meshIsSettled(meshRef.current))
+        (pointerRef.current.active ||
+          !meshIsSettled(meshRef.current) ||
+          hasActiveFallingPieces())
       ) {
         ensureAnimation();
       }
@@ -460,6 +620,9 @@ export const DeformableSquishy = forwardRef<
   useEffect(
     () => () => {
       if (animationRef.current) cancelAnimationFrame(animationRef.current);
+      if (decorationMoveFrameRef.current) {
+        cancelAnimationFrame(decorationMoveFrameRef.current);
+      }
     },
     [],
   );
@@ -470,6 +633,67 @@ export const DeformableSquishy = forwardRef<
     "--deform-opacity": transparency / 100,
     "--deform-gloss": gloss / 100,
   } as CSSProperties;
+
+  const handleDecorationPointerDown = (
+    event: ReactPointerEvent<SVGGElement>,
+    decorationId: number,
+  ) => {
+    event.preventDefault();
+    event.stopPropagation();
+    event.currentTarget.setPointerCapture(event.pointerId);
+    decorationDragRef.current = { id: decorationId, pointerId: event.pointerId };
+    onDecorationSelect?.(decorationId);
+  };
+
+  const handleDecorationPointerMove = (
+    event: ReactPointerEvent<SVGGElement>,
+    decorationId: number,
+  ) => {
+    if (
+      decorationDragRef.current?.id !== decorationId ||
+      decorationDragRef.current.pointerId !== event.pointerId
+    ) {
+      return;
+    }
+    event.preventDefault();
+    event.stopPropagation();
+    const svg = event.currentTarget.ownerSVGElement;
+    if (!svg) return;
+    const rect = svg.getBoundingClientRect();
+    const x = Math.min(94, Math.max(6, ((event.clientX - rect.left) / rect.width) * 100));
+    const y = Math.min(92, Math.max(8, ((event.clientY - rect.top) / rect.height) * 100));
+    pendingDecorationMoveRef.current = { id: decorationId, x, y };
+    if (!decorationMoveFrameRef.current) {
+      decorationMoveFrameRef.current = requestAnimationFrame(() => {
+        const pendingMove = pendingDecorationMoveRef.current;
+        if (pendingMove) {
+          onDecorationMove?.(
+            pendingMove.id,
+            pendingMove.x,
+            pendingMove.y,
+          );
+        }
+        pendingDecorationMoveRef.current = null;
+        decorationMoveFrameRef.current = null;
+      });
+    }
+  };
+
+  const handleDecorationPointerUp = (
+    event: ReactPointerEvent<SVGGElement>,
+  ) => {
+    event.preventDefault();
+    event.stopPropagation();
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+    const pendingMove = pendingDecorationMoveRef.current;
+    if (pendingMove) {
+      onDecorationMove?.(pendingMove.id, pendingMove.x, pendingMove.y);
+      pendingDecorationMoveRef.current = null;
+    }
+    decorationDragRef.current = null;
+  };
 
   return (
     <div
@@ -533,6 +757,21 @@ export const DeformableSquishy = forwardRef<
               />
             ))}
           </clipPath>
+          <mask id={`${id}-wax-mask`}>
+            <rect x="0" y="0" width="360" height="280" fill="white" />
+            {waxPieces.map((piece) => {
+              const hole = toViewBoxPoint(piece.x, piece.y);
+              return (
+                <circle
+                  cx={hole.x}
+                  cy={hole.y}
+                  r={Math.max(9, piece.size * 0.72)}
+                  fill="black"
+                  key={piece.id}
+                />
+              );
+            })}
+          </mask>
         </defs>
 
         <ellipse
@@ -615,7 +854,8 @@ export const DeformableSquishy = forwardRef<
                 className="deformable-wax-shell"
                 d={pathFromLoop(loop.points)}
                 fill={`url(#${id}-wax-shell)`}
-                opacity={Math.max(0.08, 1 - waxProgress / 112)}
+                mask={`url(#${id}-wax-mask)`}
+                opacity={waxProgress >= 96 ? 0.18 : 1}
                 key={index}
               />
             ))}
@@ -647,6 +887,30 @@ export const DeformableSquishy = forwardRef<
               })}
             </g>
           </>
+        ) : null}
+
+        {mode === "wax" ? (
+          <g className="deformable-falling-pieces" aria-hidden="true">
+            {waxPieces.slice(-24).map((piece) => {
+              const half = Math.max(7, piece.size * 0.58);
+              const start = toViewBoxPoint(piece.x, piece.y);
+              return (
+                <g
+                  ref={(node) => {
+                    if (node) fallingPieceRefs.current.set(piece.id, node);
+                    else fallingPieceRefs.current.delete(piece.id);
+                  }}
+                  transform={`translate(${start.x} ${start.y}) rotate(${piece.rotation})`}
+                  key={piece.id}
+                >
+                  <path
+                    d={`M${(-half).toFixed(1)} ${(-half * 0.28).toFixed(1)} L${(-half * 0.2).toFixed(1)} ${(-half).toFixed(1)} L${half.toFixed(1)} ${(-half * 0.48).toFixed(1)} L${(half * 0.72).toFixed(1)} ${(half * 0.72).toFixed(1)} L${(-half * 0.54).toFixed(1)} ${half.toFixed(1)}Z`}
+                    fill={`url(#${id}-wax-shell)`}
+                  />
+                </g>
+              );
+            })}
+          </g>
         ) : null}
 
         <ellipse
@@ -681,6 +945,61 @@ export const DeformableSquishy = forwardRef<
           rx="47"
           ry="15"
         />
+
+        <g className="deformable-free-decorations">
+          {[...decorations]
+            .sort((left, right) => left.zIndex - right.zIndex)
+            .map((decoration) => {
+              const anchor = toViewBoxPoint(decoration.x, decoration.y);
+              return (
+                <g
+                  ref={(node) => {
+                    if (node) decorationRefs.current.set(decoration.id, node);
+                    else decorationRefs.current.delete(decoration.id);
+                  }}
+                  className={
+                    selectedDecorationId === decoration.id ? "is-selected" : undefined
+                  }
+                  transform={`translate(${anchor.x} ${anchor.y}) rotate(${decoration.rotation}) scale(${decoration.flipped ? -decoration.scale : decoration.scale} ${decoration.scale})`}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`${decoration.label} 장식. 드래그하여 이동`}
+                  onPointerDown={(event) =>
+                    handleDecorationPointerDown(event, decoration.id)
+                  }
+                  onPointerMove={(event) =>
+                    handleDecorationPointerMove(event, decoration.id)
+                  }
+                  onPointerUp={handleDecorationPointerUp}
+                  onPointerCancel={handleDecorationPointerUp}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault();
+                      event.stopPropagation();
+                      onDecorationSelect?.(decoration.id);
+                    }
+                  }}
+                  key={decoration.id}
+                >
+                  <circle className="decoration-hit-area" r="22" />
+                  <circle className="decoration-selection-ring" r="19" />
+                  <text
+                    className="decoration-symbol"
+                    textAnchor="middle"
+                    dominantBaseline="central"
+                    style={{
+                      fontSize:
+                        decoration.category === "text"
+                          ? `${Math.max(12, 25 - decoration.symbol.length * 1.5)}px`
+                          : undefined,
+                    }}
+                  >
+                    {decoration.symbol}
+                  </text>
+                </g>
+              );
+            })}
+        </g>
       </svg>
     </div>
   );

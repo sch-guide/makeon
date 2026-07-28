@@ -3,7 +3,13 @@
 import { useCallback, useEffect, useRef } from "react";
 
 export type SensoryMode = "squishy" | "slime" | "crunch" | "wax";
-export type SoundPhase = "press" | "drag" | "release" | "crack" | "complete";
+export type SoundPhase =
+  | "press"
+  | "drag"
+  | "release"
+  | "crack"
+  | "piece"
+  | "complete";
 export type SoundStyle = "soft" | "deep" | "crisp";
 
 type PlayOptions = {
@@ -247,12 +253,12 @@ export function useSensoryAudio(
         if (options.surface === "clear-crunch" && deformation > 0.5) {
           createNoise(
             context,
-            (0.045 + deformation * 0.045) * vary(),
-            "highpass",
-            (1250 + pointerSpeed * 650) * vary(),
-            (0.025 + deformation * 0.035) * vary(),
+            (0.08 + deformation * 0.08) * vary(),
+            "lowpass",
+            (420 + pointerSpeed * 110) * vary(),
+            (0.035 + deformation * 0.04) * vary(),
             now + 0.018,
-            "dry",
+            "foam",
           );
         }
         return;
@@ -286,10 +292,10 @@ export function useSensoryAudio(
         if (quickRelease) {
           createNoise(
             context,
-            0.055 * vary(),
-            "highpass",
-            980 * vary(),
-            0.045 * vary(),
+            0.075 * vary(),
+            "bandpass",
+            520 * vary(),
+            0.038 * vary(),
             now + 0.012,
             "wet",
           );
@@ -339,9 +345,47 @@ export function useSensoryAudio(
         return;
       }
 
+      if (phase === "piece") {
+        createNoise(
+          context,
+          0.065 * vary(),
+          "bandpass",
+          680 * vary(),
+          0.07 * vary(),
+          now,
+          "dry",
+        );
+        createTone(
+          context,
+          105 * variation,
+          72 * variation,
+          0.07 * vary(),
+          0.025 * vary(),
+          "sine",
+          now,
+        );
+        return;
+      }
+
       if (phase === "complete") {
-        createTone(context, 146, 292, 0.34, 0.28, "sine", now);
-        createTone(context, 220, 440, 0.28, 0.16, "sine", now + 0.07);
+        createNoise(
+          context,
+          0.16 * vary(),
+          "bandpass",
+          780 * vary(),
+          0.1 * vary(),
+          now,
+          "dry",
+        );
+        createNoise(
+          context,
+          0.22 * vary(),
+          "lowpass",
+          360 * vary(),
+          0.06 * vary(),
+          now + 0.035,
+          "foam",
+        );
         return;
       }
 
