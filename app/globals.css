@@ -3572,6 +3572,11 @@ textarea {
 }
 
 .sensory-play-column {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(210px, 0.48fr);
+  align-items: stretch;
+  gap: 13px;
   min-width: 0;
   padding: 18px;
 }
@@ -3584,6 +3589,7 @@ textarea {
   border: 1px solid var(--line);
   border-radius: 15px;
   background: var(--surface-muted);
+  grid-column: 1 / -1;
 }
 
 .sensory-stats div {
@@ -3628,6 +3634,166 @@ textarea {
   isolation: isolate;
   touch-action: none;
   user-select: none;
+}
+
+.sensory-decoration-quick-panel {
+  min-width: 0;
+  max-height: 470px;
+  overflow: auto;
+  border: 1px solid var(--border-sage);
+  border-radius: 20px;
+  background: rgba(255, 253, 247, 0.96);
+  box-shadow: 0 12px 28px rgba(63, 78, 52, 0.1);
+  scrollbar-width: thin;
+}
+
+.sensory-decoration-quick-panel > summary {
+  padding: 14px;
+  color: var(--deep);
+  cursor: pointer;
+  list-style-position: inside;
+}
+
+.sensory-decoration-quick-panel > summary > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 820;
+}
+
+.sensory-decoration-quick-panel > summary small {
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.sensory-decoration-quick-panel > summary strong {
+  display: block;
+  margin: 5px 0 0 18px;
+  color: var(--accent-strong);
+  font-size: 10px;
+}
+
+.sensory-decoration-quick-body {
+  display: grid;
+  gap: 10px;
+  padding: 0 12px 13px;
+  border-top: 1px solid var(--line);
+}
+
+.sensory-decoration-quick-tabs {
+  display: flex;
+  gap: 5px;
+  padding-top: 11px;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.sensory-decoration-quick-tabs button,
+.sensory-decoration-quick-catalog button,
+.sensory-decoration-quick-text button,
+.sensory-decoration-quick-actions button {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 740;
+}
+
+.sensory-decoration-quick-tabs button {
+  flex: 0 0 auto;
+  border-radius: 999px;
+  padding: 6px 9px;
+  font-size: 10px;
+}
+
+.sensory-decoration-quick-tabs button[aria-selected="true"],
+.sensory-decoration-quick-catalog button[aria-pressed="true"] {
+  border-color: var(--primary-strong);
+  background: var(--primary-light);
+  color: var(--deep);
+}
+
+.sensory-decoration-quick-catalog {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.sensory-decoration-quick-catalog button {
+  display: grid;
+  min-height: 62px;
+  place-items: center;
+  gap: 2px;
+  border-radius: 12px;
+  padding: 6px;
+}
+
+.sensory-decoration-quick-catalog button span {
+  font-size: 22px;
+}
+
+.sensory-decoration-quick-catalog button small {
+  color: var(--muted);
+  font-size: 9px;
+}
+
+.sensory-decoration-quick-text {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 6px;
+}
+
+.sensory-decoration-quick-text input {
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+  padding: 9px;
+  color: var(--text);
+  font: inherit;
+}
+
+.sensory-decoration-quick-text button,
+.sensory-decoration-quick-actions button {
+  border-radius: 10px;
+  padding: 7px 8px;
+  font-size: 10px;
+}
+
+.sensory-decoration-quick-text button:disabled {
+  cursor: not-allowed;
+  opacity: 0.48;
+}
+
+.sensory-decoration-quick-guide {
+  margin: 0;
+  border-radius: 10px;
+  background: var(--primary-light);
+  padding: 9px;
+  color: var(--deep);
+  font-size: 10px;
+  line-height: 1.55;
+}
+
+.sensory-decoration-quick-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 5px;
+}
+
+.sensory-decoration-quick-actions strong {
+  display: flex;
+  grid-column: 1 / -1;
+  align-items: center;
+  gap: 5px;
+  color: var(--deep);
+  font-size: 10px;
+}
+
+.sensory-decoration-quick-actions strong span {
+  font-size: 17px;
 }
 
 .sensory-play-area::before {
@@ -4235,6 +4401,10 @@ textarea {
   grid-column: 2;
 }
 
+.sensory-wax-progress {
+  grid-column: 1 / -1;
+}
+
 .sensory-control-panel {
   display: grid;
   padding: 20px;
@@ -4463,6 +4633,7 @@ textarea {
   }
 
   .sensory-play-column {
+    display: block;
     order: 1;
   }
 
@@ -4485,6 +4656,20 @@ textarea {
 
   .sensory-play-area {
     min-height: 390px;
+  }
+
+  .sensory-decoration-quick-panel {
+    position: absolute;
+    z-index: 12;
+    right: 28px;
+    bottom: 28px;
+    width: min(260px, calc(100% - 56px));
+    max-height: min(245px, 52%);
+    overscroll-behavior: contain;
+  }
+
+  .sensory-decoration-quick-panel:not([open]) {
+    width: min(190px, calc(100% - 56px));
   }
 
   .sensory-toy-visual {
@@ -4540,8 +4725,33 @@ textarea {
   }
 
   .sensory-play-area {
-    min-height: 330px;
+    min-height: 430px;
     border-radius: 19px;
+  }
+
+  .sensory-decoration-quick-panel {
+    right: 22px;
+    bottom: 22px;
+    width: min(248px, calc(100% - 44px));
+    max-height: 225px;
+    border-radius: 16px;
+  }
+
+  .sensory-decoration-quick-panel > summary {
+    padding: 11px 12px;
+  }
+
+  .sensory-decoration-quick-panel > summary strong {
+    display: inline;
+    margin-left: 7px;
+  }
+
+  .sensory-decoration-quick-catalog {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .sensory-decoration-quick-catalog button {
+    min-height: 55px;
   }
 
   .sensory-toy-visual {

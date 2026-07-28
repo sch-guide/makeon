@@ -1276,6 +1276,146 @@ export function SensoryToyPlayground() {
             </p>
           </div>
 
+          <details className="sensory-decoration-quick-panel" open>
+            <summary>
+              <span>
+                자유 꾸미기
+                <small>{freeDecorations.length}/{decorationLimit}</small>
+              </span>
+              <strong>{pendingDecoration ? "배치 준비됨" : "장식 선택"}</strong>
+            </summary>
+            <div className="sensory-decoration-quick-body">
+              <div
+                className="sensory-decoration-quick-tabs"
+                role="tablist"
+                aria-label="빠른 장식 카테고리"
+              >
+                {decorationCategories.map((category) => (
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={decorationCategory === category.id}
+                    onClick={() => setDecorationCategory(category.id)}
+                    key={`quick-${category.id}`}
+                  >
+                    {category.label}
+                  </button>
+                ))}
+              </div>
+
+              {decorationCategory === "text" ? (
+                <div className="sensory-decoration-quick-text">
+                  <input
+                    type="text"
+                    maxLength={8}
+                    value={decorationText}
+                    aria-label="추가할 짧은 글자 또는 이모지"
+                    placeholder="글자·이모지"
+                    onChange={(event) => setDecorationText(event.target.value)}
+                  />
+                  <button
+                    type="button"
+                    disabled={!decorationText.trim()}
+                    onClick={() => {
+                      const text = decorationText.trim();
+                      if (!text) return;
+                      setPendingDecoration({
+                        symbol: text,
+                        label: `${text} 텍스트`,
+                        category: "text",
+                      });
+                    }}
+                  >
+                    배치
+                  </button>
+                </div>
+              ) : (
+                <div className="sensory-decoration-quick-catalog">
+                  {freeDecorationCatalog
+                    .filter((item) => item.category === decorationCategory)
+                    .map((item) => (
+                      <button
+                        type="button"
+                        aria-label={`${item.label} 장식 선택`}
+                        aria-pressed={
+                          pendingDecoration?.symbol === item.symbol &&
+                          pendingDecoration.label === item.label
+                        }
+                        onClick={() => setPendingDecoration(item)}
+                        key={`quick-${item.category}-${item.label}`}
+                      >
+                        <span aria-hidden="true">{item.symbol}</span>
+                        <small>{item.label}</small>
+                      </button>
+                    ))}
+                </div>
+              )}
+
+              <p className="sensory-decoration-quick-guide" aria-live="polite">
+                {pendingDecoration
+                  ? `${pendingDecoration.label} 선택됨 — 옆 놀이판의 원하는 위치를 누르세요.`
+                  : "장식을 고른 뒤 바로 옆 놀이판을 누르면 추가됩니다."}
+              </p>
+
+              {selectedFreeDecoration ? (
+                <div className="sensory-decoration-quick-actions">
+                  <strong>
+                    <span aria-hidden="true">{selectedFreeDecoration.symbol}</span>
+                    선택됨
+                  </strong>
+                  <button
+                    type="button"
+                    aria-label="장식 작게"
+                    onClick={() =>
+                      updateFreeDecoration(selectedFreeDecoration.id, {
+                        scale: selectedFreeDecoration.scale - 0.1,
+                      })
+                    }
+                  >
+                    작게
+                  </button>
+                  <button
+                    type="button"
+                    aria-label="장식 크게"
+                    onClick={() =>
+                      updateFreeDecoration(selectedFreeDecoration.id, {
+                        scale: selectedFreeDecoration.scale + 0.1,
+                      })
+                    }
+                  >
+                    크게
+                  </button>
+                  <button
+                    type="button"
+                    aria-label="장식 시계 방향으로 회전"
+                    onClick={() =>
+                      updateFreeDecoration(selectedFreeDecoration.id, {
+                        rotation: selectedFreeDecoration.rotation + 15,
+                      })
+                    }
+                  >
+                    회전
+                  </button>
+                  <button
+                    type="button"
+                    aria-label="선택한 장식 삭제"
+                    onClick={() => {
+                      setFreeDecorations((current) =>
+                        current.filter(
+                          (decoration) =>
+                            decoration.id !== selectedFreeDecoration.id,
+                        ),
+                      );
+                      setSelectedDecorationId(null);
+                    }}
+                  >
+                    삭제
+                  </button>
+                </div>
+              ) : null}
+            </div>
+          </details>
+
           {mode === "wax" ? (
             <div className="sensory-wax-progress">
               <div>
