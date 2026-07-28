@@ -28,6 +28,11 @@ type PlayOptions = {
 };
 
 type NoiseCharacter = "air" | "foam" | "wet" | "soft-dry";
+type ActiveVoice = {
+  source: AudioScheduledSourceNode;
+  gain: GainNode;
+  nodes: AudioNode[];
+};
 
 const MAX_VOICES = 4;
 const MAX_VOLUME = 0.6;
@@ -43,7 +48,7 @@ export function useSensoryAudio(
   const contextRef = useRef<AudioContext | null>(null);
   const compressorRef = useRef<DynamicsCompressorNode | null>(null);
   const masterRef = useRef<GainNode | null>(null);
-  const voicesRef = useRef<AudioScheduledSourceNode[]>([]);
+  const voicesRef = useRef<ActiveVoice[]>([]);
   const variationRef = useRef<Record<SensoryMode, number>>({
     squishy: 0,
     slime: 0,
@@ -64,11 +69,11 @@ export function useSensoryAudio(
 
     if (!masterRef.current || !compressorRef.current) {
       const compressor = context.createDynamicsCompressor();
-      compressor.threshold.value = -26;
-      compressor.knee.value = 18;
-      compressor.ratio.value = 6;
-      compressor.attack.value = 0.006;
-      compressor.release.value = 0.16;
+      compressor.threshold.value = -24;
+      compressor.knee.value = 20;
+      compressor.ratio.value = 3;
+      compressor.attack.value = 0.002;
+      compressor.release.value = 0.14;
 
       const master = context.createGain();
       master.gain.value = clamp(volume, 0, MAX_VOLUME);
@@ -91,23 +96,33 @@ export function useSensoryAudio(
   }, [volume]);
 
   const registerVoice = useCallback(
-    (voice: AudioScheduledSourceNode, nodes: AudioNode[]) => {
+    (
+      source: AudioScheduledSourceNode,
+      gain: GainNode,
+      nodes: AudioNode[],
+    ) => {
       while (voicesRef.current.length >= MAX_VOICES) {
         const oldest = voicesRef.current.shift();
         if (!oldest) break;
+        const context = contextRef.current;
+        const now = context?.currentTime ?? 0;
+        oldest.gain.gain.cancelScheduledValues(now);
+        oldest.gain.gain.setTargetAtTime(0.0001, now, 0.008);
         try {
-          oldest.stop();
+          oldest.source.stop(now + 0.03);
         } catch {
           // The oldest voice may already have ended.
         }
-        oldest.disconnect();
       }
-      voicesRef.current.push(voice);
-      voice.addEventListener(
+      const activeVoice = { source, gain, nodes };
+      voicesRef.current.push(activeVoice);
+      source.addEventListener(
         "ended",
         () => {
-          voicesRef.current = voicesRef.current.filter((item) => item !== voice);
-          voice.disconnect();
+          voicesRef.current = voicesRef.current.filter(
+            (item) => item.source !== source,
+          );
+          source.disconnect();
           nodes.forEach((node) => node.disconnect());
         },
         { once: true },
@@ -142,18 +157,18 @@ export function useSensoryAudio(
         const rawNoise = Math.random() * 2 - 1;
         const smoothing =
           character === "wet"
-            ? 0.94
+            ? 0.96
             : character === "foam"
-              ? 0.9
+              ? 0.95
               : character === "air"
-                ? 0.84
-                : 0.76;
+                ? 0.93
+                : 0.82;
         smoothedNoise = smoothedNoise * smoothing + rawNoise * (1 - smoothing);
         const body =
           character === "soft-dry"
             ? smoothedNoise * 2.1 + rawNoise * 0.12
             : smoothedNoise * 3;
-        const attack = Math.min(1, progress / 0.055);
+        const attack = Math.min(1, progress / 0.12);
         const release = Math.pow(
           Math.max(0, 1 - progress),
           character === "wet" ? 0.72 : 1.2,
@@ -170,14 +185,14 @@ export function useSensoryAudio(
       gain.gain.setValueAtTime(0.0001, startAt);
       gain.gain.exponentialRampToValueAtTime(
         Math.max(0.0002, gainValue),
-        startAt + 0.009,
+        startAt + 0.018,
       );
       gain.gain.exponentialRampToValueAtTime(0.0001, startAt + safeDuration);
 
       source.connect(filter);
       filter.connect(gain);
       gain.connect(compressorRef.current);
-      registerVoice(source, [filter, gain]);
+      registerVoice(source, gain, [filter, gain]);
       source.start(startAt);
       source.stop(startAt + safeDuration + 0.012);
     },
@@ -206,18 +221,18 @@ export function useSensoryAudio(
         startAt + safeDuration,
       );
       filter.type = "lowpass";
-      filter.frequency.value = 420;
+      filter.frequency.value = 720;
       filter.Q.value = 0.55;
       gain.gain.setValueAtTime(0.0001, startAt);
       gain.gain.exponentialRampToValueAtTime(
         Math.max(0.0002, gainValue),
-        startAt + 0.01,
+        startAt + 0.016,
       );
       gain.gain.exponentialRampToValueAtTime(0.0001, startAt + safeDuration);
       oscillator.connect(filter);
       filter.connect(gain);
       gain.connect(compressorRef.current);
-      registerVoice(oscillator, [filter, gain]);
+      registerVoice(oscillator, gain, [filter, gain]);
       oscillator.start(startAt);
       oscillator.stop(startAt + safeDuration + 0.012);
     },
@@ -260,12 +275,14 @@ export function useSensoryAudio(
               ? 1.02
               : 0.94;
 
+      // The audible body is a rounded compression pulse in the phone-friendly
+      // mid-low range. Surface noise remains a quiet secondary layer.
       createTone(
         context,
-        (isRelease ? 82 : 68) * variation * pitch * surfacePitch,
-        (isRelease ? 104 : 52) * variation * pitch * surfacePitch,
+        (isRelease ? 176 : 205) * variation * pitch * surfacePitch,
+        (isRelease ? 218 : 148) * variation * pitch * surfacePitch,
         duration,
-        (0.018 + deformation * 0.025) * variation * (rapidTap ? 0.82 : 1),
+        (0.035 + deformation * 0.04) * variation * (rapidTap ? 0.86 : 1),
         "sine",
         startAt,
       );
@@ -273,10 +290,10 @@ export function useSensoryAudio(
         context,
         duration * 0.92,
         "lowpass",
-        (260 + deformation * 150 + pointerSpeed * 80) * variation,
-        (0.07 + intensity * 0.065) * variation * (rapidTap ? 0.84 : 1),
-        startAt,
-        transparent || options.surface === "gel" ? "wet" : "foam",
+        (380 + deformation * 120 + pointerSpeed * 70) * variation,
+        (0.018 + intensity * 0.024) * variation * (rapidTap ? 0.88 : 1),
+        startAt + 0.006,
+        transparent || options.surface === "gel" ? "air" : "foam",
       );
 
       if (!isRelease && (isDrag || pressDuration > 0.28 || deformation > 0.67)) {
@@ -284,8 +301,8 @@ export function useSensoryAudio(
           context,
           0.08 + pressDuration * 0.18 + dragDistance * 0.09,
           "bandpass",
-          (210 + pointerSpeed * 190 + deformation * 75) * variation,
-          (0.024 + deformation * 0.032) * variation,
+          (300 + pointerSpeed * 160 + deformation * 60) * variation,
+          (0.012 + deformation * 0.016) * variation,
           startAt + 0.012,
           "wet",
           0.55,
@@ -359,10 +376,10 @@ export function useSensoryAudio(
         );
         createTone(
           context,
-          (phase === "release" ? 78 : 60) * variation * stylePitch,
-          (phase === "release" ? 58 : 42) * variation * stylePitch,
+          (phase === "release" ? 194 : 168) * variation * stylePitch,
+          (phase === "release" ? 152 : 126) * variation * stylePitch,
           duration * 0.9,
-          (0.012 + intensity * 0.02) * variation,
+          (0.026 + intensity * 0.028) * variation,
           "sine",
           now,
         );
@@ -510,11 +527,12 @@ export function useSensoryAudio(
     () => () => {
       voicesRef.current.forEach((voice) => {
         try {
-          voice.stop();
+          voice.source.stop();
         } catch {
           // The source may already have ended.
         }
-        voice.disconnect();
+        voice.source.disconnect();
+        voice.nodes.forEach((node) => node.disconnect());
       });
       voicesRef.current = [];
       compressorRef.current?.disconnect();

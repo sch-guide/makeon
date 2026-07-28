@@ -33,6 +33,7 @@ type WaxColor = "apple" | "strawberry" | "grape" | "vanilla" | "soda";
 type BackgroundColor = "cream" | "sage" | "lavender";
 type ChallengePhase = "idle" | "countdown" | "running" | "result";
 type DecorationCategory = FreeDecoration["category"];
+type VibrationPlatform = "checking" | "android" | "ios" | "other";
 
 type BurstParticle = {
   id: number;
@@ -214,6 +215,8 @@ export function SensoryToyPlayground() {
   const [volume, setVolume] = useState(0.24);
   const [vibrationEnabled, setVibrationEnabled] = useState(false);
   const [vibrationSupported, setVibrationSupported] = useState(false);
+  const [vibrationPlatform, setVibrationPlatform] =
+    useState<VibrationPlatform>("checking");
   const [reducedMotion, setReducedMotion] = useState(false);
   const [lowPowerMode, setLowPowerMode] = useState(false);
 
@@ -444,7 +447,15 @@ export function SensoryToyPlayground() {
   };
 
   useEffect(() => {
-    setVibrationSupported("vibrate" in navigator);
+    const userAgent = navigator.userAgent;
+    const isAndroid = /Android/i.test(userAgent);
+    const isIOS =
+      /iPhone|iPad|iPod/i.test(userAgent) ||
+      (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+    setVibrationPlatform(isAndroid ? "android" : isIOS ? "ios" : "other");
+    setVibrationSupported(
+      isAndroid && typeof navigator.vibrate === "function",
+    );
     const deviceMemory = (navigator as Navigator & { deviceMemory?: number }).deviceMemory;
     setLowPowerMode(
       navigator.hardwareConcurrency <= 4 ||
@@ -1319,14 +1330,18 @@ export function SensoryToyPlayground() {
                     onClick={() => {
                       const text = decorationText.trim();
                       if (!text) return;
-                      setPendingDecoration({
-                        symbol: text,
-                        label: `${text} 텍스트`,
-                        category: "text",
-                      });
+                      addFreeDecoration(
+                        {
+                          symbol: text,
+                          label: `${text} 텍스트`,
+                          category: "text",
+                        },
+                        50,
+                        50,
+                      );
                     }}
                   >
-                    배치
+                    중앙에 추가
                   </button>
                 </div>
               ) : (
@@ -1341,7 +1356,7 @@ export function SensoryToyPlayground() {
                           pendingDecoration?.symbol === item.symbol &&
                           pendingDecoration.label === item.label
                         }
-                        onClick={() => setPendingDecoration(item)}
+                        onClick={() => addFreeDecoration(item, 50, 50)}
                         key={`quick-${item.category}-${item.label}`}
                       >
                         <span aria-hidden="true">{item.symbol}</span>
@@ -1354,7 +1369,7 @@ export function SensoryToyPlayground() {
               <p className="sensory-decoration-quick-guide" aria-live="polite">
                 {pendingDecoration
                   ? `${pendingDecoration.label} 선택됨 — 옆 놀이판의 원하는 위치를 누르세요.`
-                  : "장식을 고른 뒤 바로 옆 놀이판을 누르면 추가됩니다."}
+                  : "장식을 누르면 놀이판 중앙에 바로 추가됩니다. 추가한 장식은 드래그해 옮기세요."}
               </p>
 
               {selectedFreeDecoration ? (
@@ -1444,20 +1459,31 @@ export function SensoryToyPlayground() {
             >
               {soundEnabled ? "소리 끄기" : "소리 켜기"}
             </button>
-            <button
-              type="button"
-              className="button button-secondary"
-              aria-pressed={vibrationEnabled}
-              disabled={!vibrationSupported}
-              onClick={() => setVibrationEnabled((current) => !current)}
-            >
-              {vibrationSupported
-                ? vibrationEnabled
-                  ? "진동 끄기"
-                  : "진동 켜기"
-                : "진동 미지원"}
-            </button>
+            {vibrationPlatform === "android" ? (
+              <button
+                type="button"
+                className="button button-secondary"
+                aria-pressed={vibrationEnabled}
+                disabled={!vibrationSupported}
+                onClick={() => {
+                  const next = !vibrationEnabled;
+                  setVibrationEnabled(next);
+                  if (next && vibrationSupported) navigator.vibrate(12);
+                }}
+              >
+                {vibrationSupported
+                  ? vibrationEnabled
+                    ? "진동 끄기"
+                    : "진동 켜기"
+                  : "이 브라우저는 진동 미지원"}
+              </button>
+            ) : null}
           </div>
+          {vibrationPlatform === "ios" ? (
+            <p className="sensory-vibration-note">
+              iPhone·iPad의 웹브라우저는 기기 진동 기능을 지원하지 않습니다.
+            </p>
+          ) : null}
           <p className="sensory-audio-note">소리는 첫 터치 후 재생됩니다.</p>
 
           <label className="sensory-volume-label">

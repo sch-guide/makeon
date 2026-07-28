@@ -3536,6 +3536,16 @@ textarea {
   font-size: 10px;
 }
 
+.sensory-vibration-note {
+  margin: 0;
+  border-radius: 11px;
+  background: var(--surface-muted);
+  padding: 10px 11px;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.55;
+}
+
 .sensory-range-grid {
   display: grid;
   gap: 16px;
