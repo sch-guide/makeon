@@ -211,7 +211,7 @@ export function SensoryToyPlayground() {
   const [gloss, setGloss] = useState(72);
   const [soundStyle, setSoundStyle] = useState<SoundStyle>("soft");
   const [soundEnabled, setSoundEnabled] = useState(false);
-  const [volume, setVolume] = useState(0.3);
+  const [volume, setVolume] = useState(0.24);
   const [vibrationEnabled, setVibrationEnabled] = useState(false);
   const [vibrationSupported, setVibrationSupported] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
@@ -267,6 +267,7 @@ export function SensoryToyPlayground() {
     lastAt: 0,
     downAt: 0,
     distance: 0,
+    soundDistance: 0,
     angle: 0,
     angleTravel: 0,
     speed: 0,
@@ -281,6 +282,8 @@ export function SensoryToyPlayground() {
   const waxPieceIdRef = useRef(0);
   const decorationIdRef = useRef(0);
   const lastDragSoundRef = useRef(0);
+  const pointerActiveRef = useRef(false);
+  const holdSoundTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const comboTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const cleanupTimersRef = useRef<Set<ReturnType<typeof setTimeout>>>(new Set());
 
@@ -546,13 +549,22 @@ export function SensoryToyPlayground() {
         setWaxShellPieces((current) => [...current, ...detached].slice(-24));
         createBurst(x, y, "◆", 5);
         vibrate([9, 32, 9]);
-        void play("wax", "crack", { intensity });
+        void play("wax", "crack", {
+          intensity,
+          waxCrackLevel: next / 100,
+        });
         scheduleCleanup(() => {
-          void play("wax", "piece", { intensity: Math.max(0.25, intensity * 0.7) });
+          void play("wax", "piece", {
+            intensity: Math.max(0.25, intensity * 0.7),
+            waxCrackLevel: next / 100,
+          });
         }, 42 + detachedCount * 12);
       } else {
         vibrate(5);
-        void play("wax", closeToCrack ? "release" : "press", { intensity });
+        void play("wax", closeToCrack ? "release" : "press", {
+          intensity,
+          waxCrackLevel: next / 100,
+        });
       }
 
       if (next === 100) {
@@ -569,7 +581,10 @@ export function SensoryToyPlayground() {
         setWaxPieces((current) => current + finalPieces.length);
         createBurst(x, y, "✦", 12);
         vibrate([24, 35, 48]);
-        void play("wax", "complete", { intensity: 1 });
+        void play("wax", "complete", {
+          intensity: 1,
+          waxCrackLevel: 1,
+        });
       }
     },
     [createBurst, play, scheduleCleanup, vibrate, waxCracks],
@@ -580,7 +595,6 @@ export function SensoryToyPlayground() {
       const now = Date.now();
       const interval = lastPressRef.current ? now - lastPressRef.current : 0;
       const rapid = interval > 0 && interval < 480;
-      const comboSpeed = interval > 0 ? Math.min(1, 480 / interval) : 0;
       const nextCombo = rapid ? comboRef.current + 1 : 1;
       lastPressRef.current = now;
       comboRef.current = nextCombo;
@@ -598,20 +612,20 @@ export function SensoryToyPlayground() {
       if (mode === "wax" && waxProgressRef.current < 100) {
         handleWaxHit(x, y, intensity);
       } else {
-        const topping = toppings[0];
         const soundMode = mode === "wax" ? "squishy" : mode;
         void play(soundMode, "press", {
           intensity,
-          topping,
-          comboSpeed,
+          comboInterval: interval,
           surface:
             mode === "squishy" || mode === "wax" ? squishySurface : undefined,
+          slimeTexture: mode === "slime" ? slimeTexture : undefined,
+          toppings: mode === "crunch" ? toppings : undefined,
         });
         vibrate(mode === "crunch" ? 7 : 5);
         if (rapid || mode === "crunch") {
           const symbol =
             mode === "crunch"
-              ? crunchToppings.find((item) => item.id === topping)?.symbol
+              ? crunchToppings.find((item) => item.id === toppings[0])?.symbol
               : undefined;
           createBurst(x, y, symbol, mode === "crunch" ? 8 : 5);
         }
@@ -625,6 +639,7 @@ export function SensoryToyPlayground() {
       mode,
       play,
       showComboMessage,
+      slimeTexture,
       squishySurface,
       toppings,
       vibrate,
@@ -641,6 +656,7 @@ export function SensoryToyPlayground() {
       return;
     }
     event.currentTarget.setPointerCapture(event.pointerId);
+    pointerActiveRef.current = true;
     pointerRef.current = {
       x: event.clientX,
       y: event.clientY,
@@ -649,6 +665,7 @@ export function SensoryToyPlayground() {
       lastAt: now,
       downAt: now,
       distance: 0,
+      soundDistance: 0,
       angle: 0,
       angleTravel: 0,
       speed: 0,
@@ -663,6 +680,21 @@ export function SensoryToyPlayground() {
       y,
       event.pressure > 0 ? event.pressure : 0.42,
     );
+    if (holdSoundTimerRef.current) clearTimeout(holdSoundTimerRef.current);
+    holdSoundTimerRef.current = setTimeout(() => {
+      if (!pointerActiveRef.current) return;
+      if (mode === "wax" && waxProgressRef.current < 100) return;
+      const soundMode = mode === "wax" ? "squishy" : mode;
+      void play(soundMode, "press", {
+        intensity: 0.58,
+        pressDuration: 520,
+        deformationAmount: 0.62,
+        surface:
+          mode === "squishy" || mode === "wax" ? squishySurface : undefined,
+        slimeTexture: mode === "slime" ? slimeTexture : undefined,
+        toppings: mode === "crunch" ? toppings : undefined,
+      });
+    }, 360);
   };
 
   const handlePointerMove = (event: ReactPointerEvent<HTMLDivElement>) => {
@@ -672,6 +704,10 @@ export function SensoryToyPlayground() {
     const deltaY = event.clientY - pointerRef.current.lastY;
     const elapsed = Math.max(8, now - pointerRef.current.lastAt);
     const distance = Math.hypot(deltaX, deltaY);
+    if (distance > 3 && holdSoundTimerRef.current) {
+      clearTimeout(holdSoundTimerRef.current);
+      holdSoundTimerRef.current = null;
+    }
     const speed = distance / elapsed;
     const totalX = event.clientX - pointerRef.current.x;
     const totalY = event.clientY - pointerRef.current.y;
@@ -695,6 +731,7 @@ export function SensoryToyPlayground() {
     pointerRef.current.angleTravel += angleDelta;
     pointerRef.current.angle = angle;
     pointerRef.current.distance += distance;
+    pointerRef.current.soundDistance += distance;
     pointerRef.current.speed = speed;
     pointerRef.current.velocityX = deltaX / elapsed;
     pointerRef.current.velocityY = deltaY / elapsed;
@@ -713,7 +750,13 @@ export function SensoryToyPlayground() {
       setMovedParticles((current) => current + Math.round(distance));
     }
 
-    if (now - lastDragSoundRef.current > 180 && distance > 4) {
+    const normalizedSpeed = Math.min(1, speed);
+    const dragSoundInterval = 250 - normalizedSpeed * 125;
+    const dragDistanceThreshold = 14 - normalizedSpeed * 7;
+    if (
+      now - lastDragSoundRef.current > dragSoundInterval &&
+      pointerRef.current.soundDistance > dragDistanceThreshold
+    ) {
       lastDragSoundRef.current = now;
       const rect = event.currentTarget.getBoundingClientRect();
       const x = ((event.clientX - rect.left) / rect.width) * 100;
@@ -722,20 +765,25 @@ export function SensoryToyPlayground() {
         if (pointerRef.current.distance > 48) {
           handleWaxHit(x, y, Math.min(1, speed + 0.25));
           pointerRef.current.distance = 0;
+          pointerRef.current.soundDistance = 0;
         }
       } else {
         void play(mode === "wax" ? "squishy" : mode, "drag", {
           intensity: Math.min(1, speed + 0.2),
-          topping: toppings[0],
           pressDuration: now - pointerRef.current.downAt,
           pointerSpeed: speed,
+          pointerVelocity: normalizedSpeed,
           dragDistance: Math.hypot(totalX, totalY),
           deformationAmount: Math.min(
             1,
             0.28 + Math.hypot(totalX, totalY) / 90 + speed * 0.25,
           ),
-          surface: mode === "squishy" ? squishySurface : undefined,
+          surface:
+            mode === "squishy" || mode === "wax" ? squishySurface : undefined,
+          slimeTexture: mode === "slime" ? slimeTexture : undefined,
+          toppings: mode === "crunch" ? toppings : undefined,
         });
+        pointerRef.current.soundDistance = 0;
       }
     }
   };
@@ -745,6 +793,11 @@ export function SensoryToyPlayground() {
       event.currentTarget.releasePointerCapture(event.pointerId);
     }
     if (!isPressed) return;
+    pointerActiveRef.current = false;
+    if (holdSoundTimerRef.current) {
+      clearTimeout(holdSoundTimerRef.current);
+      holdSoundTimerRef.current = null;
+    }
 
     const releaseIntensity = Math.min(
       1,
@@ -758,16 +811,19 @@ export function SensoryToyPlayground() {
     if (mode !== "wax" || waxProgressRef.current >= 100) {
       void play(mode === "wax" ? "squishy" : mode, "release", {
         intensity: releaseIntensity,
-        topping: toppings[0],
         pressDuration: Date.now() - pointerRef.current.downAt,
         pointerSpeed: pointerRef.current.speed,
+        pointerVelocity: Math.min(1, pointerRef.current.speed),
         dragDistance: pointerRef.current.distance,
         deformationAmount: releaseIntensity,
         releaseVelocity: Math.hypot(
           pointerRef.current.velocityX,
           pointerRef.current.velocityY,
         ),
-        surface: mode === "squishy" ? squishySurface : undefined,
+        surface:
+          mode === "squishy" || mode === "wax" ? squishySurface : undefined,
+        slimeTexture: mode === "slime" ? slimeTexture : undefined,
+        toppings: mode === "crunch" ? toppings : undefined,
       });
     }
     deformableSquishyRef.current?.release(
@@ -911,6 +967,7 @@ export function SensoryToyPlayground() {
   useEffect(
     () => () => {
       if (comboTimerRef.current) clearTimeout(comboTimerRef.current);
+      if (holdSoundTimerRef.current) clearTimeout(holdSoundTimerRef.current);
       cleanupTimersRef.current.forEach((timer) => clearTimeout(timer));
       cleanupTimersRef.current.clear();
       if (vibrationSupported) navigator.vibrate(0);
@@ -1242,19 +1299,7 @@ export function SensoryToyPlayground() {
               onClick={() => {
                 const next = !soundEnabled;
                 setSoundEnabled(next);
-                if (next) {
-                  void getContext();
-                  const soundMode =
-                    mode === "wax" && waxProgressRef.current >= 100
-                      ? "squishy"
-                      : mode;
-                  void play(soundMode, "press", {
-                    force: true,
-                    intensity: 0.42,
-                    surface:
-                      soundMode === "squishy" ? squishySurface : undefined,
-                  });
-                }
+                if (next) void getContext();
               }}
             >
               {soundEnabled ? "소리 끄기" : "소리 켜기"}
@@ -1272,28 +1317,6 @@ export function SensoryToyPlayground() {
                   : "진동 켜기"
                 : "진동 미지원"}
             </button>
-            <button
-              type="button"
-              className="button button-secondary"
-              onClick={() => {
-                void getContext();
-                const previewMode =
-                  mode === "wax" && waxProgressRef.current >= 100
-                    ? "squishy"
-                    : mode;
-                void play(previewMode, previewMode === "wax" ? "crack" : "press", {
-                  force: true,
-                  intensity: 0.46,
-                  topping: toppings[0],
-                  pressDuration: 420,
-                  deformationAmount: 0.48,
-                  surface:
-                    previewMode === "squishy" ? squishySurface : undefined,
-                });
-              }}
-            >
-              현재 소리 미리듣기
-            </button>
           </div>
           <p className="sensory-audio-note">소리는 첫 터치 후 재생됩니다.</p>
 
@@ -1302,8 +1325,8 @@ export function SensoryToyPlayground() {
             <input
               type="range"
               min="0"
-              max="0.7"
-              step="0.05"
+              max="0.6"
+              step="0.02"
               value={volume}
               onChange={(event) => setVolume(Number(event.target.value))}
             />

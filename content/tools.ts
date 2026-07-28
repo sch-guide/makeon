@@ -12,16 +12,6 @@ export const tools: Tool[] = [
     featuredOnHome: true,
   },
   {
-    slug: "digital-squishy-playground",
-    name: "디지털 말랑이 놀이터",
-    description: "누르고, 늘리고, 터뜨리며 즐기는 디지털 말랑이 미니앱",
-    category: "재미 도구",
-    status: "available",
-    icon: "☁",
-    actionLabel: "놀러 가기",
-    featuredOnHome: true,
-  },
-  {
     slug: "sensory-toy-playground",
     name: "디지털 촉감 놀이터",
     description:

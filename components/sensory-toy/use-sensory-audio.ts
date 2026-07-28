@@ -14,18 +14,26 @@ export type SoundStyle = "soft" | "deep" | "crisp";
 
 type PlayOptions = {
   intensity?: number;
-  topping?: string;
-  force?: boolean;
   pressDuration?: number;
   pointerSpeed?: number;
+  pointerVelocity?: number;
   dragDistance?: number;
   deformationAmount?: number;
   releaseVelocity?: number;
-  comboSpeed?: number;
+  comboInterval?: number;
   surface?: "foam" | "gel" | "mochi" | "clear-crunch";
+  slimeTexture?: "chewy" | "water" | "butter" | "bouncy";
+  toppings?: string[];
+  waxCrackLevel?: number;
 };
 
-const MAX_VOICES = 6;
+type NoiseCharacter = "air" | "foam" | "wet" | "soft-dry";
+
+const MAX_VOICES = 4;
+const MAX_VOLUME = 0.6;
+
+const clamp = (value: number, minimum = 0, maximum = 1) =>
+  Math.min(maximum, Math.max(minimum, value));
 
 export function useSensoryAudio(
   enabled: boolean,
@@ -33,8 +41,15 @@ export function useSensoryAudio(
   soundStyle: SoundStyle,
 ) {
   const contextRef = useRef<AudioContext | null>(null);
+  const compressorRef = useRef<DynamicsCompressorNode | null>(null);
   const masterRef = useRef<GainNode | null>(null);
   const voicesRef = useRef<AudioScheduledSourceNode[]>([]);
+  const variationRef = useRef<Record<SensoryMode, number>>({
+    squishy: 0,
+    slime: 0,
+    crunch: 0,
+    wax: 0,
+  });
 
   const getContext = useCallback(async () => {
     const AudioContextConstructor =
@@ -47,10 +62,19 @@ export function useSensoryAudio(
     contextRef.current = context;
     if (context.state === "suspended") await context.resume();
 
-    if (!masterRef.current) {
+    if (!masterRef.current || !compressorRef.current) {
+      const compressor = context.createDynamicsCompressor();
+      compressor.threshold.value = -26;
+      compressor.knee.value = 18;
+      compressor.ratio.value = 6;
+      compressor.attack.value = 0.006;
+      compressor.release.value = 0.16;
+
       const master = context.createGain();
-      master.gain.value = Math.min(0.7, Math.max(0, volume));
+      master.gain.value = clamp(volume, 0, MAX_VOLUME);
+      compressor.connect(master);
       master.connect(context.destination);
+      compressorRef.current = compressor;
       masterRef.current = master;
     }
     return context;
@@ -61,32 +85,36 @@ export function useSensoryAudio(
     const now = contextRef.current.currentTime;
     masterRef.current.gain.cancelScheduledValues(now);
     masterRef.current.gain.linearRampToValueAtTime(
-      Math.min(0.7, Math.max(0, volume)),
+      clamp(volume, 0, MAX_VOLUME),
       now + 0.04,
     );
   }, [volume]);
 
-  const registerVoice = useCallback((voice: AudioScheduledSourceNode) => {
-    while (voicesRef.current.length >= MAX_VOICES) {
-      const oldest = voicesRef.current.shift();
-      if (!oldest) break;
-      try {
-        oldest.stop();
-      } catch {
-        // The oldest source may already have stopped.
+  const registerVoice = useCallback(
+    (voice: AudioScheduledSourceNode, nodes: AudioNode[]) => {
+      while (voicesRef.current.length >= MAX_VOICES) {
+        const oldest = voicesRef.current.shift();
+        if (!oldest) break;
+        try {
+          oldest.stop();
+        } catch {
+          // The oldest voice may already have ended.
+        }
+        oldest.disconnect();
       }
-      oldest.disconnect();
-    }
-    voicesRef.current.push(voice);
-    voice.addEventListener(
-      "ended",
-      () => {
-        voicesRef.current = voicesRef.current.filter((item) => item !== voice);
-        voice.disconnect();
-      },
-      { once: true },
-    );
-  }, []);
+      voicesRef.current.push(voice);
+      voice.addEventListener(
+        "ended",
+        () => {
+          voicesRef.current = voicesRef.current.filter((item) => item !== voice);
+          voice.disconnect();
+          nodes.forEach((node) => node.disconnect());
+        },
+        { once: true },
+      );
+    },
+    [],
+  );
 
   const createNoise = useCallback(
     (
@@ -96,13 +124,15 @@ export function useSensoryAudio(
       frequency: number,
       gainValue: number,
       startAt: number,
-      character: "air" | "foam" | "wet" | "dry" = "air",
+      character: NoiseCharacter,
+      resonance = 0.7,
     ) => {
+      if (!compressorRef.current) return;
+      const safeDuration = clamp(duration, 0.045, 0.48);
       const source = context.createBufferSource();
-      registerVoice(source);
       const buffer = context.createBuffer(
         1,
-        Math.max(1, Math.floor(context.sampleRate * duration)),
+        Math.max(1, Math.floor(context.sampleRate * safeDuration)),
         context.sampleRate,
       );
       const data = buffer.getChannelData(0);
@@ -111,29 +141,45 @@ export function useSensoryAudio(
         const progress = index / data.length;
         const rawNoise = Math.random() * 2 - 1;
         const smoothing =
-          character === "wet" ? 0.92 : character === "foam" ? 0.86 : 0.72;
+          character === "wet"
+            ? 0.94
+            : character === "foam"
+              ? 0.9
+              : character === "air"
+                ? 0.84
+                : 0.76;
         smoothedNoise = smoothedNoise * smoothing + rawNoise * (1 - smoothing);
-        const sourceNoise = character === "dry" ? rawNoise : smoothedNoise * 3.2;
-        const attack = Math.min(1, progress / 0.045);
-        const release = Math.pow(1 - progress, character === "wet" ? 0.8 : 1.45);
-        data[index] = sourceNoise * attack * release;
+        const body =
+          character === "soft-dry"
+            ? smoothedNoise * 2.1 + rawNoise * 0.12
+            : smoothedNoise * 3;
+        const attack = Math.min(1, progress / 0.055);
+        const release = Math.pow(
+          Math.max(0, 1 - progress),
+          character === "wet" ? 0.72 : 1.2,
+        );
+        data[index] = body * attack * release;
       }
       source.buffer = buffer;
 
       const filter = context.createBiquadFilter();
       filter.type = filterType;
       filter.frequency.value = frequency;
-      filter.Q.value = 0.8;
+      filter.Q.value = resonance;
       const gain = context.createGain();
       gain.gain.setValueAtTime(0.0001, startAt);
-      gain.gain.exponentialRampToValueAtTime(gainValue, startAt + 0.008);
-      gain.gain.exponentialRampToValueAtTime(0.0001, startAt + duration);
+      gain.gain.exponentialRampToValueAtTime(
+        Math.max(0.0002, gainValue),
+        startAt + 0.009,
+      );
+      gain.gain.exponentialRampToValueAtTime(0.0001, startAt + safeDuration);
 
       source.connect(filter);
       filter.connect(gain);
-      if (masterRef.current) gain.connect(masterRef.current);
+      gain.connect(compressorRef.current);
+      registerVoice(source, [filter, gain]);
       source.start(startAt);
-      source.stop(startAt + duration + 0.01);
+      source.stop(startAt + safeDuration + 0.012);
     },
     [registerVoice],
   );
@@ -148,24 +194,105 @@ export function useSensoryAudio(
       type: OscillatorType,
       startAt: number,
     ) => {
+      if (!compressorRef.current) return;
+      const safeDuration = clamp(duration, 0.045, 0.42);
       const oscillator = context.createOscillator();
-      registerVoice(oscillator);
+      const filter = context.createBiquadFilter();
       const gain = context.createGain();
       oscillator.type = type;
-      oscillator.frequency.setValueAtTime(startFrequency, startAt);
+      oscillator.frequency.setValueAtTime(Math.max(30, startFrequency), startAt);
       oscillator.frequency.exponentialRampToValueAtTime(
-        Math.max(20, endFrequency),
-        startAt + duration,
+        Math.max(30, endFrequency),
+        startAt + safeDuration,
       );
+      filter.type = "lowpass";
+      filter.frequency.value = 420;
+      filter.Q.value = 0.55;
       gain.gain.setValueAtTime(0.0001, startAt);
-      gain.gain.exponentialRampToValueAtTime(gainValue, startAt + 0.008);
-      gain.gain.exponentialRampToValueAtTime(0.0001, startAt + duration);
-      oscillator.connect(gain);
-      if (masterRef.current) gain.connect(masterRef.current);
+      gain.gain.exponentialRampToValueAtTime(
+        Math.max(0.0002, gainValue),
+        startAt + 0.01,
+      );
+      gain.gain.exponentialRampToValueAtTime(0.0001, startAt + safeDuration);
+      oscillator.connect(filter);
+      filter.connect(gain);
+      gain.connect(compressorRef.current);
+      registerVoice(oscillator, [filter, gain]);
       oscillator.start(startAt);
-      oscillator.stop(startAt + duration + 0.01);
+      oscillator.stop(startAt + safeDuration + 0.012);
     },
     [registerVoice],
+  );
+
+  const playSoftBody = useCallback(
+    (
+      context: AudioContext,
+      phase: SoundPhase,
+      options: PlayOptions,
+      intensity: number,
+      variation: number,
+      pitch: number,
+      startAt: number,
+      transparent = false,
+    ) => {
+      const pressDuration = clamp((options.pressDuration ?? 0) / 1500);
+      const pointerSpeed = clamp(
+        options.pointerVelocity ?? options.pointerSpeed ?? 0,
+      );
+      const dragDistance = clamp((options.dragDistance ?? 0) / 100);
+      const deformation = clamp(options.deformationAmount ?? intensity);
+      const releaseVelocity = clamp(options.releaseVelocity ?? 0);
+      const rapidTap =
+        (options.comboInterval ?? Number.POSITIVE_INFINITY) < 260;
+      const isRelease = phase === "release";
+      const isDrag = phase === "drag";
+      const duration = isRelease
+        ? 0.085 + releaseVelocity * 0.085
+        : isDrag
+          ? 0.14 + dragDistance * 0.15
+          : 0.09 + pressDuration * 0.26;
+      const surfacePitch =
+        options.surface === "foam"
+          ? 0.86
+          : options.surface === "gel"
+            ? 1.05
+            : options.surface === "clear-crunch"
+              ? 1.02
+              : 0.94;
+
+      createTone(
+        context,
+        (isRelease ? 82 : 68) * variation * pitch * surfacePitch,
+        (isRelease ? 104 : 52) * variation * pitch * surfacePitch,
+        duration,
+        (0.018 + deformation * 0.025) * variation * (rapidTap ? 0.82 : 1),
+        "sine",
+        startAt,
+      );
+      createNoise(
+        context,
+        duration * 0.92,
+        "lowpass",
+        (260 + deformation * 150 + pointerSpeed * 80) * variation,
+        (0.07 + intensity * 0.065) * variation * (rapidTap ? 0.84 : 1),
+        startAt,
+        transparent || options.surface === "gel" ? "wet" : "foam",
+      );
+
+      if (!isRelease && (isDrag || pressDuration > 0.28 || deformation > 0.67)) {
+        createNoise(
+          context,
+          0.08 + pressDuration * 0.18 + dragDistance * 0.09,
+          "bandpass",
+          (210 + pointerSpeed * 190 + deformation * 75) * variation,
+          (0.024 + deformation * 0.032) * variation,
+          startAt + 0.012,
+          "wet",
+          0.55,
+        );
+      }
+    },
+    [createNoise, createTone],
   );
 
   const play = useCallback(
@@ -174,129 +301,79 @@ export function useSensoryAudio(
       phase: SoundPhase = "press",
       options: PlayOptions = {},
     ) => {
-      if (!enabled && !options.force) return;
+      if (!enabled || document.visibilityState === "hidden") return;
       const context = await getContext();
-      if (!context || !masterRef.current) return;
+      if (!context || !compressorRef.current) return;
 
-      const intensity = Math.min(1, Math.max(0.12, options.intensity ?? 0.5));
-      const vary = () => 0.88 + Math.random() * 0.24;
-      const variation = vary();
+      const intensity = clamp(options.intensity ?? 0.45, 0.1, 1);
+      const variationIndex = variationRef.current[mode];
+      variationRef.current[mode] = (variationIndex + 1) % 8;
+      const pattern = [-0.048, 0.031, -0.019, 0.057, -0.036, 0.014, 0.043, -0.026];
+      const variation =
+        1 + pattern[variationIndex] + (Math.random() - 0.5) * 0.024;
       const stylePitch =
-        soundStyle === "deep" ? 0.78 : soundStyle === "crisp" ? 1.18 : 1;
-      const now = context.currentTime + 0.005;
+        soundStyle === "deep" ? 0.9 : soundStyle === "crisp" ? 1.06 : 1;
+      const now = context.currentTime + 0.004;
 
       if (mode === "squishy") {
-        const releasing = phase === "release";
-        const dragging = phase === "drag";
-        const pressDuration = Math.min(1, (options.pressDuration ?? 0) / 1400);
-        const pointerSpeed = Math.min(1, options.pointerSpeed ?? 0);
-        const dragDistance = Math.min(1, (options.dragDistance ?? 0) / 90);
-        const deformation = Math.min(
-          1,
-          options.deformationAmount ?? intensity,
-        );
-        const releaseVelocity = Math.min(1, options.releaseVelocity ?? 0);
-        const comboSpeed = Math.min(1, options.comboSpeed ?? 0);
-        const surfacePitch =
-          options.surface === "foam"
-            ? 0.82
-            : options.surface === "gel"
-              ? 1.12
-              : options.surface === "clear-crunch"
-                ? 1.04
-                : 0.94;
-        const duration = releasing
-          ? 0.12 + releaseVelocity * 0.12
-          : dragging
-            ? 0.15 + dragDistance * 0.18
-            : 0.12 + pressDuration * 0.28;
-        const lowGain =
-          (0.035 + deformation * 0.045) * (1 - comboSpeed * 0.22) * vary();
-
-        // A very quiet low-frequency body layer gives weight without sounding
-        // like a game oscillator.
-        createTone(
+        playSoftBody(
           context,
-          (releasing ? 92 : 76) * variation * stylePitch * surfacePitch,
-          (releasing ? 134 : 58) * variation * stylePitch * surfacePitch,
-          duration * vary(),
-          lowGain,
-          "sine",
+          phase,
+          options,
+          intensity,
+          variation,
+          stylePitch,
           now,
         );
-
-        // Air escaping from the foam/gel body.
-        createNoise(
-          context,
-          duration * vary(),
-          "lowpass",
-          (350 + deformation * 230 + pointerSpeed * 90) * vary(),
-          (0.12 + intensity * 0.1) * vary(),
-          now,
-          options.surface === "gel" ? "wet" : "air",
-        );
-
-        // Long/deep presses and drags add a moist friction layer instead of a
-        // repeated electronic click.
-        if (pressDuration > 0.24 || dragging || deformation > 0.68) {
-          createNoise(
-            context,
-            (0.1 + pressDuration * 0.22 + dragDistance * 0.12) * vary(),
-            "bandpass",
-            (240 + pointerSpeed * 330 + deformation * 120) * vary(),
-            (0.045 + deformation * 0.065) * vary(),
-            now + 0.012,
-            "wet",
-          );
-        }
-
-        if (options.surface === "clear-crunch" && deformation > 0.5) {
-          createNoise(
-            context,
-            (0.08 + deformation * 0.08) * vary(),
-            "lowpass",
-            (420 + pointerSpeed * 110) * vary(),
-            (0.035 + deformation * 0.04) * vary(),
-            now + 0.018,
-            "foam",
-          );
-        }
         return;
       }
 
       if (mode === "slime") {
-        const pointerSpeed = Math.min(1, options.pointerSpeed ?? 0);
-        const dragDistance = Math.min(1, (options.dragDistance ?? 0) / 120);
-        const pressDuration = Math.min(1, (options.pressDuration ?? 0) / 1800);
-        const quickRelease =
-          phase === "release" && (options.releaseVelocity ?? 0) > 0.55;
+        const speed = clamp(
+          options.pointerVelocity ?? options.pointerSpeed ?? 0,
+        );
+        const distance = clamp((options.dragDistance ?? 0) / 130);
+        const duration =
+          phase === "drag"
+            ? 0.18 + (1 - speed) * 0.16 + distance * 0.08
+            : phase === "release"
+              ? 0.13 + (1 - clamp(options.releaseVelocity ?? 0)) * 0.12
+              : 0.14 + clamp((options.pressDuration ?? 0) / 1800) * 0.18;
+        const texturePitch =
+          options.slimeTexture === "water"
+            ? 1.08
+            : options.slimeTexture === "butter"
+              ? 0.9
+              : options.slimeTexture === "bouncy"
+                ? 1.04
+                : 0.96;
+        createNoise(
+          context,
+          duration,
+          "bandpass",
+          (185 + speed * 235) * variation * texturePitch,
+          (0.07 + intensity * 0.06) * variation,
+          now,
+          "wet",
+          0.5,
+        );
         createTone(
           context,
-          (quickRelease ? 118 : 72) * variation * stylePitch,
-          (quickRelease ? 164 : 48) * variation * stylePitch,
-          (phase === "drag" ? 0.22 + dragDistance * 0.22 : 0.2) * vary(),
-          (0.025 + intensity * 0.035) * vary(),
+          (phase === "release" ? 78 : 60) * variation * stylePitch,
+          (phase === "release" ? 58 : 42) * variation * stylePitch,
+          duration * 0.9,
+          (0.012 + intensity * 0.02) * variation,
           "sine",
           now,
         );
-        createNoise(
-          context,
-          (phase === "drag" ? 0.18 + dragDistance * 0.28 : 0.16 + pressDuration * 0.2) *
-            vary(),
-          "bandpass",
-          (260 + pointerSpeed * 310 + intensity * 120) * vary(),
-          (0.09 + intensity * 0.08) * vary(),
-          now,
-          "wet",
-        );
-        if (quickRelease) {
+        if (phase === "drag" && speed > 0.58) {
           createNoise(
             context,
-            0.075 * vary(),
-            "bandpass",
-            520 * vary(),
-            0.038 * vary(),
-            now + 0.012,
+            0.065 + speed * 0.035,
+            "lowpass",
+            430 * variation,
+            0.026 * variation,
+            now + 0.018,
             "wet",
           );
         }
@@ -304,113 +381,129 @@ export function useSensoryAudio(
       }
 
       if (mode === "crunch") {
-        const isFlakes = options.topping === "flakes";
-        const isBeads = options.topping === "beads";
-        const pointerSpeed = Math.min(1, options.pointerSpeed ?? 0);
-        const deformation = Math.min(
-          1,
-          options.deformationAmount ?? intensity,
-        );
-        createNoise(
+        playSoftBody(
           context,
-          (0.08 + deformation * 0.12) * vary(),
-          isFlakes ? "bandpass" : "highpass",
-          (isFlakes ? 980 : 1250 + pointerSpeed * 720) * vary(),
-          (0.11 + intensity * 0.11) * vary(),
+          phase,
+          options,
+          intensity * 0.82,
+          variation,
+          stylePitch * 1.02,
           now,
-          isFlakes ? "dry" : "foam",
+          true,
         );
-        createNoise(
-          context,
-          (0.11 + deformation * 0.08) * vary(),
-          "lowpass",
-          (310 + deformation * 170) * vary(),
-          (0.045 + deformation * 0.05) * vary(),
-          now,
-          "wet",
-        );
-        const clicks = Math.min(4, isBeads ? 2 + Math.round(intensity * 2) : 2);
-        for (let index = 0; index < clicks; index += 1) {
-          const time = now + index * 0.027 + Math.random() * 0.014;
-          createTone(
-            context,
-            (260 + Math.random() * 380) * stylePitch,
-            150 * stylePitch,
-            0.025 * vary(),
-            (0.025 + intensity * 0.025) * vary(),
-            "triangle",
-            time,
-          );
-        }
+
+        const selected = options.toppings ?? [];
+        if (selected.length === 0 || Math.random() > 0.82) return;
+        const shuffled = [...selected].sort(() => Math.random() - 0.5);
+        const layers = shuffled.slice(0, intensity > 0.72 && Math.random() > 0.5 ? 2 : 1);
+        layers.forEach((topping, index) => {
+          const offset = index * 0.028;
+          const speed = clamp(options.pointerVelocity ?? options.pointerSpeed ?? 0);
+          if (topping === "beads") {
+            createTone(
+              context,
+              205 * variation,
+              142 * variation,
+              0.055,
+              0.016 + intensity * 0.014,
+              "sine",
+              now + offset,
+            );
+          } else if (topping === "flakes") {
+            createNoise(
+              context,
+              0.07 + intensity * 0.045,
+              "bandpass",
+              620 * variation,
+              0.032 + intensity * 0.025,
+              now + offset,
+              "soft-dry",
+              0.65,
+            );
+          } else if (topping === "foam") {
+            createNoise(
+              context,
+              0.09 + intensity * 0.05,
+              "lowpass",
+              (480 + speed * 110) * variation,
+              0.034 + intensity * 0.025,
+              now + offset,
+              "foam",
+            );
+          } else {
+            createNoise(
+              context,
+              0.06 + intensity * 0.04,
+              "bandpass",
+              540 * variation,
+              0.024 + intensity * 0.02,
+              now + offset,
+              "soft-dry",
+              0.55,
+            );
+          }
+        });
         return;
       }
 
+      const waxLevel = clamp(options.waxCrackLevel ?? 0);
+      if (phase === "press" || phase === "release") {
+        createNoise(
+          context,
+          0.045 + waxLevel * 0.025,
+          "bandpass",
+          (470 + waxLevel * 150) * variation,
+          0.026 + intensity * 0.018,
+          now,
+          "soft-dry",
+          0.7,
+        );
+        return;
+      }
       if (phase === "piece") {
         createNoise(
           context,
-          0.065 * vary(),
-          "bandpass",
-          680 * vary(),
-          0.07 * vary(),
+          0.075 + intensity * 0.035,
+          "lowpass",
+          520 * variation,
+          0.038 + intensity * 0.025,
           now,
-          "dry",
+          "soft-dry",
         );
         createTone(
           context,
-          105 * variation,
-          72 * variation,
-          0.07 * vary(),
-          0.025 * vary(),
+          102 * variation,
+          70 * variation,
+          0.075,
+          0.012 + intensity * 0.012,
           "sine",
           now,
         );
         return;
       }
 
-      if (phase === "complete") {
+      const crackCount = phase === "complete" ? 3 : waxLevel > 0.72 ? 2 : 1;
+      for (let index = 0; index < crackCount; index += 1) {
         createNoise(
           context,
-          0.16 * vary(),
+          0.045 + intensity * 0.04,
           "bandpass",
-          780 * vary(),
-          0.1 * vary(),
-          now,
-          "dry",
+          (560 + waxLevel * 220) * variation,
+          (0.03 + intensity * 0.032) / Math.sqrt(crackCount),
+          now + index * 0.034,
+          "soft-dry",
+          0.85,
         );
-        createNoise(
-          context,
-          0.22 * vary(),
-          "lowpass",
-          360 * vary(),
-          0.06 * vary(),
-          now + 0.035,
-          "foam",
-        );
-        return;
       }
-
-      const crackLevel =
-        phase === "crack" ? 1 : phase === "release" ? 0.66 : 0.42;
-      createNoise(
-        context,
-        (0.045 + crackLevel * 0.055) * vary(),
-        "highpass",
-        (1200 + crackLevel * 900) * vary(),
-        (0.11 + crackLevel * 0.12) * vary(),
-        now,
-        "dry",
-      );
-      createNoise(
-        context,
-        (0.035 + crackLevel * 0.04) * vary(),
-        "bandpass",
-        (720 + crackLevel * 420) * vary(),
-        (0.055 + crackLevel * 0.055) * vary(),
-        now + 0.012,
-        "dry",
-      );
     },
-    [createNoise, createTone, enabled, getContext, soundStyle],
+    [
+      createNoise,
+      createTone,
+      enabled,
+      getContext,
+      playSoftBody,
+      soundStyle,
+    ],
   );
 
   useEffect(
@@ -419,10 +512,13 @@ export function useSensoryAudio(
         try {
           voice.stop();
         } catch {
-          // The source may already have stopped.
+          // The source may already have ended.
         }
+        voice.disconnect();
       });
       voicesRef.current = [];
+      compressorRef.current?.disconnect();
+      masterRef.current?.disconnect();
       if (contextRef.current) void contextRef.current.close();
     },
     [],
