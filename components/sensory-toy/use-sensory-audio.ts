@@ -258,42 +258,70 @@ export function useSensoryAudio(
         context.sampleRate,
       );
       const data = buffer.getChannelData(0);
-      const baseFrequency = (merging ? 148 : 132 + speed * 48) * texturePitch;
-      let viscousDrift = 0;
+      const bubbleCount = merging ? 3 : 2 + Math.round(speed * 2);
+      const bubbles = Array.from({ length: bubbleCount }, (_, index) => ({
+        center:
+          merging
+            ? 0.3 + index * 0.19
+            : 0.24 + (index / Math.max(1, bubbleCount - 1)) * 0.5,
+        width: 0.075 + Math.random() * 0.045,
+        frequency:
+          (merging ? 190 + index * 24 : 155 + Math.random() * 105) *
+          texturePitch,
+        phase: Math.random() * Math.PI * 2,
+      }));
+      let slowGelMovement = 0;
+      let surfaceFriction = 0;
 
       for (let index = 0; index < data.length; index += 1) {
         const time = index / context.sampleRate;
         const progress = index / data.length;
-        const rawDrift = Math.random() * 2 - 1;
-        viscousDrift = viscousDrift * 0.988 + rawDrift * 0.012;
-        const frequencyWobble =
-          Math.sin(time * Math.PI * (3.2 + speed * 2.4)) * 13;
-        const body = Math.sin(
-          time * Math.PI * 2 * (baseFrequency + frequencyWobble),
-        );
-        const softFold = Math.sin(
-          time * Math.PI * 2 * baseFrequency * 0.53 +
-            Math.sin(time * Math.PI * 3.1) * 0.8,
-        );
-        const movementPulse = merging
-          ? 0.72 + Math.sin(progress * Math.PI * 2) * 0.18
-          : 0.7 +
-            Math.sin(time * Math.PI * 2 * (2.1 + speed * 2.2)) * 0.22;
-        const attack = Math.min(1, progress / 0.11);
-        const release = Math.pow(Math.max(0, 1 - progress), 0.72);
+        const rawFriction = Math.random() * 2 - 1;
+        slowGelMovement =
+          slowGelMovement * 0.996 + rawFriction * 0.004;
+        surfaceFriction =
+          surfaceFriction * 0.91 + rawFriction * 0.09;
+        const gelFriction = (surfaceFriction - slowGelMovement) * 2.1;
+        const irregularMovement =
+          0.62 +
+          Math.sin(time * Math.PI * (2.4 + speed * 1.7)) * 0.16 +
+          slowGelMovement * 0.75;
+
+        let bubbleLayer = 0;
+        bubbles.forEach((bubble) => {
+          const relativeProgress = progress - bubble.center;
+          const distance = relativeProgress / bubble.width;
+          if (Math.abs(distance) > 1.8) return;
+          const localTime = relativeProgress * safeDuration;
+          const bubbleEnvelope = Math.exp(-distance * distance * 2.4);
+          const descendingFrequency =
+            bubble.frequency * (1 - Math.max(0, distance) * 0.22);
+          bubbleLayer +=
+            Math.sin(
+              localTime * Math.PI * 2 * descendingFrequency + bubble.phase,
+            ) * bubbleEnvelope;
+        });
+
+        const attack = Math.min(1, progress / 0.14);
+        const release = Math.pow(Math.max(0, 1 - progress), 0.82);
         data[index] =
-          (body * 0.42 + softFold * 0.25 + viscousDrift * 0.72) *
-          movementPulse *
+          (gelFriction * (merging ? 0.38 : 0.58) +
+            bubbleLayer * (merging ? 0.34 : 0.2)) *
+          irregularMovement *
           attack *
           release;
       }
       source.buffer = buffer;
       source.playbackRate.value = 0.98 + Math.random() * 0.04;
 
-      const filter = context.createBiquadFilter();
-      filter.type = "lowpass";
-      filter.frequency.value = 460 + speed * 110;
-      filter.Q.value = 0.35;
+      const highpass = context.createBiquadFilter();
+      highpass.type = "highpass";
+      highpass.frequency.value = 85;
+      highpass.Q.value = 0.25;
+      const lowpass = context.createBiquadFilter();
+      lowpass.type = "lowpass";
+      lowpass.frequency.value = (760 + speed * 210) * texturePitch;
+      lowpass.Q.value = 0.28;
       const gain = context.createGain();
       gain.gain.setValueAtTime(0.0001, startAt);
       gain.gain.exponentialRampToValueAtTime(
@@ -302,10 +330,11 @@ export function useSensoryAudio(
       );
       gain.gain.exponentialRampToValueAtTime(0.0001, startAt + safeDuration);
 
-      source.connect(filter);
-      filter.connect(gain);
+      source.connect(highpass);
+      highpass.connect(lowpass);
+      lowpass.connect(gain);
       gain.connect(compressorRef.current);
-      registerVoice(source, gain, [filter, gain]);
+      registerVoice(source, gain, [highpass, lowpass, gain]);
       source.start(startAt);
       source.stop(startAt + safeDuration + 0.015);
     },
