@@ -1426,7 +1426,56 @@ export function SensoryToyPlayground() {
                   >
                     삭제
                   </button>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      updateFreeDecoration(selectedFreeDecoration.id, {
+                        flipped: !selectedFreeDecoration.flipped,
+                      })
+                    }
+                  >
+                    좌우반전
+                  </button>
+                  <button
+                    type="button"
+                    disabled={freeDecorations.length >= decorationLimit}
+                    onClick={() => {
+                      const nextId = decorationIdRef.current++;
+                      const duplicate: FreeDecoration = {
+                        ...selectedFreeDecoration,
+                        id: nextId,
+                        x: Math.min(92, selectedFreeDecoration.x + 5),
+                        y: Math.min(90, selectedFreeDecoration.y + 5),
+                        zIndex:
+                          Math.max(
+                            ...freeDecorations.map(
+                              (decoration) => decoration.zIndex,
+                            ),
+                          ) + 1,
+                      };
+                      setFreeDecorations((current) => [...current, duplicate]);
+                      setSelectedDecorationId(nextId);
+                    }}
+                  >
+                    복제
+                  </button>
                 </div>
+              ) : null}
+              <div className="sensory-decoration-quick-storage">
+                <button type="button" onClick={saveDecorations}>
+                  저장
+                </button>
+                <button type="button" onClick={loadDecorations}>
+                  불러오기
+                </button>
+                <button type="button" onClick={clearDecorations}>
+                  전체 지우기
+                </button>
+              </div>
+              {decorationSaveMessage ? (
+                <p className="sensory-decoration-quick-message" aria-live="polite">
+                  {decorationSaveMessage}
+                </p>
               ) : null}
             </div>
           </details>
@@ -1540,241 +1589,6 @@ export function SensoryToyPlayground() {
           </dl>
         </aside>
       </div>
-
-      <details className="sensory-decoration-panel" open>
-        <summary>
-          자유 장식 꾸미기
-          <span>{freeDecorations.length}/{decorationLimit}</span>
-        </summary>
-        <div className="sensory-decoration-body">
-          <div
-            className="sensory-decoration-tabs"
-            role="tablist"
-            aria-label="장식 카테고리"
-          >
-            {decorationCategories.map((category) => (
-              <button
-                type="button"
-                role="tab"
-                aria-selected={decorationCategory === category.id}
-                onClick={() => setDecorationCategory(category.id)}
-                key={category.id}
-              >
-                {category.label}
-              </button>
-            ))}
-          </div>
-
-          {decorationCategory === "text" ? (
-            <div className="sensory-decoration-text">
-              <label htmlFor="sensory-decoration-text-input">짧은 글자 또는 이모지</label>
-              <div>
-                <input
-                  id="sensory-decoration-text-input"
-                  type="text"
-                  maxLength={8}
-                  value={decorationText}
-                  placeholder="예: MAKEON"
-                  onChange={(event) => setDecorationText(event.target.value)}
-                />
-                <button
-                  type="button"
-                  className="button button-secondary"
-                  disabled={!decorationText.trim()}
-                  onClick={() => {
-                    const text = decorationText.trim();
-                    if (!text) return;
-                    setPendingDecoration({
-                      symbol: text,
-                      label: `${text} 텍스트`,
-                      category: "text",
-                    });
-                  }}
-                >
-                  배치 준비
-                </button>
-              </div>
-            </div>
-          ) : (
-            <div className="sensory-decoration-catalog">
-              {freeDecorationCatalog
-                .filter((item) => item.category === decorationCategory)
-                .map((item) => (
-                  <button
-                    type="button"
-                    aria-pressed={
-                      pendingDecoration?.symbol === item.symbol &&
-                      pendingDecoration.label === item.label
-                    }
-                    onClick={() => setPendingDecoration(item)}
-                    key={`${item.category}-${item.label}`}
-                  >
-                    <span aria-hidden="true">{item.symbol}</span>
-                    {item.label}
-                  </button>
-                ))}
-            </div>
-          )}
-
-          <p className="sensory-decoration-instruction" aria-live="polite">
-            {pendingDecoration
-              ? `${pendingDecoration.label} 선택됨 — 놀이 영역에서 원하는 위치를 눌러 배치하세요.`
-              : "장식을 선택한 뒤 놀이 영역에 배치하고, 장식을 직접 드래그해 이동하세요."}
-          </p>
-          {pendingDecoration ? (
-            <button
-              type="button"
-              className="button button-muted sensory-decoration-cancel"
-              onClick={() => setPendingDecoration(null)}
-            >
-              배치 취소
-            </button>
-          ) : null}
-
-          {selectedFreeDecoration ? (
-            <div className="sensory-decoration-editor">
-              <div>
-                <strong>
-                  <span aria-hidden="true">{selectedFreeDecoration.symbol}</span>
-                  {selectedFreeDecoration.label}
-                </strong>
-                <button
-                  type="button"
-                  className="button button-muted"
-                  onClick={() => {
-                    setFreeDecorations((current) =>
-                      current.filter(
-                        (decoration) => decoration.id !== selectedFreeDecoration.id,
-                      ),
-                    );
-                    setSelectedDecorationId(null);
-                  }}
-                >
-                  삭제
-                </button>
-              </div>
-
-              <label>
-                <span>크기 {Math.round(selectedFreeDecoration.scale * 100)}%</span>
-                <input
-                  type="range"
-                  min="0.55"
-                  max="2.1"
-                  step="0.05"
-                  value={selectedFreeDecoration.scale}
-                  onChange={(event) =>
-                    updateFreeDecoration(selectedFreeDecoration.id, {
-                      scale: Number(event.target.value),
-                    })
-                  }
-                />
-              </label>
-              <label>
-                <span>회전 {Math.round(selectedFreeDecoration.rotation)}°</span>
-                <input
-                  type="range"
-                  min="0"
-                  max="359"
-                  step="1"
-                  value={selectedFreeDecoration.rotation}
-                  onChange={(event) =>
-                    updateFreeDecoration(selectedFreeDecoration.id, {
-                      rotation: Number(event.target.value),
-                    })
-                  }
-                />
-              </label>
-
-              <div className="sensory-decoration-actions">
-                <button
-                  type="button"
-                  onClick={() =>
-                    updateFreeDecoration(selectedFreeDecoration.id, {
-                      flipped: !selectedFreeDecoration.flipped,
-                    })
-                  }
-                >
-                  좌우반전
-                </button>
-                <button
-                  type="button"
-                  onClick={() =>
-                    updateFreeDecoration(selectedFreeDecoration.id, {
-                      zIndex:
-                        Math.max(
-                          ...freeDecorations.map(
-                            (decoration) => decoration.zIndex,
-                          ),
-                        ) + 1,
-                    })
-                  }
-                >
-                  맨 앞으로
-                </button>
-                <button
-                  type="button"
-                  onClick={() =>
-                    updateFreeDecoration(selectedFreeDecoration.id, {
-                      zIndex:
-                        Math.min(
-                          ...freeDecorations.map(
-                            (decoration) => decoration.zIndex,
-                          ),
-                        ) - 1,
-                    })
-                  }
-                >
-                  맨 뒤로
-                </button>
-                <button
-                  type="button"
-                  disabled={freeDecorations.length >= decorationLimit}
-                  onClick={() => {
-                    const nextId = decorationIdRef.current++;
-                    const duplicate: FreeDecoration = {
-                      ...selectedFreeDecoration,
-                      id: nextId,
-                      x: Math.min(92, selectedFreeDecoration.x + 5),
-                      y: Math.min(90, selectedFreeDecoration.y + 5),
-                      zIndex:
-                        Math.max(
-                          ...freeDecorations.map(
-                            (decoration) => decoration.zIndex,
-                          ),
-                        ) + 1,
-                    };
-                    setFreeDecorations((current) => [...current, duplicate]);
-                    setSelectedDecorationId(nextId);
-                  }}
-                >
-                  복제
-                </button>
-              </div>
-            </div>
-          ) : null}
-
-          <div className="sensory-decoration-storage">
-            <button type="button" className="button button-secondary" onClick={saveDecorations}>
-              내 꾸미기 저장
-            </button>
-            <button type="button" className="button button-secondary" onClick={loadDecorations}>
-              불러오기
-            </button>
-            <button type="button" className="button button-muted" onClick={clearDecorations}>
-              장식 전체 지우기
-            </button>
-          </div>
-          <p className="sensory-decoration-note">
-            장식은 내부 본체에 붙는 규칙으로 동작해 왁스 껍질 조각이 떨어져도
-            본체에 남습니다. 저장 정보는 현재 브라우저에만 보관됩니다.
-          </p>
-          {decorationSaveMessage ? (
-            <p className="sensory-decoration-message" aria-live="polite">
-              {decorationSaveMessage}
-            </p>
-          ) : null}
-        </div>
-      </details>
 
       {challengeResult ? (
         <section className="sensory-result" aria-live="polite">

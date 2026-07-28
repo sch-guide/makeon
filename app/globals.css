@@ -3702,7 +3702,8 @@ textarea {
 .sensory-decoration-quick-tabs button,
 .sensory-decoration-quick-catalog button,
 .sensory-decoration-quick-text button,
-.sensory-decoration-quick-actions button {
+.sensory-decoration-quick-actions button,
+.sensory-decoration-quick-storage button {
   border: 1px solid var(--line);
   background: var(--surface);
   color: var(--text);
@@ -3766,7 +3767,8 @@ textarea {
 }
 
 .sensory-decoration-quick-text button,
-.sensory-decoration-quick-actions button {
+.sensory-decoration-quick-actions button,
+.sensory-decoration-quick-storage button {
   border-radius: 10px;
   padding: 7px 8px;
   font-size: 10px;
@@ -3804,6 +3806,25 @@ textarea {
 
 .sensory-decoration-quick-actions strong span {
   font-size: 17px;
+}
+
+.sensory-decoration-quick-storage {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 5px;
+  padding-top: 2px;
+  border-top: 1px solid var(--line);
+}
+
+.sensory-decoration-quick-storage button {
+  min-width: 0;
+}
+
+.sensory-decoration-quick-message {
+  margin: 0;
+  color: var(--accent-strong);
+  font-size: 10px;
+  font-weight: 740;
 }
 
 .sensory-play-area::before {
