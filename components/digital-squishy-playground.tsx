@@ -70,6 +70,12 @@ const shapePaths: Record<SquishyShape, string> = {
     "M83 85C86 59 118 44 180 44C242 44 274 59 277 85L295 190C299 216 269 231 180 231C91 231 61 216 65 190L83 85Z",
 };
 
+const modeTextures: Record<SquishyMode, string> = {
+  soft: "/images/tools/digital-squishy-playground/soft-gel-texture.webp",
+  slime: "/images/tools/digital-squishy-playground/slime-texture.webp",
+  crunch: "/images/tools/digital-squishy-playground/crunch-texture.webp",
+};
+
 const materialPositions = [
   [108, 105],
   [143, 83],
@@ -128,63 +134,117 @@ export function DigitalSquishyPlayground() {
   const selectedMaterial =
     materials.find((item) => item.id === material) ?? materials[0];
 
-  const playSound = useCallback(
-    (currentMode: SquishyMode) => {
-      if (!soundEnabled) return;
-
+  const getAudioContext = useCallback(async () => {
       const AudioContextConstructor =
         window.AudioContext ??
         (window as typeof window & { webkitAudioContext?: typeof AudioContext })
           .webkitAudioContext;
-      if (!AudioContextConstructor) return;
+      if (!AudioContextConstructor) return null;
 
       const context =
         audioContextRef.current ?? new AudioContextConstructor();
       audioContextRef.current = context;
-      void context.resume();
+      if (context.state === "suspended") await context.resume();
+      return context;
+  }, []);
+
+  const playSound = useCallback(
+    async (currentMode: SquishyMode, force = false) => {
+      if (!soundEnabled && !force) return;
+
+      const context = await getAudioContext();
+      if (!context) return;
+
       const now = context.currentTime;
-      const gain = context.createGain();
-      gain.connect(context.destination);
-      gain.gain.setValueAtTime(0.0001, now);
-      gain.gain.exponentialRampToValueAtTime(0.12, now + 0.01);
-      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.18);
+      const master = context.createGain();
+      master.gain.setValueAtTime(0.0001, now);
+      master.gain.exponentialRampToValueAtTime(
+        currentMode === "crunch" ? 0.2 : 0.24,
+        now + 0.008,
+      );
+      master.gain.exponentialRampToValueAtTime(
+        0.0001,
+        now + (currentMode === "slime" ? 0.42 : 0.3),
+      );
+      master.connect(context.destination);
 
       const oscillator = context.createOscillator();
-      oscillator.connect(gain);
-      oscillator.type = currentMode === "slime" ? "triangle" : "sine";
+      const oscillatorGain = context.createGain();
+      oscillator.connect(oscillatorGain);
+      oscillatorGain.connect(master);
+      oscillator.type = currentMode === "crunch" ? "triangle" : "sine";
       const startFrequency =
-        currentMode === "soft" ? 150 : currentMode === "slime" ? 105 : 260;
+        currentMode === "soft" ? 118 : currentMode === "slime" ? 86 : 235;
       const endFrequency =
-        currentMode === "soft" ? 230 : currentMode === "slime" ? 68 : 170;
+        currentMode === "soft" ? 190 : currentMode === "slime" ? 54 : 128;
       oscillator.frequency.setValueAtTime(startFrequency, now);
       oscillator.frequency.exponentialRampToValueAtTime(
         endFrequency,
-        now + 0.16,
+        now + (currentMode === "slime" ? 0.34 : 0.18),
+      );
+      oscillatorGain.gain.setValueAtTime(currentMode === "crunch" ? 0.22 : 0.48, now);
+      oscillatorGain.gain.exponentialRampToValueAtTime(
+        0.0001,
+        now + (currentMode === "slime" ? 0.38 : 0.23),
       );
       oscillator.start(now);
-      oscillator.stop(now + 0.19);
+      oscillator.stop(now + (currentMode === "slime" ? 0.4 : 0.25));
+
+      const noiseDuration =
+        currentMode === "soft" ? 0.18 : currentMode === "slime" ? 0.34 : 0.24;
+      const buffer = context.createBuffer(
+        1,
+        Math.floor(context.sampleRate * noiseDuration),
+        context.sampleRate,
+      );
+      const channel = buffer.getChannelData(0);
+      for (let index = 0; index < channel.length; index += 1) {
+        const progress = index / channel.length;
+        const envelope =
+          currentMode === "crunch"
+            ? Math.max(0.12, 1 - progress)
+            : Math.sin(Math.PI * Math.min(1, progress * 1.35)) * (1 - progress);
+        channel[index] = (Math.random() * 2 - 1) * envelope;
+      }
+      const noise = context.createBufferSource();
+      const noiseFilter = context.createBiquadFilter();
+      const noiseGain = context.createGain();
+      noise.buffer = buffer;
+      noiseFilter.type = currentMode === "crunch" ? "highpass" : "lowpass";
+      noiseFilter.frequency.setValueAtTime(
+        currentMode === "soft" ? 620 : currentMode === "slime" ? 430 : 1450,
+        now,
+      );
+      noiseFilter.Q.setValueAtTime(currentMode === "slime" ? 1.4 : 0.7, now);
+      noiseGain.gain.setValueAtTime(
+        currentMode === "soft" ? 0.34 : currentMode === "slime" ? 0.3 : 0.5,
+        now,
+      );
+      noiseGain.gain.exponentialRampToValueAtTime(0.0001, now + noiseDuration);
+      noise.connect(noiseFilter);
+      noiseFilter.connect(noiseGain);
+      noiseGain.connect(master);
+      noise.start(now);
 
       if (currentMode === "crunch") {
-        const buffer = context.createBuffer(
-          1,
-          Math.floor(context.sampleRate * 0.07),
-          context.sampleRate,
-        );
-        const channel = buffer.getChannelData(0);
-        for (let index = 0; index < channel.length; index += 1) {
-          channel[index] = (Math.random() * 2 - 1) * (1 - index / channel.length);
+        for (let index = 0; index < 5; index += 1) {
+          const clickTime = now + 0.025 + index * 0.036 + Math.random() * 0.018;
+          const click = context.createOscillator();
+          const clickGain = context.createGain();
+          click.type = "square";
+          click.frequency.setValueAtTime(420 + Math.random() * 780, clickTime);
+          click.frequency.exponentialRampToValueAtTime(180, clickTime + 0.025);
+          clickGain.gain.setValueAtTime(0.0001, clickTime);
+          clickGain.gain.exponentialRampToValueAtTime(0.18, clickTime + 0.003);
+          clickGain.gain.exponentialRampToValueAtTime(0.0001, clickTime + 0.032);
+          click.connect(clickGain);
+          clickGain.connect(master);
+          click.start(clickTime);
+          click.stop(clickTime + 0.04);
         }
-        const noise = context.createBufferSource();
-        const noiseGain = context.createGain();
-        noise.buffer = buffer;
-        noiseGain.gain.setValueAtTime(0.08, now);
-        noiseGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.07);
-        noise.connect(noiseGain);
-        noiseGain.connect(context.destination);
-        noise.start(now);
       }
     },
-    [soundEnabled],
+    [getAudioContext, soundEnabled],
   );
 
   const createBurst = useCallback(
@@ -239,7 +299,7 @@ export function DigitalSquishyPlayground() {
         [mode]: current[mode] + 1,
       }));
       if (mode === "crunch" || isRapid) createBurst(x, y, mode);
-      playSound(mode);
+      void playSound(mode);
 
       if (comboTimerRef.current) clearTimeout(comboTimerRef.current);
       comboTimerRef.current = setTimeout(() => {
@@ -478,6 +538,22 @@ export function DigitalSquishyPlayground() {
                 fill="url(#squishy-gel)"
                 filter="url(#squishy-shadow)"
               />
+              <image
+                className={`squishy-texture-image is-${mode}`}
+                href={modeTextures[mode]}
+                x="0"
+                y="0"
+                width="360"
+                height="270"
+                preserveAspectRatio="xMidYMid slice"
+                clipPath={`url(#squishy-clip-${shape})`}
+                aria-hidden="true"
+              />
+              <path
+                className="squishy-color-wash"
+                d={shapePaths[shape]}
+                fill="var(--squishy-color)"
+              />
               {shape === "peach" ? (
                 <path className="squishy-leaf" d="M181 57C186 27 213 15 237 25C225 51 205 64 181 57Z" />
               ) : null}
@@ -542,8 +618,9 @@ export function DigitalSquishyPlayground() {
             className="button button-secondary"
             aria-pressed={soundEnabled}
             onClick={() => {
-              setSoundEnabled((current) => !current);
-              if (!soundEnabled) playSound(mode);
+              const nextSoundState = !soundEnabled;
+              setSoundEnabled(nextSoundState);
+              if (nextSoundState) void playSound(mode, true);
             }}
           >
             {soundEnabled ? "소리 끄기" : "소리 켜기"}

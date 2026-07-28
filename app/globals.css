@@ -2382,6 +2382,30 @@ textarea {
   stroke-width: 2;
 }
 
+.squishy-texture-image {
+  opacity: 0.92;
+  filter: saturate(0.82) contrast(1.04) brightness(1.02);
+  pointer-events: none;
+}
+
+.squishy-texture-image.is-soft {
+  filter: saturate(0.72) contrast(1.02) brightness(1.06);
+}
+
+.squishy-texture-image.is-slime {
+  filter: saturate(0.78) contrast(1.06) brightness(1.01);
+}
+
+.squishy-texture-image.is-crunch {
+  filter: saturate(0.7) contrast(1.03) brightness(1.04);
+}
+
+.squishy-color-wash {
+  opacity: 0.22;
+  mix-blend-mode: color;
+  pointer-events: none;
+}
+
 .squishy-leaf {
   fill: #789a5d;
   filter: drop-shadow(0 5px 6px rgba(49, 69, 42, 0.14));
