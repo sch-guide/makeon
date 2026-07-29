@@ -3336,6 +3336,527 @@ textarea {
   }
 }
 
+/* Digital relaxation playground */
+.relax-page-section {
+  padding-block: 70px 100px;
+  background:
+    radial-gradient(circle at 12% 5%, rgba(168, 198, 134, 0.13), transparent 28%),
+    var(--background);
+}
+
+.relax-app {
+  display: grid;
+  gap: 22px;
+}
+
+.relax-common-settings,
+.relax-game-picker,
+.relax-game-card,
+.relax-shared-stats,
+.relax-safety,
+.relax-related,
+.relax-phase-note {
+  border: 1px solid var(--border-sage);
+  border-radius: 24px;
+  background: rgba(255, 253, 247, 0.92);
+  box-shadow: var(--shadow-sm);
+}
+
+.relax-common-settings {
+  overflow: hidden;
+}
+
+.relax-common-settings > summary {
+  padding: 17px 20px;
+  color: var(--deep);
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.relax-common-settings > div {
+  display: grid;
+  grid-template-columns: auto auto minmax(180px, 1fr) auto auto;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 20px 20px;
+  border-top: 1px solid var(--line);
+}
+
+.relax-common-settings label {
+  display: grid;
+  gap: 5px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 720;
+}
+
+.relax-common-settings input {
+  width: 100%;
+  accent-color: var(--primary-strong);
+}
+
+.relax-common-settings p {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: var(--text-subtle);
+  font-size: 11px;
+}
+
+.relax-game-picker {
+  padding: 22px;
+}
+
+.relax-section-heading,
+.relax-game-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.relax-section-heading h2,
+.relax-game-heading h2 {
+  margin: 4px 0 0;
+  color: var(--deep);
+  letter-spacing: -0.035em;
+}
+
+.relax-section-heading > span {
+  border-radius: 999px;
+  background: var(--primary-light);
+  padding: 7px 11px;
+  color: var(--accent-strong);
+  font-size: 11px;
+  font-weight: 750;
+}
+
+.relax-game-picker > div:last-child {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 9px;
+  margin-top: 18px;
+}
+
+.relax-game-picker > div:last-child button {
+  display: grid;
+  min-height: 104px;
+  place-items: center;
+  gap: 4px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface);
+  padding: 11px 8px;
+  color: var(--text);
+  cursor: pointer;
+  font: inherit;
+}
+
+.relax-game-picker button > span {
+  color: var(--primary-strong);
+  font-size: 24px;
+}
+
+.relax-game-picker button strong {
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.relax-game-picker button small {
+  color: var(--muted);
+  font-size: 9px;
+}
+
+.relax-game-picker button[aria-pressed="true"] {
+  border-color: var(--primary-strong);
+  background: var(--primary-light);
+  box-shadow: inset 0 0 0 1px rgba(143, 179, 106, 0.16);
+}
+
+.relax-game-picker button:disabled {
+  cursor: not-allowed;
+  opacity: 0.56;
+}
+
+.relax-shared-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) auto;
+  align-items: stretch;
+  overflow: hidden;
+}
+
+.relax-shared-stats > div {
+  display: grid;
+  min-height: 66px;
+  place-items: center;
+  align-content: center;
+  border-right: 1px solid var(--line);
+  padding: 8px;
+}
+
+.relax-shared-stats span,
+.relax-shared-stats strong {
+  display: block;
+}
+
+.relax-shared-stats span {
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.relax-shared-stats strong {
+  margin-top: 3px;
+  color: var(--deep);
+}
+
+.relax-shared-stats .button {
+  align-self: center;
+  margin: 10px;
+}
+
+.relax-game-card {
+  padding: 26px;
+}
+
+.relax-game-heading p:not(.eyebrow) {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.relax-game-heading > strong {
+  border-radius: 14px;
+  background: var(--primary-light);
+  padding: 10px 13px;
+  color: var(--accent-strong);
+}
+
+.relax-inline-settings {
+  display: flex;
+  align-items: end;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.relax-inline-settings label {
+  display: grid;
+  min-width: 140px;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 720;
+}
+
+.relax-inline-settings select {
+  min-height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  background: var(--surface);
+  padding-inline: 11px;
+  color: var(--text);
+}
+
+.relax-bubble-board {
+  --bubble-size: 56px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(var(--bubble-size), 1fr));
+  gap: 10px;
+  margin-top: 18px;
+  border: 1px solid var(--border-sage);
+  border-radius: 20px;
+  background: linear-gradient(145deg, #edf5e8, #f7f1e4);
+  padding: 18px;
+  touch-action: none;
+  user-select: none;
+}
+
+.relax-bubble-board.is-small { --bubble-size: 42px; }
+.relax-bubble-board.is-large { --bubble-size: 70px; }
+
+.relax-bubble-board button {
+  position: relative;
+  width: 100%;
+  min-width: 42px;
+  aspect-ratio: 1;
+  border: 1px solid rgba(97, 126, 77, 0.26);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 34% 28%, rgba(255, 255, 255, 0.92), transparent 25%),
+    radial-gradient(circle, #d7e9c9, #9fc47f);
+  box-shadow:
+    inset -5px -6px 10px rgba(76, 105, 56, 0.14),
+    0 4px 8px rgba(70, 92, 55, 0.1);
+  color: #735f24;
+  cursor: pointer;
+  font-size: 17px;
+  transition: transform 100ms ease, box-shadow 100ms ease, opacity 100ms ease;
+}
+
+.relax-bubble-board button.is-golden {
+  background:
+    radial-gradient(circle at 34% 28%, #fffbe4, transparent 24%),
+    radial-gradient(circle, #f4d97b, #c9a638);
+}
+
+.relax-bubble-board button.is-popped {
+  background: rgba(143, 179, 106, 0.12);
+  box-shadow: inset 0 5px 9px rgba(71, 91, 58, 0.18);
+  opacity: 0.62;
+  transform: scale(0.78);
+}
+
+.relax-game-status {
+  min-height: 24px;
+  margin: 13px 0 0;
+  color: var(--accent-strong);
+  font-size: 12px;
+  font-weight: 720;
+}
+
+.relax-color-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(230px, 0.55fr);
+  gap: 22px;
+  margin-top: 20px;
+}
+
+.relax-color-controls {
+  display: grid;
+  gap: 13px;
+}
+
+.relax-color-row {
+  display: grid;
+  grid-template-columns: 120px minmax(0, 1fr);
+  gap: 12px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface-muted);
+  padding: 12px;
+}
+
+.relax-color-row label {
+  display: grid;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 720;
+}
+
+.relax-color-row input[type="color"] {
+  width: 100%;
+  min-height: 44px;
+  border: 0;
+  background: transparent;
+}
+
+.relax-color-row input[type="range"] {
+  width: 100%;
+  accent-color: var(--primary-strong);
+}
+
+.relax-color-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+.relax-color-result {
+  display: grid;
+  place-items: center;
+  align-content: center;
+  border: 1px solid var(--border-sage);
+  border-radius: 20px;
+  background: var(--surface-muted);
+  padding: 20px;
+  text-align: center;
+}
+
+.relax-color-result > div {
+  position: relative;
+  width: 150px;
+  height: 170px;
+  overflow: hidden;
+  border: 5px solid rgba(255, 255, 255, 0.72);
+  border-radius: 26px 26px 42px 42px;
+  background: rgba(255, 255, 255, 0.5);
+  box-shadow: inset 0 0 0 1px rgba(48, 56, 43, 0.12);
+}
+
+.relax-color-result.is-bottle > div {
+  width: 100px;
+  border-radius: 18px 18px 32px 32px;
+}
+
+.relax-color-result.is-bowl > div {
+  width: 190px;
+  height: 110px;
+  border-radius: 16px 16px 70px 70px;
+}
+
+.relax-color-result > div span {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 72%;
+  background: var(--mixed-color);
+  transition: background 280ms ease, height 400ms ease;
+}
+
+.relax-color-result.is-mixed > div span {
+  animation: relax-liquid-mix 520ms ease;
+}
+
+.relax-color-result h3 {
+  margin: 14px 0 4px;
+  color: var(--deep);
+}
+
+.relax-color-result > strong {
+  color: var(--accent-strong);
+}
+
+.relax-color-result p {
+  margin: 4px 0 12px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.relax-disclaimer,
+.relax-phase-note p {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.7;
+}
+
+.relax-phase-note,
+.relax-safety {
+  margin-top: 22px;
+  padding: 22px;
+}
+
+.relax-phase-note strong,
+.relax-safety h2 {
+  color: var(--deep);
+}
+
+.relax-phase-note p,
+.relax-safety p {
+  margin: 7px 0 0;
+}
+
+.relax-related {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-top: 22px;
+  padding: 22px;
+}
+
+@keyframes relax-liquid-mix {
+  0% { transform: translateY(12%) rotate(-2deg); }
+  48% { transform: translateY(-3%) rotate(2deg); }
+  100% { transform: translateY(0) rotate(0); }
+}
+
+@media (max-width: 900px) {
+  .relax-common-settings > div {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .relax-game-picker > div:last-child {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .relax-page-section {
+    padding-block: 50px 80px;
+  }
+
+  .relax-common-settings > div,
+  .relax-game-picker > div:last-child {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .relax-common-settings label,
+  .relax-common-settings p {
+    grid-column: 1 / -1;
+  }
+
+  .relax-common-settings .button {
+    width: 100%;
+    min-height: 44px;
+    padding-inline: 8px;
+  }
+
+  .relax-game-picker,
+  .relax-game-card {
+    padding: 16px;
+  }
+
+  .relax-section-heading,
+  .relax-game-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .relax-game-picker > div:last-child button {
+    min-height: 98px;
+  }
+
+  .relax-shared-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .relax-shared-stats > div:nth-child(2n) {
+    border-right: 0;
+  }
+
+  .relax-shared-stats .button {
+    grid-column: 1 / -1;
+    min-height: 44px;
+  }
+
+  .relax-bubble-board {
+    --bubble-size: 42px;
+    gap: 7px;
+    padding: 12px;
+  }
+
+  .relax-color-layout,
+  .relax-color-row {
+    grid-template-columns: 1fr;
+  }
+
+  .relax-color-result {
+    min-height: 340px;
+  }
+}
+
+@media (max-width: 360px) {
+  .relax-game-picker > div:last-child button {
+    min-height: 92px;
+    padding-inline: 5px;
+  }
+
+  .relax-bubble-board {
+    --bubble-size: 38px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .relax-bubble-board button,
+  .relax-color-result > div span {
+    transition: none;
+  }
+
+  .relax-color-result.is-mixed > div span {
+    animation: none;
+  }
+}
+
 /* Digital sensory toy playground */
 .sensory-page-section {
   padding-block: 74px 110px;

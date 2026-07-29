@@ -22,4 +22,15 @@ export const tools: Tool[] = [
     actionLabel: "놀러 가기",
     featuredOnHome: false,
   },
+  {
+    slug: "digital-relax-playground",
+    name: "디지털 힐링 놀이터",
+    description:
+      "버블랩, 액체 자석, 모래 자르기, 젤리 꾸미기 등 10가지 미니게임을 한곳에서 즐겨보세요.",
+    category: "재미 도구",
+    status: "available",
+    icon: "✣",
+    actionLabel: "놀러 가기",
+    featuredOnHome: false,
+  },
 ];

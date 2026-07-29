@@ -10,6 +10,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/tools/ai-prompt-generator",
     "/tools/digital-squishy-playground",
     "/tools/sensory-toy-playground",
+    "/tools/digital-relax-playground",
     "/about",
     "/contact",
     "/privacy",
