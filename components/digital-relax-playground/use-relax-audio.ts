@@ -89,6 +89,59 @@ export function useRelaxAudio(enabled: boolean, volume: number) {
       const context = await getContext();
       if (!context || !compressorRef.current) return;
       const now = context.currentTime + 0.004;
+
+      if (sound === "bubble" || sound === "golden") {
+        const variation = 0.96 + Math.random() * 0.08;
+        const duration =
+          (sound === "golden" ? 0.12 : 0.075 + Math.random() * 0.035) *
+          variation;
+        const frameCount = Math.max(
+          1,
+          Math.floor(context.sampleRate * duration),
+        );
+        const buffer = context.createBuffer(1, frameCount, context.sampleRate);
+        const channel = buffer.getChannelData(0);
+
+        for (let index = 0; index < frameCount; index += 1) {
+          const progress = index / frameCount;
+          const softNoise = Math.random() * 2 - 1;
+          const airPulse = Math.sin(progress * Math.PI);
+          channel[index] =
+            softNoise *
+            airPulse *
+            Math.pow(1 - progress, sound === "golden" ? 1.7 : 2.15);
+        }
+
+        const source = context.createBufferSource();
+        const bodyFilter = context.createBiquadFilter();
+        const softFilter = context.createBiquadFilter();
+        const gain = context.createGain();
+        source.buffer = buffer;
+        source.playbackRate.value = variation;
+        bodyFilter.type = "bandpass";
+        bodyFilter.frequency.value =
+          (sound === "golden" ? 360 : 245 + Math.random() * 70) * variation;
+        bodyFilter.Q.value = 0.58;
+        softFilter.type = "lowpass";
+        softFilter.frequency.value =
+          (sound === "golden" ? 920 : 650 + Math.random() * 130) * variation;
+        softFilter.Q.value = 0.35;
+        gain.gain.setValueAtTime(0.0001, now);
+        gain.gain.exponentialRampToValueAtTime(
+          (0.032 + Math.min(1, intensity) * 0.022) * variation,
+          now + 0.008,
+        );
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+        source.connect(bodyFilter);
+        bodyFilter.connect(softFilter);
+        softFilter.connect(gain);
+        gain.connect(compressorRef.current);
+        register(source, gain);
+        source.start(now);
+        source.stop(now + duration + 0.02);
+        return;
+      }
+
       const duration =
         sound === "pour" ? 0.34 : sound === "stir" ? 0.28 : 0.09;
       const oscillator = context.createOscillator();
@@ -107,7 +160,7 @@ export function useRelaxAudio(enabled: boolean, volume: number) {
       oscillator.frequency.setValueAtTime(start * variation, now);
       oscillator.frequency.exponentialRampToValueAtTime(end * variation, now + duration);
       filter.type = "lowpass";
-      filter.frequency.value = sound === "golden" ? 820 : 560;
+      filter.frequency.value = 560;
       filter.Q.value = 0.4;
       gain.gain.setValueAtTime(0.0001, now);
       gain.gain.exponentialRampToValueAtTime(
