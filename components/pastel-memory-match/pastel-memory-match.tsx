@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { MemoryCard, type MemoryCardModel } from "./memory-card";
+import { MemoryIcon } from "./memory-icon";
 import {
   difficulties,
   getDifficulty,
@@ -78,8 +79,10 @@ export function PastelMemoryMatch() {
   const [themeId, setThemeId] = useState<ThemeId>("cats");
   const [difficultyId, setDifficultyId] = useState<DifficultyId>("easy");
   const [previewSeconds, setPreviewSeconds] = useState<PreviewSeconds>(2);
-  const [soundEnabled, setSoundEnabled] = useState(false);
-  const [volume, setVolume] = useState(0.2);
+  const [bgmEnabled, setBgmEnabled] = useState(true);
+  const [sfxEnabled, setSfxEnabled] = useState(true);
+  const [bgmVolume, setBgmVolume] = useState(0.18);
+  const [audioOpen, setAudioOpen] = useState(false);
   const [status, setStatus] = useState<GameStatus>("ready");
   const [cards, setCards] = useState<MemoryCardModel[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -90,6 +93,8 @@ export function PastelMemoryMatch() {
   const [score, setScore] = useState(0);
   const [hintsLeft, setHintsLeft] = useState(3);
   const [hintedPair, setHintedPair] = useState<string | null>(null);
+  const [mismatchIds, setMismatchIds] = useState<string[]>([]);
+  const [comboMessage, setComboMessage] = useState<string | null>(null);
   const [elapsed, setElapsed] = useState(0);
   const [announcement, setAnnouncement] = useState("게임 설정을 선택해 주세요.");
   const [result, setResult] = useState<Result | null>(null);
@@ -99,9 +104,10 @@ export function PastelMemoryMatch() {
   const selectedRef = useRef<string | null>(null);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const timeoutsRef = useRef<Set<ReturnType<typeof setTimeout>>>(new Set());
-  const playSound = useMemoryAudio(soundEnabled, volume);
   const difficulty = getDifficulty(difficultyId);
   const theme = getTheme(themeId);
+  const isAudioActive = status !== "ready" && status !== "complete";
+  const { play: playSound, startBgm } = useMemoryAudio({ sfxEnabled, bgmEnabled, bgmVolume, bgmActive: isAudioActive });
 
   const clearScheduled = useCallback(() => {
     timeoutsRef.current.forEach(clearTimeout);
@@ -123,22 +129,25 @@ export function PastelMemoryMatch() {
   useEffect(() => {
     try {
       const stored = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? "null") as {
-        themeId?: ThemeId; previewSeconds?: PreviewSeconds; soundEnabled?: boolean; volume?: number; records?: Records;
+        themeId?: ThemeId; previewSeconds?: PreviewSeconds; soundEnabled?: boolean; volume?: number;
+        bgmEnabled?: boolean; sfxEnabled?: boolean; bgmVolume?: number; records?: Records;
       } | null;
       if (!stored) return;
       if (stored.themeId && memoryThemes.some((item) => item.id === stored.themeId)) setThemeId(stored.themeId);
       if ([0, 2, 4].includes(stored.previewSeconds ?? -1)) setPreviewSeconds(stored.previewSeconds ?? 2);
-      setSoundEnabled(Boolean(stored.soundEnabled));
-      if (typeof stored.volume === "number") setVolume(Math.min(0.6, Math.max(0.05, stored.volume)));
+      setBgmEnabled(stored.bgmEnabled ?? stored.soundEnabled ?? true);
+      setSfxEnabled(stored.sfxEnabled ?? stored.soundEnabled ?? true);
+      const savedVolume = stored.bgmVolume ?? stored.volume;
+      if (typeof savedVolume === "number") setBgmVolume(Math.min(0.55, Math.max(0.05, savedVolume)));
       if (stored.records) setRecords({ ...emptyRecords, ...stored.records });
     } catch { /* localStorage가 차단되어도 게임은 계속 동작합니다. */ }
   }, []);
 
   useEffect(() => {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({ themeId, previewSeconds, soundEnabled, volume, records }));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ themeId, previewSeconds, bgmEnabled, sfxEnabled, bgmVolume, records }));
     } catch { /* 저장할 수 없는 환경에서는 메모리 상태만 사용합니다. */ }
-  }, [themeId, previewSeconds, soundEnabled, volume, records]);
+  }, [themeId, previewSeconds, bgmEnabled, sfxEnabled, bgmVolume, records]);
 
   const beginTimer = useCallback(() => {
     startTimeRef.current = Date.now();
@@ -162,8 +171,11 @@ export function PastelMemoryMatch() {
     setScore(0);
     setHintsLeft(3);
     setHintedPair(null);
+    setMismatchIds([]);
+    setComboMessage(null);
     setElapsed(0);
     setResult(null);
+    startBgm(true);
     if (previewSeconds > 0) {
       setStatus("preview");
       setAnnouncement(`${previewSeconds}초 동안 카드를 미리 보여드려요.`);
@@ -180,7 +192,7 @@ export function PastelMemoryMatch() {
       setAnnouncement("게임을 시작합니다. 같은 그림을 찾아보세요.");
       beginTimer();
     }
-  }, [beginTimer, clearScheduled, difficultyId, previewSeconds, schedule, themeId]);
+  }, [beginTimer, clearScheduled, difficultyId, previewSeconds, schedule, startBgm, themeId]);
 
   const finishGame = useCallback((finalMoves: number, finalBestCombo: number, finalScore: number, hintsUsed: number) => {
     if (timerRef.current) clearInterval(timerRef.current);
@@ -214,7 +226,8 @@ export function PastelMemoryMatch() {
 
   const selectCard = useCallback((card: MemoryCardModel) => {
     if (status !== "playing" || lockRef.current || card.faceUp || card.matched) return;
-    playSound("flip");
+    playSound("tap");
+    schedule(() => playSound("flip"), 45);
     setCards((current) => current.map((item) => item.id === card.id ? { ...item, faceUp: true } : item));
     if (!selectedRef.current) {
       selectedRef.current = card.id;
@@ -245,6 +258,11 @@ export function PastelMemoryMatch() {
         setBestCombo(nextBestCombo);
         setScore(nextScore);
         setMatches(nextMatches);
+        if (nextCombo >= 2) {
+          const message = nextCombo >= 5 ? "PERFECT MEMORY" : `${nextCombo} COMBO`;
+          setComboMessage(message);
+          schedule(() => setComboMessage(null), 980);
+        }
         setAnnouncement(`${card.label} 한 쌍을 맞췄습니다. ${nextCombo > 1 ? `${nextCombo}콤보!` : ""}`);
         if (nextMatches === difficulty.pairs) {
           finishGame(nextMoves, nextBestCombo, nextScore, 3 - hintsLeft);
@@ -255,11 +273,13 @@ export function PastelMemoryMatch() {
       }, 360);
     } else {
       playSound("miss");
+      setMismatchIds([first.id, card.id]);
       setAnnouncement("서로 다른 카드예요. 잠시 후 다시 뒤집습니다.");
       schedule(() => {
         setCards((current) => current.map((item) => item.id === first.id || item.id === card.id ? { ...item, faceUp: false } : item));
         selectedRef.current = null;
         setSelectedId(null);
+        setMismatchIds([]);
         setCombo(0);
         lockRef.current = false;
         setStatus("playing");
@@ -290,12 +310,17 @@ export function PastelMemoryMatch() {
     selectedRef.current = null;
     setStatus("ready");
     setResult(null);
+    setMismatchIds([]);
+    setComboMessage(null);
     setAnnouncement("게임 설정 화면으로 돌아왔습니다.");
   }, [clearScheduled]);
 
   const remainingPairs = difficulty.pairs - matches;
   const isActive = status !== "ready" && status !== "complete";
-  const cardStyle = useMemo(() => ({ "--memory-columns": difficulty.columns } as React.CSSProperties), [difficulty.columns]);
+  const cardStyle = useMemo(() => ({
+    "--memory-columns": difficulty.columns,
+    "--memory-mobile-columns": difficultyId === "easy" ? 3 : 4,
+  } as React.CSSProperties), [difficulty.columns, difficultyId]);
 
   return (
     <div className={styles.gameShell}>
@@ -314,7 +339,12 @@ export function PastelMemoryMatch() {
             <div className={styles.themeGrid}>
               {memoryThemes.map((item) => (
                 <button key={item.id} type="button" className={themeId === item.id ? styles.selectedOption : ""} aria-pressed={themeId === item.id} onClick={() => setThemeId(item.id)}>
-                  <strong>{item.name}</strong><span>{item.description}</span>
+                  <span className={styles.themePreview} aria-hidden="true">
+                    {item.symbols.slice(0, 3).map((symbol) => (
+                      <span key={symbol.key}><MemoryIcon theme={item.id} iconKey={symbol.key} label={symbol.label} accent={symbol.accent} soft={symbol.soft} decorative /></span>
+                    ))}
+                  </span>
+                  <strong>{item.name}</strong><span className={styles.themeDescription}>{item.description}</span>
                 </button>
               ))}
             </div>
@@ -333,6 +363,12 @@ export function PastelMemoryMatch() {
             </label>
           </div>
 
+          <div className={styles.setupAudio} aria-label="게임 오디오 설정">
+            <div><span className={styles.audioNote}>AUDIO</span><strong>게임 사운드</strong></div>
+            <button type="button" aria-pressed={bgmEnabled} onClick={() => setBgmEnabled((value) => !value)}>BGM {bgmEnabled ? "켬" : "끔"}</button>
+            <button type="button" aria-pressed={sfxEnabled} onClick={() => setSfxEnabled((value) => !value)}>효과음 {sfxEnabled ? "켬" : "끔"}</button>
+          </div>
+
           <div className={styles.startSummary}>
             <span><strong>{theme.name}</strong> 테마</span><span>{difficulty.name} · {difficulty.pairs}쌍</span><span>힌트 3회</span>
           </div>
@@ -347,27 +383,42 @@ export function PastelMemoryMatch() {
           <div className={styles.hud}>
             <div><span>남은 쌍</span><strong>{remainingPairs}</strong></div>
             <div><span>이동</span><strong>{moves}</strong></div>
-            <div><span>콤보</span><strong>{combo}</strong></div>
-            <div><span>최고 콤보</span><strong>{bestCombo}</strong></div>
             <div><span>시간</span><strong>{formatTime(elapsed)}</strong></div>
+            <div><span>콤보</span><strong>{combo}</strong></div>
             <div><span>점수</span><strong>{score.toLocaleString()}</strong></div>
           </div>
           <div className={styles.progressTrack} aria-label={`${matches}/${difficulty.pairs}쌍 완료`}><span style={{ width: `${(matches / difficulty.pairs) * 100}%` }} /></div>
-          <div className={styles.board} style={cardStyle} aria-busy={status === "preview" || status === "resolving"}>
-            {cards.map((card) => <MemoryCard key={card.id} card={card} disabled={status !== "playing"} hinted={hintedPair === card.pairId} onSelect={selectCard} />)}
+          <div className={styles.boardPanel}>
+            {comboMessage && <div className={styles.comboToast} aria-hidden="true">{comboMessage}</div>}
+            <div className={styles.board} style={cardStyle} aria-busy={status === "preview" || status === "resolving"}>
+              {cards.map((card) => <MemoryCard key={card.id} card={card} disabled={status !== "playing"} hinted={hintedPair === card.pairId} mismatched={mismatchIds.includes(card.id)} onSelect={selectCard} />)}
+            </div>
           </div>
           <div className={styles.controls}>
             <button type="button" onClick={useHint} disabled={status !== "playing" || hintsLeft === 0 || Boolean(hintedPair)}>힌트 <span>{hintsLeft}/3</span></button>
             <button type="button" onClick={startGame}>다시 시작</button>
-            <button type="button" aria-pressed={soundEnabled} onClick={() => setSoundEnabled((value) => !value)}>{soundEnabled ? "소리 켬" : "소리 끔"}</button>
+            <button type="button" aria-expanded={audioOpen} onClick={() => setAudioOpen((value) => !value)}>오디오 설정</button>
             <button type="button" onClick={leaveGame}>게임 나가기</button>
           </div>
-          {soundEnabled && <label className={styles.volume}>효과음 음량 <input type="range" min="0.05" max="0.6" step="0.05" value={volume} onChange={(event) => setVolume(Number(event.target.value))} /></label>}
+          {audioOpen && (
+            <div className={styles.audioPanel}>
+              <button type="button" aria-pressed={bgmEnabled} onClick={() => {
+                const next = !bgmEnabled;
+                setBgmEnabled(next);
+                if (next) startBgm(true, true);
+              }}>BGM {bgmEnabled ? "켬" : "끔"}</button>
+              <button type="button" aria-pressed={sfxEnabled} onClick={() => setSfxEnabled((value) => !value)}>효과음 {sfxEnabled ? "켬" : "끔"}</button>
+              <label>BGM 음량 <input type="range" min="0.05" max="0.55" step="0.05" value={bgmVolume} onChange={(event) => setBgmVolume(Number(event.target.value))} /></label>
+            </div>
+          )}
         </section>
       )}
 
       {status === "complete" && result && (
         <section className={styles.result} aria-labelledby="memory-result-title">
+          <div className={styles.resultArtwork} aria-hidden="true">
+            {theme.symbols.slice(0, 3).map((symbol) => <MemoryIcon key={symbol.key} theme={theme.id} iconKey={symbol.key} label={symbol.label} accent={symbol.accent} soft={symbol.soft} decorative />)}
+          </div>
           <div className={styles.resultBadge} aria-hidden="true">✓</div>
           <p className={styles.kicker}>ALL PAIRS FOUND</p>
           <h2 id="memory-result-title">게임 완료!</h2>

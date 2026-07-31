@@ -54,10 +54,10 @@ export const memoryThemes: MemoryTheme[] = [
     name: "고양이",
     description: "포근한 고양이 친구들의 하루",
     symbols: symbols([
-      ["cat-face", "고양이 얼굴"], ["paw", "발바닥"], ["fish", "생선"],
-      ["yarn", "털실"], ["cat-house", "고양이 집"], ["bell", "방울"],
-      ["treat", "간식"], ["tail", "꼬리"], ["mouse", "장난감 쥐"],
-      ["cushion", "고양이 쿠션"], ["feather", "깃털 장난감"], ["milk", "우유 그릇"],
+      ["cat-face", "고양이 얼굴"], ["paw", "분홍 발바닥"], ["yarn", "털실"],
+      ["fish", "생선 간식"], ["cat-house", "고양이 집"], ["bell", "방울 목걸이"],
+      ["feather", "깃털 장난감"], ["milk", "우유 그릇"], ["box-cat", "박스 안 고양이"],
+      ["tail", "고양이 꼬리"], ["sleeping-cat", "낮잠 자는 고양이"], ["heart-cat", "하트를 안은 고양이"],
     ]),
   },
   {
@@ -65,10 +65,10 @@ export const memoryThemes: MemoryTheme[] = [
     name: "디저트",
     description: "달콤하고 부드러운 티타임",
     symbols: symbols([
-      ["cake", "케이크"], ["donut", "도넛"], ["macaron", "마카롱"],
+      ["cake", "딸기 케이크"], ["donut", "도넛"], ["macaron", "마카롱"],
       ["pudding", "푸딩"], ["cookie", "쿠키"], ["strawberry-milk", "딸기 우유"],
-      ["icecream", "아이스크림"], ["cupcake", "컵케이크"], ["croissant", "크루아상"],
-      ["candy", "사탕"], ["pie", "과일 파이"], ["tea", "따뜻한 차"],
+      ["cupcake", "컵케이크"], ["icecream", "아이스크림"], ["waffle", "와플"],
+      ["croissant", "크루아상"], ["chocolate", "초콜릿"], ["tart", "과일 타르트"],
     ]),
   },
   {
@@ -76,10 +76,10 @@ export const memoryThemes: MemoryTheme[] = [
     name: "자연",
     description: "하늘과 숲에서 만나는 작은 풍경",
     symbols: symbols([
-      ["cloud", "구름"], ["sun", "해"], ["moon", "달"],
-      ["star", "별"], ["flower", "꽃"], ["leaf", "나뭇잎"],
-      ["rainbow", "무지개"], ["snowflake", "눈송이"], ["mountain", "산"],
-      ["tree", "나무"], ["drop", "물방울"], ["mushroom", "버섯"],
+      ["sun", "해"], ["moon", "달"], ["star", "별"],
+      ["cloud", "구름"], ["rainbow", "무지개"], ["flower", "꽃"],
+      ["leaf", "나뭇잎"], ["snowflake", "눈송이"], ["mushroom", "버섯"],
+      ["butterfly", "나비"], ["drop", "빗방울"], ["tree", "작은 나무"],
     ]),
   },
   {
@@ -87,16 +87,16 @@ export const memoryThemes: MemoryTheme[] = [
     name: "AI·코딩",
     description: "아이디어가 코드가 되는 작은 작업실",
     symbols: symbols([
-      ["code", "코드 창"], ["terminal", "터미널"], ["folder", "폴더"],
-      ["cloud-data", "클라우드"], ["database", "데이터베이스"], ["browser", "브라우저"],
-      ["robot", "로봇"], ["bulb", "전구"], ["chip", "AI 칩"],
-      ["brackets", "코드 괄호"], ["cursor", "마우스 커서"], ["gear", "설정 톱니"],
+      ["code", "코드 편집기"], ["terminal", "터미널"], ["folder", "폴더"],
+      ["database", "데이터베이스"], ["browser", "브라우저"], ["cloud-data", "클라우드"],
+      ["robot", "로봇"], ["bulb", "전구"], ["keyboard", "키보드"],
+      ["git-branch", "Git 브랜치"], ["server", "서버"], ["mobile-app", "모바일 앱"],
     ]),
   },
 ];
 
 export const difficulties: Difficulty[] = [
-  { id: "easy", name: "쉬움", pairs: 6, columns: 3, targetSeconds: 55, targetMoves: 10 },
+  { id: "easy", name: "쉬움", pairs: 6, columns: 4, targetSeconds: 55, targetMoves: 10 },
   { id: "normal", name: "보통", pairs: 8, columns: 4, targetSeconds: 85, targetMoves: 15 },
   { id: "hard", name: "어려움", pairs: 10, columns: 5, targetSeconds: 125, targetMoves: 20 },
   { id: "challenge", name: "챌린지", pairs: 12, columns: 6, targetSeconds: 165, targetMoves: 25 },
