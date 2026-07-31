@@ -27,8 +27,8 @@ const STORAGE_KEY = "makeon-pastel-color-sort-v1";
 const defaultProgress: SavedProgress = {
   unlockedLevel: 1,
   lastLevel: 1,
-  soundEnabled: false,
-  patternsEnabled: true,
+  soundEnabled: true,
+  audioVersion: 2,
   records: {},
 };
 
@@ -66,7 +66,7 @@ export function PastelColorSortGame() {
   const [hydrated, setHydrated] = useState(false);
   const tubeRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const timersRef = useRef<number[]>([]);
-  const playSound = usePastelAudio(progress.soundEnabled);
+  const { playSound } = usePastelAudio(progress.soundEnabled);
 
   const clearTimers = useCallback(() => {
     timersRef.current.forEach((timer) => window.clearTimeout(timer));
@@ -103,6 +103,8 @@ export function PastelColorSortGame() {
         records: saved.records ?? {},
         unlockedLevel: Math.min(30, Math.max(1, saved.unlockedLevel ?? 1)),
         lastLevel: Math.min(30, Math.max(1, saved.lastLevel ?? 1)),
+        soundEnabled: saved.audioVersion === 2 ? (saved.soundEnabled ?? true) : true,
+        audioVersion: 2,
       };
       setProgress(merged);
       setLevelNumber(merged.lastLevel);
@@ -179,7 +181,7 @@ export function PastelColorSortGame() {
       endY: target.top + 32,
     });
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const timer = window.setTimeout(() => completeMove(move), reduced ? 80 : 460);
+    const timer = window.setTimeout(() => completeMove(move), reduced ? 80 : 540);
     timersRef.current.push(timer);
   }, [completeMove, playSound]);
 
@@ -270,11 +272,12 @@ export function PastelColorSortGame() {
             type="button"
             aria-pressed={progress.soundEnabled}
             onClick={() => setProgress((current) => ({ ...current, soundEnabled: !current.soundEnabled }))}
+            title="배경음악과 효과음을 함께 켜거나 끕니다."
           >
-            <span aria-hidden="true">{progress.soundEnabled ? "♪" : "♩"}</span>
-            {progress.soundEnabled ? "소리 켬" : "소리 끔"}
+            <span aria-hidden="true">{progress.soundEnabled ? "◖♪◗" : "♪"}</span>
+            {progress.soundEnabled ? "BGM · 효과음 켬" : "오디오 끔"}
           </button>
-          <button type="button" onClick={() => loadLevel(levelNumber, variant)}>↻ 다시 시작</button>
+          <button type="button" onClick={() => { playSound("tap"); loadLevel(levelNumber, variant); }}>↻ 다시 시작</button>
         </div>
       </div>
 
@@ -285,11 +288,15 @@ export function PastelColorSortGame() {
             const isSelected = selected === index;
             const isHintFrom = hint?.from === index;
             const isHintTo = hint?.to === index;
+            const isPouring = transfer?.from === index;
+            const isReceiving = transfer?.to === index;
+            const pourDirection = transfer && transfer.endX < transfer.startX ? -1 : 1;
             return (
               <button
-                className={`pastel-tube${isSelected ? " is-selected" : ""}${validTargets.has(index) ? " is-valid-target" : ""}${complete ? " is-complete" : ""}${isHintFrom ? " is-hint-from" : ""}${isHintTo ? " is-hint-to" : ""}`}
+                className={`pastel-tube${isSelected ? " is-selected" : ""}${validTargets.has(index) ? " is-valid-target" : ""}${complete ? " is-complete" : ""}${isHintFrom ? " is-hint-from" : ""}${isHintTo ? " is-hint-to" : ""}${isPouring ? " is-pouring" : ""}${isReceiving ? " is-receiving" : ""}`}
                 type="button"
                 key={index}
+                style={{ "--pour-direction": pourDirection } as CSSProperties}
                 ref={(node) => { tubeRefs.current[index] = node; }}
                 onClick={() => onTubePress(index)}
                 onKeyDown={(event) => onTubeKeyDown(event, index)}
@@ -303,9 +310,7 @@ export function PastelColorSortGame() {
                   {Array.from({ length: TUBE_CAPACITY }, (_, slot) => {
                     const color = tube[slot];
                     return (
-                      <span className={`pastel-layer-slot${color ? ` color-${color}` : ""}`} key={slot}>
-                        {color && progress.patternsEnabled ? COLOR_META[color].symbol : ""}
-                      </span>
+                      <span className={`pastel-layer-slot${color ? ` color-${color}` : ""}`} key={slot} />
                     );
                   })}
                 </span>
@@ -327,7 +332,8 @@ export function PastelColorSortGame() {
             } as CSSProperties}
             aria-hidden="true"
           >
-            {progress.patternsEnabled ? COLOR_META[transfer.color].symbol : ""}
+            <span className="pastel-transfer-stream" />
+            <span className="pastel-transfer-drop" />
           </div>
         )}
 
@@ -335,24 +341,17 @@ export function PastelColorSortGame() {
 
         <div className="pastel-color-legend" aria-label="색상 안내">
           {COLOR_META && Object.entries(COLOR_META).slice(0, level.colorCount).map(([color, meta]) => (
-            <span key={color}><i className={`color-${color}`} aria-hidden="true">{progress.patternsEnabled ? meta.symbol : ""}</i>{meta.name}</span>
+            <span key={color}><i className={`color-${color}`} aria-hidden="true" />{meta.name}</span>
           ))}
         </div>
       </div>
 
       <div className="pastel-sort-controls" aria-label="게임 조작">
-        <button type="button" onClick={undo} disabled={history.length === 0 || Boolean(transfer) || completed}>↶ 한 수 되돌리기</button>
-        <button type="button" onClick={showHint} disabled={Boolean(transfer) || completed}>✦ 힌트 <small>{hintsUsed}회</small></button>
-        <button type="button" onClick={() => loadLevel(levelNumber, variant + 1)} disabled={Boolean(transfer)}>⤨ 새 배치</button>
-        <button type="button" onClick={() => loadLevel(Math.min(30, levelNumber + 1))} disabled={!completed || levelNumber === 30}>다음 레벨 →</button>
-        <button type="button" onClick={() => setShowLevels(true)}>▦ 레벨 선택</button>
-        <button
-          type="button"
-          aria-pressed={progress.patternsEnabled}
-          onClick={() => setProgress((current) => ({ ...current, patternsEnabled: !current.patternsEnabled }))}
-        >
-          {progress.patternsEnabled ? "패턴 켬" : "패턴 끔"}
-        </button>
+        <button type="button" onClick={() => { playSound("tap"); undo(); }} disabled={history.length === 0 || Boolean(transfer) || completed}>↶ 한 수 되돌리기</button>
+        <button type="button" onClick={() => { playSound("tap"); showHint(); }} disabled={Boolean(transfer) || completed}>✦ 힌트 <small>{hintsUsed}회</small></button>
+        <button type="button" onClick={() => { playSound("tap"); loadLevel(levelNumber, variant + 1); }} disabled={Boolean(transfer)}>⤨ 새 배치</button>
+        <button type="button" onClick={() => { playSound("tap"); loadLevel(Math.min(30, levelNumber + 1)); }} disabled={!completed || levelNumber === 30}>다음 레벨 →</button>
+        <button type="button" onClick={() => { playSound("tap"); setShowLevels(true); }}>▦ 레벨 선택</button>
       </div>
 
       {showLevels && (
@@ -381,7 +380,7 @@ export function PastelColorSortGame() {
       {completed && (
         <div className="pastel-modal-backdrop pastel-success-backdrop">
           <section className="pastel-success-modal" role="dialog" aria-modal="true" aria-labelledby="success-title">
-            <div className="pastel-confetti" aria-hidden="true">● ◆ ✦ ● ◆</div>
+            <div className="pastel-confetti" aria-hidden="true" />
             <p>LEVEL {levelNumber} CLEAR</p>
             <h2 id="success-title">레벨 완료!</h2>
             <div className="pastel-stars" aria-label={`별 ${earnedStars}개`}>{"★".repeat(earnedStars)}{"☆".repeat(3 - earnedStars)}</div>

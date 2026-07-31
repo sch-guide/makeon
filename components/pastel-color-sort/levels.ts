@@ -14,17 +14,17 @@ export const COLOR_ORDER: ColorId[] = [
   "aqua",
 ];
 
-export const COLOR_META: Record<ColorId, { name: string; symbol: string }> = {
-  rose: { name: "연분홍", symbol: "●" },
-  lavender: { name: "연보라", symbol: "◆" },
-  sky: { name: "하늘", symbol: "▲" },
-  mint: { name: "민트", symbol: "✦" },
-  apricot: { name: "살구", symbol: "■" },
-  lemon: { name: "레몬", symbol: "＋" },
-  sage: { name: "세이지", symbol: "≋" },
-  coral: { name: "코랄", symbol: "♥" },
-  plum: { name: "자두", symbol: "⬟" },
-  aqua: { name: "아쿠아", symbol: "✣" },
+export const COLOR_META: Record<ColorId, { name: string }> = {
+  rose: { name: "연분홍" },
+  lavender: { name: "라벤더" },
+  sky: { name: "파우더 블루" },
+  mint: { name: "민트" },
+  apricot: { name: "살구" },
+  lemon: { name: "버터 옐로" },
+  sage: { name: "세이지" },
+  coral: { name: "연피치" },
+  plum: { name: "모브" },
+  aqua: { name: "아쿠아" },
 };
 
 function mulberry32(seed: number) {
