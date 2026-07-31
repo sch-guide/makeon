@@ -33,4 +33,15 @@ export const tools: Tool[] = [
     actionLabel: "게임 시작",
     featuredOnHome: false,
   },
+  {
+    slug: "pastel-color-sort",
+    name: "파스텔 컬러 정렬 퍼즐",
+    description:
+      "섞여 있는 파스텔 색상을 같은 색끼리 모아 모든 용기를 정리하는 무료 퍼즐 게임",
+    category: "퍼즐 게임",
+    status: "available",
+    icon: "◈",
+    actionLabel: "게임 시작",
+    featuredOnHome: false,
+  },
 ];
