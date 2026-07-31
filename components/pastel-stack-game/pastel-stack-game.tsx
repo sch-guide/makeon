@@ -75,6 +75,7 @@ const BLOCK_HEIGHT = 34;
 const BASE_Y = 608;
 const MAX_BLOCK_WIDTH = 286;
 const STORAGE_KEY = "makeon-pastel-stack-v1";
+const AUDIO_DEFAULTS_VERSION = 2;
 
 const blockPalette = [
   ["#a9c98d", "#7fa966"],
@@ -138,8 +139,8 @@ export function PastelStackGame() {
   const animationRef = useRef<number | null>(null);
   const lastFrameRef = useRef(0);
   const reducedMotionRef = useRef(false);
-  const soundEnabledRef = useRef(false);
-  const bgmEnabledRef = useRef(false);
+  const soundEnabledRef = useRef(true);
+  const bgmEnabledRef = useRef(true);
   const vibrationEnabledRef = useRef(false);
   const volumeRef = useRef(0.25);
   const audioContextRef = useRef<AudioContext | null>(null);
@@ -157,8 +158,8 @@ export function PastelStackGame() {
   const [records, setRecords] = useState<Records>({ height: 0, score: 0, combo: 0 });
   const [newRecord, setNewRecord] = useState(false);
   const [message, setMessage] = useState("게임 시작을 눌러 첫 블록을 쌓아보세요.");
-  const [soundEnabled, setSoundEnabled] = useState(false);
-  const [bgmEnabled, setBgmEnabled] = useState(false);
+  const [soundEnabled, setSoundEnabled] = useState(true);
+  const [bgmEnabled, setBgmEnabled] = useState(true);
   const [vibrationEnabled, setVibrationEnabled] = useState(false);
   const [vibrationSupported, setVibrationSupported] = useState(false);
   const [volume, setVolume] = useState(0.25);
@@ -176,7 +177,11 @@ export function PastelStackGame() {
     try {
       const raw = window.localStorage.getItem(STORAGE_KEY);
       const stored = raw ? JSON.parse(raw) : {};
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...stored, ...next }));
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        ...stored,
+        audioDefaultsVersion: AUDIO_DEFAULTS_VERSION,
+        ...next,
+      }));
     } catch {
       // The game remains playable when storage is unavailable.
     }
@@ -189,6 +194,7 @@ export function PastelStackGame() {
         const stored = JSON.parse(raw) as Partial<Records> & {
           sound?: boolean;
           bgm?: boolean;
+          audioDefaultsVersion?: number;
           vibration?: boolean;
           volume?: number;
         };
@@ -197,8 +203,9 @@ export function PastelStackGame() {
           score: Number(stored.score) || 0,
           combo: Number(stored.combo) || 0,
         });
-        const storedSound = stored.sound === true;
-        const storedBgm = stored.bgm === true;
+        const usesCurrentAudioDefaults = stored.audioDefaultsVersion === AUDIO_DEFAULTS_VERSION;
+        const storedSound = usesCurrentAudioDefaults ? stored.sound !== false : true;
+        const storedBgm = usesCurrentAudioDefaults ? stored.bgm !== false : true;
         const storedVibration = stored.vibration === true;
         const storedVolume = Math.min(0.6, Math.max(0, Number(stored.volume) || 0.25));
         setSoundEnabled(storedSound);
@@ -209,6 +216,22 @@ export function PastelStackGame() {
         bgmEnabledRef.current = storedBgm;
         vibrationEnabledRef.current = storedVibration;
         volumeRef.current = storedVolume;
+        if (!usesCurrentAudioDefaults) {
+          window.localStorage.setItem(STORAGE_KEY, JSON.stringify({
+            ...stored,
+            sound: true,
+            bgm: true,
+            audioDefaultsVersion: AUDIO_DEFAULTS_VERSION,
+          }));
+        }
+      } else {
+        window.localStorage.setItem(STORAGE_KEY, JSON.stringify({
+          sound: true,
+          bgm: true,
+          vibration: false,
+          volume: 0.25,
+          audioDefaultsVersion: AUDIO_DEFAULTS_VERSION,
+        }));
       }
     } catch {
       // Ignore malformed or unavailable storage.
@@ -294,43 +317,89 @@ export function PastelStackGame() {
 
     const progression = [
       [261.63, 329.63, 392],
-      [220, 277.18, 329.63],
+      [246.94, 293.66, 392],
+      [220, 261.63, 329.63],
+      [174.61, 261.63, 329.63],
+      [196, 246.94, 329.63],
+      [220, 293.66, 349.23],
       [174.61, 220, 261.63],
       [196, 246.94, 293.66],
+      [261.63, 329.63, 440],
+      [164.81, 246.94, 329.63],
+      [220, 277.18, 329.63],
+      [174.61, 261.63, 349.23],
+      [146.83, 220, 293.66],
+      [196, 261.63, 329.63],
+      [174.61, 220, 329.63],
+      [196, 246.94, 392],
     ];
-    const chord = progression[bgmStepRef.current % progression.length];
-    bgmStepRef.current += 1;
+    const melodyScale = [523.25, 587.33, 659.25, 783.99, 880, 987.77];
+    const step = bgmStepRef.current;
+    const chord = progression[step % progression.length];
+    const phrase = Math.floor(step / 4) % 4;
+    bgmStepRef.current = step + 1;
     const now = context.currentTime + 0.02;
-    const duration = 2.35;
+    const duration = 1.48;
 
-    chord.forEach((frequency, index) => {
+    const connectVoice = (
+      frequency: number,
+      startAt: number,
+      length: number,
+      peak: number,
+      type: OscillatorType,
+      cutoff: number,
+    ) => {
       const oscillator = context.createOscillator();
       const filter = context.createBiquadFilter();
       const gain = context.createGain();
-      const variation = 0.992 + Math.random() * 0.016;
-      oscillator.type = index === 0 ? "sine" : "triangle";
-      oscillator.frequency.value = frequency * variation * (index === 0 ? 0.5 : 1);
+      const variation = 0.985 + Math.random() * 0.03;
+      oscillator.type = type;
+      oscillator.frequency.value = frequency * variation;
       filter.type = "lowpass";
-      filter.frequency.value = 720 + index * 95;
-      filter.Q.value = 0.3;
-      gain.gain.setValueAtTime(0.0001, now);
-      gain.gain.exponentialRampToValueAtTime(index === 0 ? 0.032 : 0.018, now + 0.42);
-      gain.gain.setValueAtTime(index === 0 ? 0.032 : 0.018, now + 1.15);
-      gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+      filter.frequency.value = cutoff * (0.96 + Math.random() * 0.08);
+      filter.Q.value = 0.25;
+      gain.gain.setValueAtTime(0.0001, startAt);
+      gain.gain.exponentialRampToValueAtTime(peak, startAt + Math.min(0.12, length * 0.25));
+      gain.gain.exponentialRampToValueAtTime(0.0001, startAt + length);
       oscillator.connect(filter);
       filter.connect(gain);
       gain.connect(compressorRef.current!);
       const voice = { oscillator, filter, gain };
       bgmVoicesRef.current.push(voice);
-      oscillator.start(now);
-      oscillator.stop(now + duration + 0.03);
+      oscillator.start(startAt);
+      oscillator.stop(startAt + length + 0.03);
       oscillator.addEventListener("ended", () => {
         bgmVoicesRef.current = bgmVoicesRef.current.filter((item) => item !== voice);
         oscillator.disconnect();
         filter.disconnect();
         gain.disconnect();
       }, { once: true });
+    };
+
+    chord.forEach((frequency, index) => {
+      connectVoice(
+        frequency * (index === 0 ? 0.5 : 1),
+        now,
+        duration,
+        index === 0 ? 0.024 : 0.012,
+        index === 0 ? "sine" : "triangle",
+        760 + index * 110,
+      );
     });
+
+    const melodyIndex = (step * 2 + phrase) % melodyScale.length;
+    const secondOffset = [2, 1, 3, 2][phrase];
+    connectVoice(melodyScale[melodyIndex], now + 0.08, 0.3, 0.014, "sine", 1450);
+    if (step % 3 !== 1) {
+      connectVoice(
+        melodyScale[(melodyIndex + secondOffset) % melodyScale.length],
+        now + 0.66 + Math.random() * 0.08,
+        0.28,
+        0.011,
+        "sine",
+        1550,
+      );
+    }
   }, [ensureAudio]);
 
   const stopBgm = useCallback(() => {
@@ -358,7 +427,7 @@ export function PastelStackGame() {
     void playBgmChord();
     bgmTimerRef.current = window.setInterval(() => {
       void playBgmChord();
-    }, 1900);
+    }, 1280);
   }, [playBgmChord]);
 
   useEffect(() => {
