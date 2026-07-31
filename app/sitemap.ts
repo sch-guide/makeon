@@ -11,6 +11,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/tools/digital-squishy-playground",
     "/tools/sensory-toy-playground",
     "/tools/pastel-stack-game",
+    "/tools/pastel-memory-match",
     "/tools/pastel-color-sort",
     "/about",
     "/contact",

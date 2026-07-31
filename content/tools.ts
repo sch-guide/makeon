@@ -44,4 +44,15 @@ export const tools: Tool[] = [
     actionLabel: "게임 시작",
     featuredOnHome: false,
   },
+  {
+    slug: "pastel-memory-match",
+    name: "파스텔 메모리 카드 맞추기",
+    description:
+      "카드를 뒤집어 같은 그림을 찾고 콤보와 최고 기록에 도전하는 무료 기억력 게임",
+    category: "퍼즐 게임",
+    status: "available",
+    icon: "✦",
+    actionLabel: "게임 시작",
+    featuredOnHome: false,
+  },
 ];

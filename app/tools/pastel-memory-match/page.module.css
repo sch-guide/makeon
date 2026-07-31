@@ -1,0 +1,23 @@
+.pageSection { padding: 18px 0 96px; }
+.guide, .faq, .related { width: min(920px, 100%); margin: 72px auto 0; }
+.guide > h2, .faq > h2, .related h2 { margin: 5px 0 20px; font-size: clamp(25px, 4vw, 36px); line-height: 1.25; letter-spacing: -.035em; }
+.guide > div { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.guide article { border: 1px solid #ddd6c8; border-radius: 20px; background: #fffefa; padding: 22px; }
+.guide article > span { color: #8fb36a; font-size: 13px; font-weight: 900; letter-spacing: .1em; }
+.guide h3 { margin: 8px 0 6px; font-size: 18px; }
+.guide article p, .faq p { margin: 0; color: #6e7168; font-size: 14px; }
+.faq > div { overflow: hidden; border: 1px solid #ddd6c8; border-radius: 20px; background: #fffefa; }
+.faq details { border-bottom: 1px solid #e7e1d6; }
+.faq details:last-child { border-bottom: 0; }
+.faq summary { cursor: pointer; padding: 17px 20px; font-weight: 750; }
+.faq details p { padding: 0 20px 18px; }
+.related { display: flex; align-items: end; justify-content: space-between; gap: 24px; border-top: 1px solid #ddd6c8; padding-top: 34px; }
+.related h2 { margin-bottom: 0; }
+.related > div:last-child { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
+@media (max-width: 700px) {
+  .pageSection { padding-bottom: 64px; }
+  .guide, .faq, .related { margin-top: 52px; }
+  .guide > div { grid-template-columns: 1fr; }
+  .related { display: grid; align-items: start; }
+  .related > div:last-child { justify-content: flex-start; }
+}
