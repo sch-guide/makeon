@@ -393,7 +393,7 @@
 .modeButtons,
 .toggleRow {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
 }
 
@@ -503,6 +503,10 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .toggleRow {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
   .controlHeading,
   .instructions {
     grid-column: 1 / -1;
@@ -589,6 +593,10 @@
     grid-template-columns: 1fr;
     border-radius: 18px;
     padding: 15px;
+  }
+
+  .toggleRow {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .controlHeading,
