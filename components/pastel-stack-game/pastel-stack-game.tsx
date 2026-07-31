@@ -7,6 +7,10 @@ import {
   useRef,
   useState,
 } from "react";
+import { Leaderboard } from "@/components/games/Leaderboard";
+import { NicknameDialog } from "@/components/games/NicknameDialog";
+import { ScoreSubmitResult } from "@/components/games/ScoreSubmitResult";
+import { useStackLeaderboard } from "@/components/games/use-stack-leaderboard";
 import styles from "./pastel-stack-game.module.css";
 
 type Mode = "classic" | "calm";
@@ -134,6 +138,7 @@ function roundedRect(
 }
 
 export function PastelStackGame() {
+  const leaderboard = useStackLeaderboard();
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const engineRef = useRef<Engine>(createEngine("classic"));
   const animationRef = useRef<number | null>(null);
@@ -149,6 +154,8 @@ export function PastelStackGame() {
   const bgmTimerRef = useRef<number | null>(null);
   const bgmStepRef = useRef(0);
   const bgmVoicesRef = useRef<BgmVoice[]>([]);
+  const startRequestRef = useRef(false);
+  const pendingStartRef = useRef(false);
   const [mode, setMode] = useState<Mode>("classic");
   const [status, setStatus] = useState<GameStatus>("ready");
   const [height, setHeight] = useState(0);
@@ -487,7 +494,13 @@ export function PastelStackGame() {
     syncHud(engine);
     void playSound(isNew ? "record" : "over");
     vibrate(38);
-  }, [playSound, syncHud, updateRecords, vibrate]);
+    void leaderboard.submitStackScore({
+      score: engine.score,
+      height: engine.height,
+      bestCombo: engine.bestCombo,
+      difficulty: engine.mode,
+    });
+  }, [leaderboard.submitStackScore, playSound, syncHud, updateRecords, vibrate]);
 
   const resolveLanding = useCallback((engine: Engine) => {
     const current = engine.current;
@@ -807,7 +820,7 @@ export function PastelStackGame() {
     if (typeof navigator.vibrate === "function") navigator.vibrate(0);
   }, [stopBgm]);
 
-  const startGame = useCallback(() => {
+  const beginGame = useCallback(() => {
     const engine = createEngine(mode);
     engine.status = "playing";
     engineRef.current = engine;
@@ -818,10 +831,26 @@ export function PastelStackGame() {
     if (bgmEnabledRef.current) startBgm();
   }, [mode, spawnCurrentBlock, startBgm, syncHud]);
 
+  const startGame = useCallback(async () => {
+    if (startRequestRef.current) return;
+    startRequestRef.current = true;
+    try {
+      const preparation = await leaderboard.createGameSession(mode);
+      if (!preparation.ready) {
+        pendingStartRef.current = true;
+        return;
+      }
+      pendingStartRef.current = false;
+      beginGame();
+    } finally {
+      startRequestRef.current = false;
+    }
+  }, [beginGame, leaderboard.createGameSession, mode]);
+
   const dropBlock = useCallback(() => {
     const engine = engineRef.current;
     if (engine.status === "ready") {
-      startGame();
+      void startGame();
       return;
     }
     if (engine.status !== "playing" || !engine.current) return;
@@ -882,7 +911,7 @@ export function PastelStackGame() {
                 <span aria-hidden="true" className={styles.stackMark}><i /><i /><i /></span>
                 <h2>하늘까지 쌓아볼까요?</h2>
                 <p>블록이 중앙에 왔을 때 멈추면 퍼펙트 콤보가 이어집니다.</p>
-                <button type="button" className="button button-primary" onClick={startGame}>
+                <button type="button" className="button button-primary" onClick={() => void startGame()}>
                   게임 시작
                 </button>
               </div>
@@ -897,7 +926,12 @@ export function PastelStackGame() {
                   <p>점수 <strong>{score.toLocaleString()}</strong></p>
                   <p>최고 콤보 <strong>{bestCombo}</strong></p>
                 </div>
-                <button type="button" className="button button-primary" onClick={startGame}>
+                <ScoreSubmitResult
+                  status={leaderboard.submissionStatus}
+                  result={leaderboard.submissionResult}
+                  error={leaderboard.submissionError}
+                />
+                <button type="button" className="button button-primary" onClick={() => void startGame()}>
                   다시 시작
                 </button>
                 <Link className="button button-secondary" href="/tools">다른 무료 도구 보기</Link>
@@ -920,6 +954,7 @@ export function PastelStackGame() {
               <button
                 type="button"
                 aria-pressed={mode === "classic"}
+                disabled={status === "playing" || status === "dropping"}
                 onClick={() => {
                   setMode("classic");
                   engineRef.current.mode = "classic";
@@ -930,6 +965,7 @@ export function PastelStackGame() {
               <button
                 type="button"
                 aria-pressed={mode === "calm"}
+                disabled={status === "playing" || status === "dropping"}
                 onClick={() => {
                   setMode("calm");
                   engineRef.current.mode = "calm";
@@ -1010,7 +1046,7 @@ export function PastelStackGame() {
             />
           </label>
 
-          <button type="button" className="button button-secondary" onClick={startGame}>
+          <button type="button" className="button button-secondary" onClick={() => void startGame()}>
             다시 시작
           </button>
 
@@ -1028,6 +1064,41 @@ export function PastelStackGame() {
           ? "기기의 움직임 줄이기 설정에 따라 화면 흔들림과 입자 효과를 줄였습니다."
           : "블록이 높아질수록 배경이 크림 아침에서 연보라 밤으로 천천히 바뀝니다."}
       </p>
+
+      <Leaderboard
+        configured={leaderboard.configured}
+        nickname={leaderboard.nickname}
+        period={leaderboard.period}
+        entries={leaderboard.entries}
+        myBest={leaderboard.myBest}
+        loading={leaderboard.rankingLoading}
+        error={leaderboard.rankingError}
+        onPeriodChange={leaderboard.setPeriod}
+        onRefresh={leaderboard.refreshRankings}
+        onEditNickname={leaderboard.openNickname}
+      />
+
+      <NicknameDialog
+        open={leaderboard.nicknameOpen}
+        initialNickname={leaderboard.nickname ?? ""}
+        saving={leaderboard.nicknameSaving}
+        serverError={leaderboard.nicknameError}
+        onClose={() => {
+          const shouldStartOffline = pendingStartRef.current;
+          pendingStartRef.current = false;
+          leaderboard.closeNickname();
+          if (shouldStartOffline) beginGame();
+        }}
+        onSave={async (nickname) => {
+          const saved = await leaderboard.saveNickname(nickname);
+          if (!saved || !pendingStartRef.current) return;
+          const preparation = await leaderboard.createGameSession(mode);
+          if (preparation.ready) {
+            pendingStartRef.current = false;
+            beginGame();
+          }
+        }}
+      />
     </div>
   );
 }

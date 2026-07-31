@@ -145,7 +145,23 @@ npm run build
 NEXT_PUBLIC_SITE_URL=https://your-domain.com
 ```
 
-개인정보처리방침의 운영자 정보와 날짜도 실제 운영 상황에 맞게 검토하세요. Google Analytics나 AdSense를 실제로 설치하면 사용하는 쿠키와 제3자 서비스 내용을 방침에 구체적으로 추가해야 합니다.
+개인정보처리방침의 운영자 정보와 날짜는 실제 운영 상황에 맞게 유지하세요. 광고, 게임 랭킹 또는 외부 서비스가 변경되면 사용하는 정보와 제3자 서비스 내용도 함께 갱신해야 합니다.
+
+## Supabase 온라인 랭킹 설정
+
+파스텔 스택 게임은 Supabase 연결 전에도 기존 브라우저 최고 기록 방식으로 정상 작동합니다. 온라인 랭킹을 활성화하려면 다음 순서로 설정합니다.
+
+1. Supabase 프로젝트에서 익명 로그인을 활성화합니다.
+2. Supabase SQL Editor에서 `supabase/migrations/20260801_create_game_leaderboards.sql`을 실행합니다.
+3. 로컬 개발 환경의 `.env.local`과 Vercel 환경변수에 다음 값을 설정합니다.
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
+```
+
+`SUPABASE_SERVICE_ROLE_KEY`는 서버 전용입니다. 브라우저 컴포넌트에서 import하거나 `NEXT_PUBLIC_` 접두사를 붙이거나 Git에 커밋하면 안 됩니다. 환경변수 적용 후 Vercel을 다시 배포하면 익명 인증, 닉네임, 오늘·전체 랭킹과 서버 검증 점수 제출이 활성화됩니다.
 
 ## 6. Vercel 배포 방법
 
@@ -155,7 +171,7 @@ NEXT_PUBLIC_SITE_URL=https://your-domain.com
 2. [Vercel](https://vercel.com)에 로그인하고 **Add New → Project**를 선택합니다.
 3. GitHub 저장소 목록에서 MAKEON 저장소를 가져옵니다.
 4. Framework Preset이 **Next.js**인지 확인합니다.
-5. Environment Variables에 `NEXT_PUBLIC_SITE_URL`을 추가합니다. 첫 배포에서는 Vercel 기본 주소를 넣고, 개인 도메인을 연결한 뒤 실제 주소로 변경해도 됩니다.
+5. Environment Variables에 `NEXT_PUBLIC_SITE_URL`을 추가합니다. 온라인 랭킹을 사용할 경우 위의 Supabase 환경변수 3개도 Production, Preview, Development에 설정합니다.
 6. **Deploy**를 누릅니다.
 
 이후 GitHub의 기본 브랜치에 변경 사항을 올리면 Vercel이 자동으로 새 버전을 배포합니다.
@@ -177,10 +193,8 @@ AdSense 신청 전에는 실제 도메인과 이메일을 적용하고, 충분�
 
 ## 현재 포함하지 않은 기능
 
-- 로그인과 회원 관리
-- 데이터베이스와 Supabase
+- 이메일 기반 회원가입과 회원 관리
+- 컬러 정렬·메모리 게임의 온라인 랭킹(파스텔 스택 검증 후 확장 예정)
 - 댓글, 관리자 화면, 온라인 문의 폼
-- 실제 광고 코드
-- AI 프롬프트 생성기의 동작 기능
 
-필요해지는 시점에 하나씩 추가할 수 있도록 첫 버전은 콘텐츠와 정적 데이터 중심으로 유지했습니다.
+온라인 랭킹은 Supabase 익명 인증을 사용하며 이메일, 전화번호 또는 실명을 요구하지 않습니다. Supabase가 연결되지 않거나 장애가 발생해도 게임과 브라우저 기록은 계속 사용할 수 있습니다.
