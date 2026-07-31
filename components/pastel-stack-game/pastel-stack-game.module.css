@@ -1,0 +1,642 @@
+.shell {
+  display: grid;
+  gap: 18px;
+}
+
+.pageSection {
+  padding-block: 64px 100px;
+  background:
+    radial-gradient(circle at 10% 7%, rgba(168, 198, 134, 0.15), transparent 28%),
+    radial-gradient(circle at 88% 12%, rgba(239, 179, 195, 0.14), transparent 24%),
+    var(--background);
+}
+
+.intro {
+  max-width: 760px;
+  margin: 0 auto 26px;
+  text-align: center;
+}
+
+.intro h2,
+.guide h2,
+.faq h2,
+.related h2 {
+  margin: 5px 0 11px;
+  color: var(--deep);
+  font-size: clamp(25px, 3.5vw, 39px);
+  letter-spacing: -0.045em;
+}
+
+.intro > p:last-child,
+.guide > p,
+.related p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.75;
+}
+
+.guide,
+.faq,
+.related {
+  margin-top: 28px;
+  border: 1px solid var(--border-sage);
+  border-radius: 24px;
+  background: rgba(255, 253, 248, 0.92);
+  padding: clamp(20px, 4vw, 34px);
+  box-shadow: var(--shadow-sm);
+}
+
+.guideGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.guideGrid article {
+  border-radius: 17px;
+  background: var(--surface-muted);
+  padding: 18px;
+}
+
+.guideGrid span {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--primary-light);
+  color: var(--accent-strong);
+  font-size: 11px;
+  font-weight: 850;
+}
+
+.guideGrid h3 {
+  margin: 12px 0 6px;
+  color: var(--deep);
+  font-size: 16px;
+}
+
+.guideGrid p,
+.faq details p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.faq details {
+  border-top: 1px solid var(--line);
+}
+
+.faq details:last-child {
+  border-bottom: 1px solid var(--line);
+}
+
+.faq summary {
+  padding: 17px 2px;
+  color: var(--deep);
+  cursor: pointer;
+  font-weight: 760;
+}
+
+.faq details p {
+  padding: 0 2px 17px;
+}
+
+.related {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.related h2 {
+  margin-bottom: 0;
+  font-size: clamp(21px, 3vw, 30px);
+}
+
+.related > div:last-child {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.summaryBar {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  overflow: hidden;
+  border: 1px solid var(--border-sage);
+  border-radius: 20px;
+  background: rgba(255, 253, 248, 0.92);
+  box-shadow: var(--shadow-sm);
+}
+
+.summaryBar > div {
+  display: grid;
+  min-height: 68px;
+  place-items: center;
+  align-content: center;
+  border-right: 1px solid var(--line);
+}
+
+.summaryBar > div:last-child {
+  border-right: 0;
+}
+
+.summaryBar span,
+.hud span {
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.summaryBar strong {
+  margin-top: 2px;
+  color: var(--deep);
+  font-size: 18px;
+}
+
+.gameLayout {
+  display: grid;
+  grid-template-columns: minmax(0, 600px) minmax(220px, 280px);
+  justify-content: center;
+  align-items: start;
+  gap: 18px;
+}
+
+.gameCard,
+.controls {
+  border: 1px solid var(--border-sage);
+  border-radius: 26px;
+  background: rgba(255, 253, 248, 0.94);
+  box-shadow: 0 18px 48px rgba(75, 63, 49, 0.1);
+}
+
+.gameCard {
+  overflow: hidden;
+  padding: 13px;
+}
+
+.hud {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  overflow: hidden;
+  margin-bottom: 11px;
+  border: 1px solid rgba(125, 111, 93, 0.14);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.82);
+}
+
+.hud > div {
+  display: grid;
+  min-height: 55px;
+  place-items: center;
+  align-content: center;
+  border-right: 1px solid rgba(125, 111, 93, 0.13);
+}
+
+.hud > div:last-child {
+  border-right: 0;
+}
+
+.hud strong {
+  margin-top: 1px;
+  color: var(--deep);
+  font-size: 16px;
+}
+
+.canvasWrap {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border: 1px solid rgba(121, 103, 84, 0.16);
+  border-radius: 20px;
+  background: #fff8e9;
+  outline: none;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.canvasWrap:focus-visible {
+  box-shadow: 0 0 0 4px rgba(143, 179, 106, 0.28);
+}
+
+.canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 420 / 680;
+}
+
+.startOverlay,
+.gameOverOverlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 10px;
+  background: linear-gradient(180deg, rgba(255, 250, 239, 0.72), rgba(255, 248, 235, 0.92));
+  padding: 24px;
+  text-align: center;
+  backdrop-filter: blur(3px);
+}
+
+.startOverlay h2,
+.gameOverOverlay h2 {
+  margin: 0;
+  color: var(--deep);
+  font-size: clamp(24px, 5vw, 36px);
+  letter-spacing: -0.045em;
+}
+
+.startOverlay p {
+  max-width: 340px;
+  margin: 0 0 8px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.stackMark {
+  position: relative;
+  display: block;
+  width: 110px;
+  height: 90px;
+}
+
+.stackMark i {
+  position: absolute;
+  left: 50%;
+  height: 19px;
+  border-radius: 4px;
+  box-shadow: inset 0 4px 5px rgba(255, 255, 255, 0.34), 0 5px 8px rgba(87, 69, 50, 0.13);
+  transform: translateX(-50%);
+}
+
+.stackMark i:nth-child(1) {
+  bottom: 4px;
+  width: 108px;
+  background: #a9c98d;
+}
+
+.stackMark i:nth-child(2) {
+  bottom: 31px;
+  width: 82px;
+  background: #f3b38d;
+}
+
+.stackMark i:nth-child(3) {
+  bottom: 58px;
+  width: 59px;
+  background: #c8b5e4;
+}
+
+.gameOverOverlay > span {
+  border-radius: 999px;
+  background: var(--primary-light);
+  padding: 6px 10px;
+  color: var(--accent-strong);
+  font-size: 9px;
+  font-weight: 850;
+  letter-spacing: 0.1em;
+}
+
+.gameOverOverlay > div {
+  display: grid;
+  width: min(100%, 340px);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  overflow: hidden;
+  margin: 8px 0;
+  border: 1px solid rgba(125, 111, 93, 0.15);
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.gameOverOverlay p {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  border-right: 1px solid rgba(125, 111, 93, 0.13);
+  padding: 11px 5px;
+  color: var(--muted);
+  font-size: 9px;
+}
+
+.gameOverOverlay p:last-child {
+  border-right: 0;
+}
+
+.gameOverOverlay strong {
+  color: var(--deep);
+  font-size: 15px;
+}
+
+.feedback {
+  position: absolute;
+  right: 14px;
+  bottom: 12px;
+  left: 14px;
+  min-height: 34px;
+  margin: 0;
+  border: 1px solid rgba(255, 255, 255, 0.64);
+  border-radius: 999px;
+  background: rgba(255, 253, 247, 0.78);
+  padding: 8px 14px;
+  color: var(--accent-strong);
+  font-size: 10px;
+  font-weight: 760;
+  text-align: center;
+  backdrop-filter: blur(5px);
+}
+
+.controls {
+  position: sticky;
+  top: 92px;
+  display: grid;
+  gap: 17px;
+  padding: 20px;
+}
+
+.controlHeading > span {
+  color: var(--primary-strong);
+  font-size: 9px;
+  font-weight: 850;
+  letter-spacing: 0.1em;
+}
+
+.controlHeading h2 {
+  margin: 3px 0 0;
+  color: var(--deep);
+  font-size: 19px;
+  letter-spacing: -0.035em;
+}
+
+.controls fieldset {
+  min-width: 0;
+  margin: 0;
+  border: 0;
+  padding: 0;
+}
+
+.controls legend,
+.volumeControl > span,
+.instructions > strong {
+  margin-bottom: 7px;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 780;
+}
+
+.modeButtons,
+.toggleRow {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.modeButtons button,
+.toggleRow button {
+  min-height: 52px;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: #fffdf9;
+  color: var(--muted);
+  cursor: pointer;
+  font: inherit;
+}
+
+.modeButtons button[aria-pressed="true"],
+.toggleRow button[aria-pressed="true"] {
+  border-color: var(--primary-strong);
+  background: var(--primary-light);
+  color: var(--accent-strong);
+}
+
+.modeButtons strong,
+.modeButtons span {
+  display: block;
+}
+
+.modeButtons strong {
+  color: var(--deep);
+  font-size: 11px;
+}
+
+.modeButtons span {
+  margin-top: 2px;
+  font-size: 9px;
+}
+
+.toggleRow button {
+  min-height: 44px;
+  font-size: 10px;
+  font-weight: 760;
+}
+
+.toggleRow button span {
+  margin-right: 4px;
+  color: var(--primary-strong);
+  font-size: 16px;
+}
+
+.volumeControl {
+  display: grid;
+  gap: 5px;
+}
+
+.volumeControl > span {
+  display: flex;
+  justify-content: space-between;
+  margin: 0;
+}
+
+.volumeControl input {
+  width: 100%;
+  accent-color: var(--primary-strong);
+}
+
+.instructions {
+  border-radius: 15px;
+  background: var(--surface-muted);
+  padding: 13px;
+}
+
+.instructions p {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.55;
+}
+
+.instructions p span {
+  display: inline-block;
+  min-width: 47px;
+  color: var(--deep);
+  font-weight: 780;
+}
+
+.instructions small {
+  display: block;
+  margin-top: 9px;
+  color: var(--text-subtle);
+  font-size: 9px;
+  line-height: 1.55;
+}
+
+.motionNote {
+  margin: 0;
+  color: var(--muted);
+  font-size: 10px;
+  text-align: center;
+}
+
+@media (max-width: 820px) {
+  .gameLayout {
+    grid-template-columns: minmax(0, 600px);
+  }
+
+  .controls {
+    position: static;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .controlHeading,
+  .instructions {
+    grid-column: 1 / -1;
+  }
+
+  .guideGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .related {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .related > div:last-child {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 520px) {
+  .pageSection {
+    padding-block: 46px 76px;
+  }
+
+  .shell {
+    gap: 12px;
+  }
+
+  .summaryBar {
+    border-radius: 16px;
+  }
+
+  .summaryBar > div {
+    min-height: 58px;
+  }
+
+  .summaryBar span {
+    font-size: 8px;
+  }
+
+  .summaryBar strong {
+    font-size: 14px;
+  }
+
+  .gameCard {
+    border-radius: 18px;
+    padding: 7px;
+  }
+
+  .hud {
+    margin-bottom: 7px;
+    border-radius: 13px;
+  }
+
+  .hud > div {
+    min-height: 49px;
+  }
+
+  .hud span {
+    font-size: 8px;
+  }
+
+  .hud strong {
+    font-size: 13px;
+  }
+
+  .canvasWrap {
+    border-radius: 14px;
+  }
+
+  .canvas {
+    aspect-ratio: 420 / 680;
+  }
+
+  .feedback {
+    right: 8px;
+    bottom: 7px;
+    left: 8px;
+    padding-inline: 8px;
+    font-size: 9px;
+  }
+
+  .controls {
+    grid-template-columns: 1fr;
+    border-radius: 18px;
+    padding: 15px;
+  }
+
+  .controlHeading,
+  .instructions {
+    grid-column: auto;
+  }
+
+  .startOverlay,
+  .gameOverOverlay {
+    padding: 16px;
+  }
+
+  .startOverlay h2,
+  .gameOverOverlay h2 {
+    font-size: 25px;
+  }
+
+  .startOverlay p {
+    max-width: 280px;
+    font-size: 10px;
+  }
+
+  .guide,
+  .faq,
+  .related {
+    border-radius: 18px;
+    padding: 17px;
+  }
+
+  .related > div:last-child,
+  .related :global(.button) {
+    width: 100%;
+  }
+}
+
+@media (max-width: 340px) {
+  .gameCard {
+    margin-inline: -4px;
+  }
+
+  .feedback {
+    white-space: normal;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .canvasWrap,
+  .stackMark i {
+    scroll-behavior: auto;
+  }
+}

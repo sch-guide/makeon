@@ -23,14 +23,14 @@ export const tools: Tool[] = [
     featuredOnHome: false,
   },
   {
-    slug: "digital-relax-playground",
-    name: "디지털 힐링 놀이터",
+    slug: "pastel-stack-game",
+    name: "파스텔 스택 쌓기",
     description:
-      "버블랩, 액체 자석, 모래 자르기, 젤리 꾸미기 등 10가지 미니게임을 한곳에서 즐겨보세요.",
+      "블록을 타이밍에 맞춰 쌓고, 퍼펙트 콤보와 최고 높이에 도전하는 무료 미니게임",
     category: "재미 도구",
     status: "available",
-    icon: "✣",
-    actionLabel: "놀러 가기",
+    icon: "▰",
+    actionLabel: "게임 시작",
     featuredOnHome: false,
   },
 ];
