@@ -27,7 +27,7 @@ export async function POST(request: Request) {
 
   const startedAt = new Date().toISOString();
   const { data, error } = await admin
-    .from("game_sessions")
+    .from("makeon_game_sessions")
     .insert({ user_id: user.id, game_key: body.gameKey, difficulty: body.difficulty, started_at: startedAt })
     .select("id, started_at")
     .single();
@@ -38,4 +38,3 @@ export async function POST(request: Request) {
     { headers: { "Cache-Control": "private, no-store" } },
   );
 }
-

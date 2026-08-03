@@ -38,7 +38,7 @@ export async function loadStackRankings(
   userId: string,
   period: RankingPeriod,
 ): Promise<RankingsResponse> {
-  const { data, error } = await admin.rpc("get_stack_rankings", {
+  const { data, error } = await admin.rpc("makeon_get_stack_rankings", {
     p_period: period,
     p_user_id: userId,
     p_limit: 20,
@@ -53,4 +53,3 @@ export async function loadStackRankings(
     timezone: "Asia/Seoul",
   };
 }
-

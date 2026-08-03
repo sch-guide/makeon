@@ -38,7 +38,7 @@ export async function POST(request: Request) {
   const score = parsed.data;
 
   const { data: profile, error: profileError } = await admin
-    .from("game_profiles")
+    .from("makeon_game_profiles")
     .select("nickname")
     .eq("user_id", user.id)
     .maybeSingle();
@@ -46,7 +46,7 @@ export async function POST(request: Request) {
   if (!profile) return NextResponse.json({ error: "랭킹에 표시할 닉네임을 먼저 설정해주세요.", code: "NICKNAME_REQUIRED" }, { status: 409 });
 
   const { data: session, error: sessionError } = await admin
-    .from("game_sessions")
+    .from("makeon_game_sessions")
     .select("id, game_key, difficulty, started_at, submitted_at")
     .eq("id", score.gameSessionId)
     .eq("user_id", user.id)
@@ -68,7 +68,7 @@ export async function POST(request: Request) {
     .digest("hex");
 
   const date = kstDate(now);
-  const { data: submitResult, error: submitError } = await admin.rpc("submit_stack_score", {
+  const { data: submitResult, error: submitError } = await admin.rpc("makeon_submit_stack_score", {
     p_user_id: user.id,
     p_game_session_id: session.id,
     p_score: score.score,

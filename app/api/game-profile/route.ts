@@ -18,7 +18,7 @@ export async function GET(request: Request) {
   if (!user) return NextResponse.json({ error: "인증이 필요합니다." }, { status: 401 });
 
   const { data, error } = await admin
-    .from("game_profiles")
+    .from("makeon_game_profiles")
     .select("nickname")
     .eq("user_id", user.id)
     .maybeSingle();
@@ -45,7 +45,7 @@ export async function PUT(request: Request) {
   const result = validateNickname((body as { nickname?: unknown })?.nickname);
   if (!result.nickname) return NextResponse.json({ error: result.error }, { status: 400 });
 
-  const { error } = await admin.from("game_profiles").upsert({
+  const { error } = await admin.from("makeon_game_profiles").upsert({
     user_id: user.id,
     nickname: result.nickname,
     updated_at: new Date().toISOString(),
@@ -54,4 +54,3 @@ export async function PUT(request: Request) {
 
   return NextResponse.json({ profile: { nickname: result.nickname } });
 }
-
