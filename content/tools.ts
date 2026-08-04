@@ -55,4 +55,15 @@ export const tools: Tool[] = [
     actionLabel: "게임 시작",
     featuredOnHome: false,
   },
+  {
+    slug: "makeon-tetris",
+    name: "MAKEON 테트리스",
+    description:
+      "파스텔 블록으로 줄을 완성하고 오늘·전체 온라인 랭킹에 도전하는 무료 블록 퍼즐 게임",
+    category: "퍼즐 게임",
+    status: "available",
+    icon: "▦",
+    actionLabel: "게임 시작",
+    featuredOnHome: false,
+  },
 ];

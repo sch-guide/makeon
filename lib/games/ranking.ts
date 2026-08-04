@@ -2,6 +2,7 @@ export const GAME_KEYS = [
   "pastel_stack",
   "pastel_color_sort",
   "pastel_memory_match",
+  "tetris",
 ] as const;
 
 export type GameKey = (typeof GAME_KEYS)[number];
@@ -42,6 +43,16 @@ export type StackScoreInput = {
   gameSessionId: string;
 };
 
+export type TetrisScoreInput = {
+  gameKey: "tetris";
+  score: number;
+  lines: number;
+  level: number;
+  durationMs: number;
+  difficulty: "classic";
+  gameSessionId: string;
+};
+
 export type ScoreSubmitResult = {
   saved: boolean;
   improved: boolean;
@@ -68,4 +79,3 @@ export function formatGameDuration(durationMs: number | null) {
   const remainder = seconds % 60;
   return minutes > 0 ? `${minutes}분 ${remainder}초` : `${remainder}초`;
 }
-

@@ -1,0 +1,439 @@
+.pageSection {
+  padding: 44px 0 96px;
+  background:
+    radial-gradient(circle at 10% 5%, rgba(168, 198, 134, 0.17), transparent 28%),
+    linear-gradient(180deg, var(--background) 0%, #f3eee4 100%);
+}
+
+.intro {
+  max-width: 760px;
+  margin-bottom: 28px;
+}
+
+.intro h2,
+.guide h2,
+.settingsPanel h2 {
+  margin: 5px 0 10px;
+  color: var(--deep);
+  letter-spacing: -0.045em;
+}
+
+.intro p:not(:global(.eyebrow)),
+.guide > p:not(:global(.eyebrow)) {
+  color: var(--muted);
+  line-height: 1.8;
+}
+
+.shell {
+  display: grid;
+  gap: 26px;
+}
+
+.gameLayout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(250px, 320px);
+  gap: 22px;
+  align-items: start;
+}
+
+.playPanel,
+.settingsPanel {
+  border: 1px solid var(--border-sage);
+  border-radius: 26px;
+  background: rgba(255, 253, 248, 0.95);
+  box-shadow: var(--shadow-sm);
+}
+
+.playPanel {
+  padding: clamp(14px, 3vw, 24px);
+}
+
+.topBar {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.topBar > div {
+  display: grid;
+  gap: 2px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface-muted);
+  padding: 9px 10px;
+  text-align: center;
+}
+
+.topBar span {
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.topBar strong {
+  color: var(--deep);
+  font-size: clamp(14px, 2.5vw, 19px);
+}
+
+.stageRow {
+  display: grid;
+  grid-template-columns: minmax(220px, 340px) 118px;
+  justify-content: center;
+  gap: 14px;
+  align-items: start;
+}
+
+.boardWrap {
+  border-radius: 22px;
+  background: linear-gradient(145deg, #dbe7d2, #c8d7bd);
+  padding: 9px;
+  box-shadow: inset 0 0 0 1px rgba(62, 82, 54, 0.1), 0 18px 38px rgba(55, 66, 48, 0.14);
+}
+
+.board {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  width: 100%;
+  aspect-ratio: 1 / 2;
+  overflow: hidden;
+  border: 1px solid rgba(56, 68, 51, 0.28);
+  border-radius: 15px;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.035)),
+    #29322b;
+}
+
+.cell {
+  position: relative;
+  min-width: 0;
+  border-right: 1px solid rgba(255, 255, 255, 0.035);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.035);
+}
+
+.filled {
+  border: 1px solid rgba(255, 255, 255, 0.26);
+  border-radius: 4px;
+  box-shadow:
+    inset 2px 2px 0 rgba(255, 255, 255, 0.32),
+    inset -2px -2px 0 rgba(41, 51, 43, 0.18),
+    0 2px 4px rgba(0, 0, 0, 0.18);
+}
+
+.filled::after {
+  content: "";
+  position: absolute;
+  inset: 22%;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.11);
+}
+
+.ghost {
+  opacity: 0.24;
+  background: transparent !important;
+  outline: 2px solid currentColor;
+  outline-offset: -3px;
+  box-shadow: none;
+}
+
+.overlay {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 14px;
+  background: rgba(32, 40, 34, 0.72);
+  padding: 20px;
+  backdrop-filter: blur(3px);
+}
+
+.overlay strong {
+  color: #fffdf8;
+  font-size: clamp(24px, 6vw, 42px);
+  letter-spacing: -0.05em;
+}
+
+.overlay button,
+.pauseButton,
+.mobileControls button,
+.toggleGrid button {
+  min-height: 44px;
+  border: 1px solid var(--border-sage);
+  border-radius: 13px;
+  background: #fffdf8;
+  color: var(--deep);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 780;
+}
+
+.overlay button {
+  border-color: #9fc47c;
+  background: #a8c686;
+  padding: 10px 22px;
+}
+
+.sidePanel {
+  display: grid;
+  gap: 10px;
+}
+
+.nextCard {
+  display: grid;
+  gap: 8px;
+  border: 1px solid var(--line);
+  border-radius: 17px;
+  background: var(--surface-muted);
+  padding: 12px;
+}
+
+.nextCard > span {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 750;
+  text-align: center;
+}
+
+.previewGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  aspect-ratio: 1;
+  gap: 2px;
+}
+
+.previewGrid i {
+  border-radius: 4px;
+  box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.pauseButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.message {
+  min-height: 24px;
+  margin: 14px 0 10px;
+  color: var(--muted);
+  font-size: 12px;
+  text-align: center;
+}
+
+.mobileControls {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(44px, 1fr)) minmax(92px, 1.5fr);
+  gap: 7px;
+}
+
+.mobileControls button {
+  min-height: 50px;
+  font-size: 21px;
+  touch-action: manipulation;
+}
+
+.mobileControls .dropButton {
+  border-color: var(--primary-strong);
+  background: var(--primary);
+  font-size: 12px;
+}
+
+.settingsPanel {
+  display: grid;
+  gap: 18px;
+  padding: 22px;
+  position: sticky;
+  top: 90px;
+}
+
+.settingsPanel h2 {
+  font-size: 25px;
+}
+
+.toggleGrid {
+  display: grid;
+  gap: 8px;
+}
+
+.toggleGrid button {
+  width: 100%;
+  padding: 9px 12px;
+  text-align: left;
+}
+
+.toggleGrid button[aria-pressed="true"] {
+  border-color: var(--primary-strong);
+  background: var(--primary-light);
+  color: var(--accent-strong);
+}
+
+.volumeControl {
+  display: grid;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.volumeControl span {
+  display: flex;
+  justify-content: space-between;
+}
+
+.volumeControl input {
+  width: 100%;
+  accent-color: var(--primary-strong);
+}
+
+.instructions {
+  display: grid;
+  gap: 8px;
+  border-radius: 16px;
+  background: var(--surface-muted);
+  padding: 14px;
+}
+
+.instructions strong {
+  color: var(--deep);
+  font-size: 13px;
+}
+
+.instructions p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.65;
+}
+
+.instructions span {
+  color: var(--accent-strong);
+  font-weight: 800;
+}
+
+.guide {
+  margin-top: 48px;
+}
+
+.guideGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 13px;
+  margin-top: 20px;
+}
+
+.guideGrid article {
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: rgba(255, 253, 248, 0.86);
+  padding: 20px;
+}
+
+.guideGrid span {
+  color: var(--primary-strong);
+  font-size: 12px;
+  font-weight: 850;
+}
+
+.guideGrid h3 {
+  margin: 10px 0 7px;
+  color: var(--deep);
+  font-size: 17px;
+}
+
+.guideGrid p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+@media (max-width: 860px) {
+  .gameLayout {
+    grid-template-columns: 1fr;
+  }
+
+  .settingsPanel {
+    position: static;
+  }
+
+  .toggleGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 560px) {
+  .pageSection {
+    padding-top: 30px;
+  }
+
+  .playPanel,
+  .settingsPanel {
+    border-radius: 19px;
+  }
+
+  .playPanel {
+    padding: 10px;
+  }
+
+  .topBar {
+    gap: 5px;
+  }
+
+  .topBar > div {
+    border-radius: 10px;
+    padding: 7px 3px;
+  }
+
+  .topBar strong {
+    font-size: 13px;
+  }
+
+  .stageRow {
+    grid-template-columns: minmax(0, 1fr) 80px;
+    gap: 8px;
+  }
+
+  .boardWrap {
+    border-radius: 16px;
+    padding: 6px;
+  }
+
+  .board {
+    border-radius: 11px;
+  }
+
+  .nextCard {
+    border-radius: 12px;
+    padding: 7px;
+  }
+
+  .pauseButton {
+    min-height: 40px;
+    padding: 5px;
+    font-size: 10px;
+  }
+
+  .mobileControls {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .mobileControls .dropButton {
+    grid-column: 1 / -1;
+  }
+
+  .toggleGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .guideGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .filled,
+  .overlay {
+    transition: none;
+  }
+}

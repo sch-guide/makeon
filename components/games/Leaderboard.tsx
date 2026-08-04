@@ -23,6 +23,7 @@ export function Leaderboard({
   onPeriodChange,
   onRefresh,
   onEditNickname,
+  game = "stack",
 }: {
   configured: boolean;
   nickname: string | null;
@@ -34,6 +35,7 @@ export function Leaderboard({
   onPeriodChange: (period: RankingPeriod) => void;
   onRefresh: () => void;
   onEditNickname: () => void;
+  game?: "stack" | "tetris";
 }) {
   const [showMine, setShowMine] = useState(false);
 
@@ -42,7 +44,7 @@ export function Leaderboard({
       <header className={styles.panelHeader}>
         <div>
           <p className="eyebrow">ONLINE LEADERBOARD</p>
-          <h2 id="online-ranking-title">파스텔 스택 온라인 랭킹</h2>
+          <h2 id="online-ranking-title">{game === "tetris" ? "MAKEON 테트리스 온라인 랭킹" : "파스텔 스택 온라인 랭킹"}</h2>
         </div>
         <button type="button" className={styles.refreshButton} onClick={onRefresh} disabled={!configured || loading}>
           {loading ? "불러오는 중…" : "랭킹 새로고침"}
@@ -75,12 +77,15 @@ export function Leaderboard({
                 <li className={styles.rankRow} data-current={entry.isCurrentUser} key={`${entry.rank}-${entry.nickname}-${entry.achievedAt}`}>
                   <span className={styles.rank} aria-label={`${entry.rank}위`}>{medal(entry.rank)}</span>
                   <span className={styles.nickname}>{entry.nickname}{entry.isCurrentUser ? " (나)" : ""}</span>
-                  <span className={styles.record}><strong>{entry.score.toLocaleString()}점</strong><span>{entry.height ?? 0}층 · 콤보 {entry.bestCombo ?? 0}</span></span>
+                  <span className={styles.record}>
+                    <strong>{entry.score.toLocaleString()}점</strong>
+                    <span>{game === "tetris" ? `${entry.height ?? 0}줄 · 레벨 ${entry.level ?? 1}` : `${entry.height ?? 0}층 · 콤보 ${entry.bestCombo ?? 0}`}</span>
+                  </span>
                 </li>
               ))}
             </ol>
           ) : null}
-          {(showMine || !error) && <MyBestRecord record={myBest} />}
+          {(showMine || !error) && <MyBestRecord record={myBest} game={game} />}
           <p className={styles.privacyNote}>오늘 랭킹은 한국 시간 자정 기준입니다. 비정상적인 기록은 별도의 안내 없이 제외될 수 있습니다.</p>
         </>
       )}
