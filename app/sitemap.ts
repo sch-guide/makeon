@@ -3,6 +3,11 @@ import { blogPosts } from "@/content/blog-posts";
 import { siteConfig } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
+  const staticRouteUpdatedAt: Record<string, string> = {
+    "": "2026-08-04",
+    "/blog": "2026-08-04",
+    "/about": "2026-08-04",
+  };
   const staticRoutes = [
     "",
     "/blog",
@@ -22,7 +27,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return [
     ...staticRoutes.map((route) => ({
       url: `${siteConfig.url}${route}`,
-      lastModified: new Date("2026-07-22"),
+      lastModified: new Date(staticRouteUpdatedAt[route] ?? "2026-07-22"),
       changeFrequency: route === "" ? ("weekly" as const) : ("monthly" as const),
       priority:
         route === ""

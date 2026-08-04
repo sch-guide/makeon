@@ -123,7 +123,13 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     dateModified: post.updatedAt ?? post.publishedAt,
     inLanguage: "ko-KR",
     mainEntityOfPage: `${siteConfig.url}/blog/${post.slug}`,
-    author: { "@type": "Organization", name: "MAKEON" },
+    author: {
+      "@type": "Person",
+      name: "MAKEON 운영자",
+      url: `${siteConfig.url}/about`,
+      description:
+        "AI 코딩으로 Next.js 사이트와 무료 도구를 직접 만들고, 저장소와 공개 결과를 대조해 기록하는 초보 운영자",
+    },
     publisher: { "@type": "Organization", name: "MAKEON" },
     keywords: [post.primaryKeyword, ...(post.relatedKeywords ?? [])]
       .filter((keyword): keyword is string => Boolean(keyword))
@@ -140,12 +146,30 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         })),
       }
     : null;
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "홈", item: siteConfig.url },
+      { "@type": "ListItem", position: 2, name: "블로그", item: `${siteConfig.url}/blog` },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: post.title,
+        item: `${siteConfig.url}/blog/${post.slug}`,
+      },
+    ],
+  };
 
   return (
     <main id="main-content">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
       {faqJsonLd ? (
         <script
@@ -167,7 +191,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             <h1>{post.title}</h1>
             <p className="article-summary">{post.summary}</p>
             <div className="article-meta">
-              <span>MAKEON 편집팀</span>
+              <span>MAKEON 운영자</span>
               <span aria-hidden="true">·</span>
               <time dateTime={post.publishedAt}>{formatDate(post.publishedAt)}</time>
               {post.updatedAt && post.updatedAt !== post.publishedAt ? (
@@ -221,6 +245,25 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 <p>{post.reviewNote.notice}</p>
               </aside>
             ) : null}
+
+            <aside className="article-review-note" aria-label="작성자와 검증 방식">
+              <span>ABOUT THE AUTHOR</span>
+              <div className="article-review-meta">
+                <div>
+                  <strong>작성</strong>
+                  <span>MAKEON 운영자</span>
+                </div>
+                <div>
+                  <strong>관점</strong>
+                  <span>AI 코딩을 직접 운영하며 배우는 초보자</span>
+                </div>
+              </div>
+              <p>
+                전문 개발자를 사칭하지 않습니다. 저장소의 코드와 Git 기록, 공개 페이지에서
+                확인한 내용과 공식 문서를 대조하고, 확인하지 못한 결과는 성공 사례로 쓰지 않습니다. {" "}
+                <Link href="/about">작성 및 검증 원칙 보기</Link>
+              </p>
+            </aside>
 
             {post.sections.map((section) => (
               <section key={section.heading}>

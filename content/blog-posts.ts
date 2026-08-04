@@ -1,9 +1,13 @@
 import type { BlogPost } from "@/types/content";
 import { secondClusterPosts } from "@/content/blog-posts-second-cluster";
 import { thirdClusterPosts } from "@/content/blog-posts-third-cluster";
+import {
+  adsenseQualityPosts,
+  strengthenedPostSlugs,
+} from "@/content/blog-posts-adsense-quality";
 import { applyBlogVisuals } from "@/content/blog-visuals";
 
-const rawBlogPosts: BlogPost[] = [
+const legacyBlogPosts: BlogPost[] = [
   ...thirdClusterPosts,
   ...secondClusterPosts,
   {
@@ -1254,6 +1258,12 @@ const rawBlogPosts: BlogPost[] = [
       { label: "Vercel 플랜 공식 안내", href: "https://vercel.com/docs/plans" },
     ],
   },
+];
+
+const strengthenedSlugSet = new Set<string>(strengthenedPostSlugs);
+const rawBlogPosts: BlogPost[] = [
+  ...adsenseQualityPosts,
+  ...legacyBlogPosts.filter((post) => !strengthenedSlugSet.has(post.slug)),
 ];
 
 export const blogPosts: BlogPost[] = rawBlogPosts.map(applyBlogVisuals);
