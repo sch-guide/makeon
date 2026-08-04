@@ -122,6 +122,13 @@ revoke all on public.makeon_game_sessions from public, anon, authenticated;
 revoke all on public.makeon_game_score_submissions from public, anon, authenticated;
 revoke all on public.makeon_game_profiles from public, anon, authenticated;
 
+grant select, insert, update
+  on table public.makeon_game_profiles
+  to service_role;
+grant select, insert, update
+  on table public.makeon_game_sessions
+  to service_role;
+
 create or replace function public.makeon_is_better_stack_score(
   p_score integer,
   p_height integer,
