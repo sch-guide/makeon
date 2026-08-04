@@ -29,6 +29,7 @@ type Result = {
 };
 
 const STORAGE_KEY = "makeon-pastel-memory-v1";
+const AUDIO_DEFAULTS_VERSION = 2;
 const emptyRecords: Records = {
   easy: { score: 0, seconds: 0, moves: 0 },
   normal: { score: 0, seconds: 0, moves: 0 },
@@ -79,10 +80,8 @@ export function PastelMemoryMatch() {
   const [themeId, setThemeId] = useState<ThemeId>("cats");
   const [difficultyId, setDifficultyId] = useState<DifficultyId>("easy");
   const [previewSeconds, setPreviewSeconds] = useState<PreviewSeconds>(2);
-  const [bgmEnabled, setBgmEnabled] = useState(true);
   const [sfxEnabled, setSfxEnabled] = useState(true);
-  const [bgmVolume, setBgmVolume] = useState(0.18);
-  const [audioOpen, setAudioOpen] = useState(false);
+  const [bgmEnabled, setBgmEnabled] = useState(true);
   const [status, setStatus] = useState<GameStatus>("ready");
   const [cards, setCards] = useState<MemoryCardModel[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -107,7 +106,7 @@ export function PastelMemoryMatch() {
   const difficulty = getDifficulty(difficultyId);
   const theme = getTheme(themeId);
   const isAudioActive = status !== "ready" && status !== "complete";
-  const { play: playSound, startBgm } = useMemoryAudio({ sfxEnabled, bgmEnabled, bgmVolume, bgmActive: isAudioActive });
+  const { play: playSound, startBgm, stopBgm } = useMemoryAudio({ sfxEnabled, bgmEnabled, bgmVolume: 0.22, bgmActive: isAudioActive });
 
   const clearScheduled = useCallback(() => {
     timeoutsRef.current.forEach(clearTimeout);
@@ -129,25 +128,26 @@ export function PastelMemoryMatch() {
   useEffect(() => {
     try {
       const stored = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? "null") as {
-        themeId?: ThemeId; previewSeconds?: PreviewSeconds; soundEnabled?: boolean; volume?: number;
-        bgmEnabled?: boolean; sfxEnabled?: boolean; bgmVolume?: number; records?: Records;
+        themeId?: ThemeId; previewSeconds?: PreviewSeconds; sfxEnabled?: boolean; bgmEnabled?: boolean;
+        audioDefaultsVersion?: number; records?: Records;
       } | null;
       if (!stored) return;
       if (stored.themeId && memoryThemes.some((item) => item.id === stored.themeId)) setThemeId(stored.themeId);
       if ([0, 2, 4].includes(stored.previewSeconds ?? -1)) setPreviewSeconds(stored.previewSeconds ?? 2);
-      setBgmEnabled(stored.bgmEnabled ?? stored.soundEnabled ?? true);
-      setSfxEnabled(stored.sfxEnabled ?? stored.soundEnabled ?? true);
-      const savedVolume = stored.bgmVolume ?? stored.volume;
-      if (typeof savedVolume === "number") setBgmVolume(Math.min(0.55, Math.max(0.05, savedVolume)));
+      const usesCurrentAudioDefaults = stored.audioDefaultsVersion === AUDIO_DEFAULTS_VERSION;
+      setSfxEnabled(usesCurrentAudioDefaults ? stored.sfxEnabled !== false : true);
+      setBgmEnabled(usesCurrentAudioDefaults ? stored.bgmEnabled !== false : true);
       if (stored.records) setRecords({ ...emptyRecords, ...stored.records });
     } catch { /* localStorage가 차단되어도 게임은 계속 동작합니다. */ }
   }, []);
 
   useEffect(() => {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({ themeId, previewSeconds, bgmEnabled, sfxEnabled, bgmVolume, records }));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        themeId, previewSeconds, sfxEnabled, bgmEnabled, audioDefaultsVersion: AUDIO_DEFAULTS_VERSION, records,
+      }));
     } catch { /* 저장할 수 없는 환경에서는 메모리 상태만 사용합니다. */ }
-  }, [themeId, previewSeconds, bgmEnabled, sfxEnabled, bgmVolume, records]);
+  }, [themeId, previewSeconds, sfxEnabled, bgmEnabled, records]);
 
   const beginTimer = useCallback(() => {
     startTimeRef.current = Date.now();
@@ -157,6 +157,13 @@ export function PastelMemoryMatch() {
       setElapsed(Math.floor((Date.now() - startTimeRef.current) / 1000));
     }, 500);
   }, []);
+
+  const toggleBgm = useCallback(() => {
+    const next = !bgmEnabled;
+    setBgmEnabled(next);
+    if (next && isAudioActive) startBgm(true, true);
+    else stopBgm();
+  }, [bgmEnabled, isAudioActive, startBgm, stopBgm]);
 
   const startGame = useCallback(() => {
     clearScheduled();
@@ -364,9 +371,13 @@ export function PastelMemoryMatch() {
           </div>
 
           <div className={styles.setupAudio} aria-label="게임 오디오 설정">
-            <div><span className={styles.audioNote}>AUDIO</span><strong>게임 사운드</strong></div>
-            <button type="button" aria-pressed={bgmEnabled} onClick={() => setBgmEnabled((value) => !value)}>BGM {bgmEnabled ? "켬" : "끔"}</button>
-            <button type="button" aria-pressed={sfxEnabled} onClick={() => setSfxEnabled((value) => !value)}>효과음 {sfxEnabled ? "켬" : "끔"}</button>
+            <div><span className={styles.audioNote}>AUDIO</span><strong>게임 시작과 함께 바로 재생돼요</strong></div>
+            <button type="button" aria-pressed={sfxEnabled} onClick={() => setSfxEnabled((value) => !value)}>
+              <span aria-hidden="true">{sfxEnabled ? "♪" : "×"}</span>{sfxEnabled ? "소리 켬" : "음소거"}
+            </button>
+            <button type="button" aria-pressed={bgmEnabled} onClick={toggleBgm}>
+              <span aria-hidden="true">♫</span>{bgmEnabled ? "BGM 켬" : "BGM 끔"}
+            </button>
           </div>
 
           <div className={styles.startSummary}>
@@ -385,6 +396,7 @@ export function PastelMemoryMatch() {
             <div><span>이동</span><strong>{moves}</strong></div>
             <div><span>시간</span><strong>{formatTime(elapsed)}</strong></div>
             <div><span>콤보</span><strong>{combo}</strong></div>
+            <div><span>최고 콤보</span><strong>{bestCombo}</strong></div>
             <div><span>점수</span><strong>{score.toLocaleString()}</strong></div>
           </div>
           <div className={styles.progressTrack} aria-label={`${matches}/${difficulty.pairs}쌍 완료`}><span style={{ width: `${(matches / difficulty.pairs) * 100}%` }} /></div>
@@ -397,20 +409,14 @@ export function PastelMemoryMatch() {
           <div className={styles.controls}>
             <button type="button" onClick={useHint} disabled={status !== "playing" || hintsLeft === 0 || Boolean(hintedPair)}>힌트 <span>{hintsLeft}/3</span></button>
             <button type="button" onClick={startGame}>다시 시작</button>
-            <button type="button" aria-expanded={audioOpen} onClick={() => setAudioOpen((value) => !value)}>오디오 설정</button>
+            <button type="button" aria-pressed={sfxEnabled} onClick={() => setSfxEnabled((value) => !value)}>
+              <span aria-hidden="true">{sfxEnabled ? "♪" : "×"}</span>{sfxEnabled ? "소리 켬" : "음소거"}
+            </button>
+            <button type="button" aria-pressed={bgmEnabled} onClick={toggleBgm}>
+              <span aria-hidden="true">♫</span>{bgmEnabled ? "BGM 켬" : "BGM 끔"}
+            </button>
             <button type="button" onClick={leaveGame}>게임 나가기</button>
           </div>
-          {audioOpen && (
-            <div className={styles.audioPanel}>
-              <button type="button" aria-pressed={bgmEnabled} onClick={() => {
-                const next = !bgmEnabled;
-                setBgmEnabled(next);
-                if (next) startBgm(true, true);
-              }}>BGM {bgmEnabled ? "켬" : "끔"}</button>
-              <button type="button" aria-pressed={sfxEnabled} onClick={() => setSfxEnabled((value) => !value)}>효과음 {sfxEnabled ? "켬" : "끔"}</button>
-              <label>BGM 음량 <input type="range" min="0.05" max="0.55" step="0.05" value={bgmVolume} onChange={(event) => setBgmVolume(Number(event.target.value))} /></label>
-            </div>
-          )}
         </section>
       )}
 

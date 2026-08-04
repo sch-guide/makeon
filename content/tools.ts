@@ -2,6 +2,17 @@ import type { Tool } from "@/types/content";
 
 export const tools: Tool[] = [
   {
+    slug: "digital-squishy-playground",
+    name: "디지털 말랑이 놀이터",
+    description:
+      "브라우저에서 말랑한 젤을 누르고 늘리며 시각 효과와 합성 소리를 즐기는 무료 감각 놀이",
+    category: "재미 도구",
+    status: "available",
+    icon: "●",
+    actionLabel: "놀러 가기",
+    featuredOnHome: false,
+  },
+  {
     slug: "ai-prompt-generator",
     name: "AI 프롬프트 생성기",
     description:
@@ -56,8 +67,8 @@ export const tools: Tool[] = [
     featuredOnHome: false,
   },
   {
-    slug: "makeon-tetris",
-    name: "MAKEON 테트리스",
+    slug: "pastel-block-puzzle",
+    name: "MAKEON 파스텔 블록 퍼즐",
     description:
       "파스텔 블록으로 줄을 완성하고 오늘·전체 온라인 랭킹에 도전하는 무료 블록 퍼즐 게임",
     category: "퍼즐 게임",

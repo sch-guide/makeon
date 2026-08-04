@@ -20,6 +20,6 @@ export async function GET(request: NextRequest) {
     const rankings = await loadTetrisRankings(admin, user.id, period);
     return NextResponse.json(rankings, { headers: { "Cache-Control": "private, no-store" } });
   } catch {
-    return NextResponse.json({ error: "테트리스 랭킹을 불러오지 못했습니다." }, { status: 500 });
+    return NextResponse.json({ error: "블록 퍼즐 랭킹을 불러오지 못했습니다." }, { status: 500 });
   }
 }

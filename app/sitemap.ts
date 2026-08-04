@@ -18,7 +18,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/tools/pastel-stack-game",
     "/tools/pastel-memory-match",
     "/tools/pastel-color-sort",
-    "/tools/makeon-tetris",
+    "/tools/pastel-block-puzzle",
     "/about",
     "/contact",
     "/privacy",

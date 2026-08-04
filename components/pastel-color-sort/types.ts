@@ -40,6 +40,7 @@ export type SavedProgress = {
   unlockedLevel: number;
   lastLevel: number;
   soundEnabled: boolean;
+  bgmEnabled: boolean;
   audioVersion: number;
   records: Record<number, LevelRecord>;
 };

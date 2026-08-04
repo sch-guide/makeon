@@ -10,7 +10,7 @@ type AudioOptions = {
   bgmActive: boolean;
 };
 
-const BAR_MS = 8000;
+const BEAT_MS = 430;
 
 export function useMemoryAudio({ sfxEnabled, bgmEnabled, bgmVolume, bgmActive }: AudioOptions) {
   const contextRef = useRef<AudioContext | null>(null);
@@ -18,6 +18,7 @@ export function useMemoryAudio({ sfxEnabled, bgmEnabled, bgmVolume, bgmActive }:
   const effectsGainRef = useRef<GainNode | null>(null);
   const musicTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const musicStartedRef = useRef(false);
+  const musicStepRef = useRef(0);
   const settingsRef = useRef({ sfxEnabled, bgmEnabled, bgmVolume, bgmActive });
   settingsRef.current = { sfxEnabled, bgmEnabled, bgmVolume, bgmActive };
 
@@ -44,7 +45,7 @@ export function useMemoryAudio({ sfxEnabled, bgmEnabled, bgmVolume, bgmActive }:
     musicGain.gain.value = 0.0001;
     const warmth = context.createBiquadFilter();
     warmth.type = "lowpass";
-    warmth.frequency.value = 2200;
+    warmth.frequency.value = 3600;
     warmth.Q.value = 0.45;
     musicGain.connect(warmth);
     warmth.connect(compressor);
@@ -53,55 +54,59 @@ export function useMemoryAudio({ sfxEnabled, bgmEnabled, bgmVolume, bgmActive }:
     return context;
   }, []);
 
-  const scheduleMusicBar = useCallback((context: AudioContext) => {
+  const playMusicStep = useCallback((context: AudioContext) => {
     const destination = musicGainRef.current;
     if (!destination) return;
-    const start = context.currentTime + 0.05;
-    const chordProgression = [
-      [261.63, 329.63, 392],
-      [220, 261.63, 329.63],
-      [246.94, 293.66, 369.99],
-      [196, 246.94, 329.63],
+    const step = musicStepRef.current;
+    musicStepRef.current = (step + 1) % 32;
+    const now = context.currentTime + 0.018;
+    const progression = [
+      [261.63, 329.63, 392], [261.63, 329.63, 392],
+      [349.23, 440, 523.25], [349.23, 440, 523.25],
+      [392, 493.88, 587.33], [392, 493.88, 587.33],
+      [329.63, 392, 493.88], [392, 493.88, 587.33],
     ];
-    chordProgression.forEach((chord, chordIndex) => {
-      const chordStart = start + chordIndex * 2;
-      chord.forEach((frequency, voiceIndex) => {
-        const oscillator = context.createOscillator();
-        const gain = context.createGain();
-        oscillator.type = voiceIndex === 0 ? "sine" : "triangle";
-        oscillator.frequency.value = frequency / (voiceIndex === 0 ? 2 : 1);
-        oscillator.detune.value = voiceIndex * 2 - 2;
-        gain.gain.setValueAtTime(0.0001, chordStart);
-        gain.gain.exponentialRampToValueAtTime(voiceIndex === 0 ? 0.055 : 0.025, chordStart + 0.35);
-        gain.gain.setValueAtTime(voiceIndex === 0 ? 0.04 : 0.018, chordStart + 1.45);
-        gain.gain.exponentialRampToValueAtTime(0.0001, chordStart + 2.05);
-        oscillator.connect(gain);
-        gain.connect(destination);
-        oscillator.start(chordStart);
-        oscillator.stop(chordStart + 2.1);
-      });
-    });
+    const melody = [
+      659.25, 783.99, 880, 783.99, 698.46, 880, 783.99, 659.25,
+      698.46, 783.99, 987.77, 880, 783.99, 698.46, 659.25, 783.99,
+      880, 987.77, 1046.5, 987.77, 880, 783.99, 698.46, 783.99,
+      659.25, 783.99, 880, 987.77, 1046.5, 987.77, 880, 783.99,
+    ];
+    const chord = progression[Math.floor(step / 4) % progression.length];
 
-    [659.25, 523.25, 587.33, 493.88, 659.25, 440, 493.88, 392].forEach((frequency, index) => {
-      const noteStart = start + index;
+    const voice = (frequency: number, offset: number, length: number, peak: number, type: OscillatorType, cutoff: number) => {
       const oscillator = context.createOscillator();
+      const filter = context.createBiquadFilter();
       const gain = context.createGain();
-      oscillator.type = "sine";
+      const start = now + offset;
+      oscillator.type = type;
       oscillator.frequency.value = frequency;
-      gain.gain.setValueAtTime(0.0001, noteStart);
-      gain.gain.exponentialRampToValueAtTime(0.026, noteStart + 0.025);
-      gain.gain.exponentialRampToValueAtTime(0.0001, noteStart + 0.72);
-      oscillator.connect(gain);
+      filter.type = "lowpass";
+      filter.frequency.value = cutoff;
+      filter.Q.value = 0.35;
+      gain.gain.setValueAtTime(0.0001, start);
+      gain.gain.exponentialRampToValueAtTime(peak, start + 0.014);
+      gain.gain.exponentialRampToValueAtTime(0.0001, start + length);
+      oscillator.connect(filter);
+      filter.connect(gain);
       gain.connect(destination);
-      oscillator.start(noteStart);
-      oscillator.stop(noteStart + 0.75);
-    });
+      oscillator.start(start);
+      oscillator.stop(start + length + 0.025);
+    };
+
+    voice(melody[step], 0, 0.25, step % 4 === 0 ? 0.038 : 0.029, "triangle", 2700);
+    if (step % 2 === 0) voice(chord[0] * 0.5, 0, 0.32, 0.042, "sine", 620);
+    if (step % 4 === 0) {
+      chord.forEach((frequency, index) => voice(frequency, 0.025, 0.38, index === 0 ? 0.021 : 0.014, "triangle", 1500 + index * 280));
+    }
+    if (step % 8 === 7) voice(melody[(step + 2) % melody.length], 0.19, 0.17, 0.018, "sine", 3100);
   }, []);
 
   const stopBgm = useCallback(() => {
     if (musicTimerRef.current) clearInterval(musicTimerRef.current);
     musicTimerRef.current = null;
     musicStartedRef.current = false;
+    musicStepRef.current = 0;
     const context = contextRef.current;
     const musicGain = musicGainRef.current;
     if (context && musicGain) {
@@ -116,15 +121,19 @@ export function useMemoryAudio({ sfxEnabled, bgmEnabled, bgmVolume, bgmActive }:
     const context = ensureContext();
     const musicGain = musicGainRef.current;
     if (!context || !musicGain) return;
-    if (context.state === "suspended") void context.resume();
-    musicGain.gain.cancelScheduledValues(context.currentTime);
-    musicGain.gain.setTargetAtTime(Math.max(0.015, settings.bgmVolume * 0.32), context.currentTime, 0.2);
-    scheduleMusicBar(context);
-    musicTimerRef.current = setInterval(() => {
-      if (!document.hidden && settingsRef.current.bgmEnabled && settingsRef.current.bgmActive) scheduleMusicBar(context);
-    }, BAR_MS);
     musicStartedRef.current = true;
-  }, [ensureContext, scheduleMusicBar]);
+    const begin = () => {
+      if (!musicStartedRef.current || !settingsRef.current.bgmEnabled || (!settingsRef.current.bgmActive && !forceActive)) return;
+      musicGain.gain.cancelScheduledValues(context.currentTime);
+      musicGain.gain.setTargetAtTime(Math.max(0.015, settingsRef.current.bgmVolume * 0.3), context.currentTime, 0.08);
+      playMusicStep(context);
+      musicTimerRef.current = setInterval(() => {
+        if (!document.hidden && settingsRef.current.bgmEnabled && settingsRef.current.bgmActive) playMusicStep(context);
+      }, BEAT_MS);
+    };
+    if (context.state === "suspended") void context.resume().then(begin);
+    else begin();
+  }, [ensureContext, playMusicStep]);
 
   const play = useCallback((sound: Sound, combo = 0) => {
     if (!settingsRef.current.sfxEnabled || document.hidden) return;

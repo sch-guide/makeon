@@ -13,7 +13,7 @@ type AudioEngine = {
   nextLoopAt: number;
 };
 
-const LOOP_SECONDS = 12.8;
+const LOOP_SECONDS = 8.4;
 
 function makeEngine() {
   const context = new window.AudioContext();
@@ -23,14 +23,14 @@ function makeEngine() {
   const sfx = context.createGain();
   const pad = context.createBiquadFilter();
   master.gain.value = 0.72;
-  music.gain.value = 0.055;
+  music.gain.value = 0.052;
   sfx.gain.value = 0.28;
   compressor.threshold.value = -20;
   compressor.knee.value = 18;
   compressor.ratio.value = 3;
   pad.type = "lowpass";
-  pad.frequency.value = 1150;
-  pad.Q.value = 0.45;
+  pad.frequency.value = 1650;
+  pad.Q.value = 0.28;
   pad.connect(music);
   music.connect(master);
   sfx.connect(master);
@@ -59,27 +59,66 @@ function tone(
   oscillator.stop(start + duration + 0.03);
 }
 
+function softChordTone(
+  context: AudioContext,
+  destination: AudioNode,
+  frequency: number,
+  start: number,
+  duration: number,
+  volume: number,
+) {
+  const oscillator = context.createOscillator();
+  const overtone = context.createOscillator();
+  const gain = context.createGain();
+  const overtoneGain = context.createGain();
+  oscillator.type = "sine";
+  overtone.type = "triangle";
+  oscillator.frequency.setValueAtTime(frequency, start);
+  overtone.frequency.setValueAtTime(frequency * 2, start);
+  overtone.detune.setValueAtTime(5, start);
+  gain.gain.setValueAtTime(0.0001, start);
+  gain.gain.exponentialRampToValueAtTime(volume, start + Math.min(0.16, duration * 0.15));
+  gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+  overtoneGain.gain.value = 0.065;
+  oscillator.connect(gain);
+  overtone.connect(overtoneGain).connect(gain);
+  gain.connect(destination);
+  oscillator.start(start);
+  overtone.start(start);
+  oscillator.stop(start + duration + 0.04);
+  overtone.stop(start + duration + 0.04);
+}
+
 function scheduleBgmLoop(engine: AudioEngine, start: number) {
   const { context, music, pad } = engine;
 
-  const chords = [
-    [220, 277.18, 329.63],
-    [196, 246.94, 329.63],
-    [174.61, 220, 261.63],
-    [196, 246.94, 293.66],
+  // Fresh upbeat A-major arrangement: bouncing pizzicato harmony and a
+  // compact glass-marimba melody, separate from the stack game's BGM.
+  const harmony = [
+    [220, 329.63, 554.37],
+    [185, 277.18, 440],
+    [146.83, 220, 369.99],
+    [164.81, 246.94, 415.3],
   ];
-  chords.forEach((chord, index) => {
-    const chordStart = start + index * 3.2;
+  harmony.forEach((chord, index) => {
+    const chordStart = start + index * 2.1;
     chord.forEach((frequency, voice) => {
-      tone(context, pad, frequency, chordStart, 3.35, voice === 0 ? 0.16 : 0.095, "sine");
+      softChordTone(context, pad, frequency, chordStart, 2.24, voice === 0 ? 0.092 : 0.048);
     });
+    tone(context, music, chord[0] * 2, chordStart + 0.04, 0.25, 0.052, "triangle");
+    tone(context, music, chord[1] * 2, chordStart + 1.05, 0.2, 0.032, "sine");
   });
 
-  const melody = [659.25, 554.37, 493.88, 554.37, 659.25, 739.99, 659.25, 554.37];
+  const melody: Array<number | null> = [
+    659.25, 880, 1108.73, null, 987.77, 880, 739.99, null,
+    659.25, 739.99, 880, 987.77, 1108.73, null, 987.77, 880,
+    739.99, 880, 987.77, null, 880, 739.99, 659.25, null,
+  ];
   melody.forEach((frequency, index) => {
-    const noteStart = start + 0.8 + index * 1.6;
-    tone(context, music, frequency, noteStart, 0.72, index % 3 === 0 ? 0.15 : 0.095, "sine");
-    tone(context, music, frequency * 2, noteStart, 0.32, 0.025, "sine");
+    if (!frequency) return;
+    const noteStart = start + 0.12 + index * 0.35;
+    tone(context, music, frequency, noteStart, 0.24, index % 8 === 0 ? 0.072 : 0.047, "triangle");
+    tone(context, music, frequency * 2, noteStart + 0.012, 0.11, 0.011, "sine");
   });
 }
 
@@ -121,10 +160,12 @@ function waterSound(engine: AudioEngine) {
   source.start();
 }
 
-export function usePastelAudio(enabled: boolean) {
+export function usePastelAudio(soundEnabled: boolean, bgmEnabled: boolean) {
   const engineRef = useRef<AudioEngine | null>(null);
-  const enabledRef = useRef(enabled);
-  enabledRef.current = enabled;
+  const soundEnabledRef = useRef(soundEnabled);
+  const bgmEnabledRef = useRef(bgmEnabled);
+  soundEnabledRef.current = soundEnabled;
+  bgmEnabledRef.current = bgmEnabled;
 
   const stop = useCallback(() => {
     const engine = engineRef.current;
@@ -135,25 +176,43 @@ export function usePastelAudio(enabled: boolean) {
   }, []);
 
   const ensureEngine = useCallback(() => {
-    if (!enabledRef.current || typeof window === "undefined") return null;
+    if (!soundEnabledRef.current || typeof window === "undefined") return null;
     const engine = engineRef.current ?? makeEngine();
     engineRef.current = engine;
     if (engine.context.state === "suspended") void engine.context.resume();
-    startBgm(engine);
+    if (bgmEnabledRef.current) startBgm(engine);
     return engine;
+  }, []);
+
+  const startAudio = useCallback((override?: { soundEnabled?: boolean; bgmEnabled?: boolean }) => {
+    if (typeof window === "undefined") return;
+    const shouldPlaySound = override?.soundEnabled ?? soundEnabledRef.current;
+    const shouldPlayBgm = override?.bgmEnabled ?? bgmEnabledRef.current;
+    if (!shouldPlaySound && !shouldPlayBgm) return;
+    const engine = engineRef.current ?? makeEngine();
+    engineRef.current = engine;
+    if (engine.context.state === "suspended") void engine.context.resume();
+    if (shouldPlayBgm) startBgm(engine);
   }, []);
 
   useEffect(() => {
     const engine = engineRef.current;
-    if (!enabled && engine) stop();
-  }, [enabled, stop]);
+    if ((!soundEnabled && !bgmEnabled) || (!bgmEnabled && engine && engine.loopTimer !== null)) {
+      stop();
+      if (soundEnabled) startAudio();
+      return;
+    }
+    if ((bgmEnabled && (!engine || engine.loopTimer === null)) || (soundEnabled && !engine)) {
+      startAudio();
+    }
+  }, [bgmEnabled, soundEnabled, startAudio, stop]);
 
   useEffect(() => {
     const onVisibility = () => {
       const engine = engineRef.current;
       if (!engine) return;
       if (document.hidden && engine.context.state === "running") void engine.context.suspend();
-      else if (!document.hidden && enabledRef.current && engine.context.state === "suspended") {
+      else if (!document.hidden && (soundEnabledRef.current || bgmEnabledRef.current) && engine.context.state === "suspended") {
         void engine.context.resume();
       }
     };
@@ -165,6 +224,7 @@ export function usePastelAudio(enabled: boolean) {
   }, [stop]);
 
   const playSound = useCallback((name: SoundName) => {
+    if (!soundEnabledRef.current) return;
     const engine = ensureEngine();
     if (!engine) return;
     const now = engine.context.currentTime;
@@ -198,5 +258,5 @@ export function usePastelAudio(enabled: boolean) {
     });
   }, [ensureEngine]);
 
-  return { playSound };
+  return { playSound, startAudio };
 }

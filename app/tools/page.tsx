@@ -44,10 +44,10 @@ export default function ToolsPage() {
           <div className="coming-roadmap">
             <div className="roadmap-mark" aria-hidden="true">+</div>
             <div>
-              <h2>다음 도구도 차근차근 준비합니다.</h2>
+              <h2>직접 확인한 도구만 공개합니다.</h2>
               <p>
-                실제로 자주 겪는 작은 불편을 해결하는 도구부터 만듭니다. 제작 과정과 공개
-                소식은 블로그에서 먼저 확인할 수 있습니다.
+                각 도구는 모바일과 데스크톱 동작, 데이터 저장 범위와 기본 사용법을 확인한 뒤
+                공개합니다. 구현 과정과 시행착오는 블로그에서 함께 설명합니다.
               </p>
             </div>
           </div>

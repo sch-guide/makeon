@@ -18,7 +18,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "요청 형식이 올바르지 않습니다." }, { status: 400 });
   }
   if (body.gameKey !== "tetris" || body.difficulty !== "classic") {
-    return NextResponse.json({ error: "테트리스 게임 설정이 올바르지 않습니다." }, { status: 400 });
+    return NextResponse.json({ error: "블록 퍼즐 게임 설정이 올바르지 않습니다." }, { status: 400 });
   }
 
   const startedAt = new Date().toISOString();

@@ -6,6 +6,7 @@ import {
   strengthenedPostSlugs,
 } from "@/content/blog-posts-adsense-quality";
 import { applyBlogVisuals } from "@/content/blog-visuals";
+import { applyBlogPostEnhancement } from "@/content/blog-post-enhancements";
 
 const legacyBlogPosts: BlogPost[] = [
   ...thirdClusterPosts,
@@ -1266,7 +1267,9 @@ const rawBlogPosts: BlogPost[] = [
   ...legacyBlogPosts.filter((post) => !strengthenedSlugSet.has(post.slug)),
 ];
 
-export const blogPosts: BlogPost[] = rawBlogPosts.map(applyBlogVisuals);
+export const blogPosts: BlogPost[] = rawBlogPosts.map((post) =>
+  applyBlogVisuals(applyBlogPostEnhancement(post)),
+);
 
 export function getPostBySlug(slug: string) {
   return blogPosts.find((post) => post.slug === slug);

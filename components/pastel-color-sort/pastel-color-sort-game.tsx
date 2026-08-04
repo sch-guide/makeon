@@ -28,7 +28,8 @@ const defaultProgress: SavedProgress = {
   unlockedLevel: 1,
   lastLevel: 1,
   soundEnabled: true,
-  audioVersion: 2,
+  bgmEnabled: true,
+  audioVersion: 5,
   records: {},
 };
 
@@ -66,7 +67,7 @@ export function PastelColorSortGame() {
   const [hydrated, setHydrated] = useState(false);
   const tubeRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const timersRef = useRef<number[]>([]);
-  const { playSound } = usePastelAudio(progress.soundEnabled);
+  const { playSound, startAudio } = usePastelAudio(progress.soundEnabled, progress.bgmEnabled);
 
   const clearTimers = useCallback(() => {
     timersRef.current.forEach((timer) => window.clearTimeout(timer));
@@ -103,8 +104,9 @@ export function PastelColorSortGame() {
         records: saved.records ?? {},
         unlockedLevel: Math.min(30, Math.max(1, saved.unlockedLevel ?? 1)),
         lastLevel: Math.min(30, Math.max(1, saved.lastLevel ?? 1)),
-        soundEnabled: saved.audioVersion === 2 ? (saved.soundEnabled ?? true) : true,
-        audioVersion: 2,
+        soundEnabled: true,
+        bgmEnabled: true,
+        audioVersion: 5,
       };
       setProgress(merged);
       setLevelNumber(merged.lastLevel);
@@ -123,6 +125,10 @@ export function PastelColorSortGame() {
       // Storage may be unavailable in private browsing; gameplay remains in memory.
     }
   }, [hydrated, progress]);
+
+  useEffect(() => {
+    if (hydrated && (progress.soundEnabled || progress.bgmEnabled)) startAudio();
+  }, [hydrated, progress.bgmEnabled, progress.soundEnabled, startAudio]);
 
   useEffect(() => () => clearTimers(), [clearTimers]);
 
@@ -181,7 +187,7 @@ export function PastelColorSortGame() {
       endY: target.top + 32,
     });
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const timer = window.setTimeout(() => completeMove(move), reduced ? 80 : 540);
+    const timer = window.setTimeout(() => completeMove(move), reduced ? 80 : 420);
     timersRef.current.push(timer);
   }, [completeMove, playSound]);
 
@@ -271,11 +277,28 @@ export function PastelColorSortGame() {
           <button
             type="button"
             aria-pressed={progress.soundEnabled}
-            onClick={() => setProgress((current) => ({ ...current, soundEnabled: !current.soundEnabled }))}
-            title="배경음악과 효과음을 함께 켜거나 끕니다."
+            onClick={() => {
+              const next = !progress.soundEnabled;
+              if (next) startAudio({ soundEnabled: true, bgmEnabled: progress.bgmEnabled });
+              setProgress((current) => ({ ...current, soundEnabled: next }));
+            }}
+            title="게임 효과음을 켜거나 끕니다."
           >
-            <span aria-hidden="true">{progress.soundEnabled ? "◖♪◗" : "♪"}</span>
-            {progress.soundEnabled ? "BGM · 효과음 켬" : "오디오 끔"}
+            <span aria-hidden="true">{progress.soundEnabled ? "♪" : "×"}</span>
+            {progress.soundEnabled ? "소리 켬" : "음소거"}
+          </button>
+          <button
+            type="button"
+            aria-pressed={progress.bgmEnabled}
+            onClick={() => {
+              const next = !progress.bgmEnabled;
+              if (next) startAudio({ soundEnabled: progress.soundEnabled, bgmEnabled: true });
+              setProgress((current) => ({ ...current, bgmEnabled: next }));
+            }}
+            title="배경음악을 켜거나 끕니다."
+          >
+            <span aria-hidden="true">♫</span>
+            {progress.bgmEnabled ? "BGM 켬" : "BGM 끔"}
           </button>
           <button type="button" onClick={() => { playSound("tap"); loadLevel(levelNumber, variant); }}>↻ 다시 시작</button>
         </div>
@@ -314,7 +337,8 @@ export function PastelColorSortGame() {
                     );
                   })}
                 </span>
-                {complete && <span className="pastel-tube-check" aria-hidden="true">✓</span>}
+                <span className="pastel-tube-ground-shadow" aria-hidden="true" />
+                {complete && <span className="pastel-tube-sparkle" aria-hidden="true"><i /><i /><i /></span>}
               </button>
             );
           })}

@@ -229,7 +229,7 @@
 
 .hud {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(6, 1fr);
   overflow: hidden;
   margin-bottom: 10px;
   border: 1px solid #e0d9cc;
@@ -419,6 +419,7 @@
   width: min(96%, 118px);
   height: 100%;
   max-height: 126px;
+  filter: saturate(1.08) contrast(1.025);
 }
 
 .cardLabel {
@@ -488,7 +489,7 @@
 
 .controls {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 9px;
   margin-top: 16px;
 }
@@ -513,6 +514,8 @@
 
 .controls button:disabled { cursor: not-allowed; opacity: .48; }
 .controls button:first-child { border-color: #c9d8b9; background: #eff5e7; }
+.controls button[aria-pressed="true"] { border-color: #b8caa8; background: #eaf2e2; color: #4e673b; }
+.controls button[aria-pressed="false"] { border-color: #e2b9aa; background: #fff0ea; color: #875c4c; }
 .controls button span { display: inline-grid; min-width: 28px; place-items: center; border-radius: 999px; background: white; padding: 2px 5px; }
 
 .audioPanel {
@@ -623,8 +626,8 @@
   .hud { grid-template-columns: 1fr 1fr; }
   .hud div { border-right: 0; border-bottom: 1px solid #e7e0d5; }
   .hud div:nth-child(odd) { border-right: 1px solid #e7e0d5; }
-  .hud div:nth-child(4) { border-bottom: 0; }
-  .hud div:nth-child(5) { grid-column: 1 / -1; border-bottom: 0; border-top: 1px solid #e7e0d5; }
+  .hud div:nth-child(5),
+  .hud div:nth-child(6) { border-bottom: 0; }
   .board { grid-template-columns: repeat(var(--memory-mobile-columns), minmax(0, 1fr)); gap: 8px; }
   .controls { grid-template-columns: 1fr 1fr; }
   .resultGrid { grid-template-columns: 1fr 1fr; }

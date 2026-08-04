@@ -243,7 +243,7 @@ export function TetrisGame() {
       engine.level = Math.floor(engine.lines / 10) + 1;
       audio.play(cleared === 4 ? "tetris" : "line");
       vibrate(cleared === 4 ? [18, 25, 30] : 18);
-      setMessage(cleared === 4 ? "테트리스! 네 줄을 한 번에 지웠어요." : `${cleared}줄을 정리했어요.`);
+      setMessage(cleared === 4 ? "4줄 클리어! 한 번에 정리했어요." : `${cleared}줄을 정리했어요.`);
     } else {
       audio.play("drop");
     }
@@ -384,7 +384,7 @@ export function TetrisGame() {
   return (
     <div className={styles.shell}>
       <div className={styles.gameLayout}>
-        <section className={styles.playPanel} aria-label="MAKEON 테트리스 게임">
+        <section className={styles.playPanel} aria-label="MAKEON 파스텔 블록 퍼즐 게임">
           <div className={styles.topBar}>
             <div><span>점수</span><strong>{snapshot.score.toLocaleString()}</strong></div>
             <div><span>라인</span><strong>{snapshot.lines}</strong></div>
@@ -394,7 +394,7 @@ export function TetrisGame() {
 
           <div className={styles.stageRow}>
             <div className={styles.boardWrap}>
-              <div className={styles.board} role="group" aria-label={`테트리스 보드, 점수 ${snapshot.score}점, ${snapshot.lines}줄 삭제`}>
+              <div className={styles.board} role="group" aria-label={`블록 퍼즐 보드, 점수 ${snapshot.score}점, ${snapshot.lines}줄 삭제`}>
                 {renderedCells.map((cell, index) => (
                   <span
                     className={`${styles.cell} ${cell.kind ? styles.filled : ""} ${cell.ghost ? styles.ghost : ""}`}
@@ -430,7 +430,7 @@ export function TetrisGame() {
 
           <p className={styles.message} aria-live="polite">{message}</p>
 
-          <div className={styles.mobileControls} aria-label="테트리스 조작 버튼">
+          <div className={styles.mobileControls} aria-label="블록 퍼즐 조작 버튼">
             <button type="button" onClick={() => move(-1)} aria-label="왼쪽 이동">←</button>
             <button type="button" onClick={() => stepDown(true)} aria-label="아래로 이동">↓</button>
             <button type="button" onClick={() => move(1)} aria-label="오른쪽 이동">→</button>
