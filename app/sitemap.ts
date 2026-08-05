@@ -17,6 +17,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/tools/sensory-toy-playground",
     "/tools/pastel-stack-game",
     "/tools/pastel-memory-match",
+    "/tools/memory-token-battle",
     "/tools/pastel-color-sort",
     "/tools/pastel-block-puzzle",
     "/about",

@@ -67,6 +67,17 @@ export const tools: Tool[] = [
     featuredOnHome: false,
   },
   {
+    slug: "memory-token-battle",
+    name: "메모리 토큰 배틀",
+    description:
+      "토큰의 위치를 기억해 짝을 찾고 2인 또는 로봇과 대결하는 무료 기억력 게임",
+    category: "대전 게임",
+    status: "available",
+    icon: "✺",
+    actionLabel: "게임 시작",
+    featuredOnHome: false,
+  },
+  {
     slug: "pastel-block-puzzle",
     name: "MAKEON 파스텔 블록 퍼즐",
     description:
