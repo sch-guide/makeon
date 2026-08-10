@@ -44,7 +44,7 @@ export function Leaderboard({
       <header className={styles.panelHeader}>
         <div>
           <p className="eyebrow">ONLINE LEADERBOARD</p>
-          <h2 id="online-ranking-title">{game === "tetris" ? "파스텔 블록 퍼즐 온라인 랭킹" : "파스텔 스택 온라인 랭킹"}</h2>
+          <h2 id="online-ranking-title">{game === "tetris" ? "블록 퍼즐 온라인 랭킹" : "파스텔 스택 온라인 랭킹"}</h2>
         </div>
         <button type="button" className={styles.refreshButton} onClick={onRefresh} disabled={!configured || loading}>
           {loading ? "불러오는 중…" : "랭킹 새로고침"}

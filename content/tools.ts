@@ -110,15 +110,15 @@ export const tools: Tool[] = [
   },
   {
     slug: "pastel-block-puzzle",
-    name: "MAKEON 파스텔 블록 퍼즐",
+    name: "블록 퍼즐",
     description:
-      "파스텔 블록으로 줄을 완성하고 오늘·전체 온라인 랭킹에 도전하는 무료 블록 퍼즐 게임",
+      "블록으로 줄을 완성하고 오늘·전체 온라인 랭킹에 도전하는 무료 블록 퍼즐 게임",
     category: "퍼즐 게임",
     status: "available",
     icon: "▦",
     href: "/tools/pastel-block-puzzle",
     thumbnail: "/images/tools/thumbnails/pastel-block-puzzle.svg",
-    thumbnailAlt: "파스텔 블록과 다음 블록이 보이는 블록 퍼즐 플레이 화면",
+    thumbnailAlt: "블록과 다음 블록이 보이는 블록 퍼즐 플레이 화면",
     tags: ["온라인 랭킹", "모바일 조작", "블록 퍼즐"],
     popularity: 92,
     releasedAt: "2026-08-04",

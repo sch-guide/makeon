@@ -6,15 +6,15 @@ import styles from "@/components/tetris-game/tetris-game.module.css";
 import { siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "MAKEON 파스텔 블록 퍼즐 | 무료 줄 완성 게임",
+  title: "블록 퍼즐 | 무료 줄 완성 게임",
   description:
-    "일곱 종류의 파스텔 블록을 이동하고 회전해 가로줄을 완성하고 오늘·전체 온라인 랭킹에 도전하는 무료 웹 블록 퍼즐입니다.",
+    "일곱 종류의 블록을 이동하고 회전해 가로줄을 완성하고 오늘·전체 온라인 랭킹에 도전하는 무료 웹 블록 퍼즐입니다.",
   alternates: { canonical: "/tools/pastel-block-puzzle" },
   openGraph: {
-    title: "MAKEON 파스텔 블록 퍼즐 | 무료 줄 완성 게임",
-    description: "파스텔 블록으로 가로줄을 완성하고 온라인 TOP 20 기록에 도전해보세요.",
+    title: "블록 퍼즐 | 무료 줄 완성 게임",
+    description: "블록으로 가로줄을 완성하고 온라인 TOP 20 기록에 도전해보세요.",
     url: "/tools/pastel-block-puzzle",
-    images: [{ url: "/og.png", alt: "MAKEON 파스텔 블록 퍼즐" }],
+    images: [{ url: "/og.png", alt: "블록 퍼즐" }],
   },
 };
 
@@ -50,11 +50,11 @@ export default function PastelBlockPuzzlePage() {
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "VideoGame",
-    name: "MAKEON 파스텔 블록 퍼즐",
+    name: "블록 퍼즐",
     url: `${siteConfig.url}/tools/pastel-block-puzzle`,
     applicationCategory: "GameApplication",
     operatingSystem: "Web Browser",
-    description: "모바일과 PC에서 줄을 완성하고 온라인 랭킹에 도전하는 무료 파스텔 블록 퍼즐",
+    description: "모바일과 PC에서 줄을 완성하고 온라인 랭킹에 도전하는 무료 블록 퍼즐",
     playMode: "SinglePlayer",
     offers: { "@type": "Offer", price: "0", priceCurrency: "KRW" },
   };
@@ -64,7 +64,7 @@ export default function PastelBlockPuzzlePage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
       <PageHero
         eyebrow="FREE BLOCK PUZZLE"
-        title="MAKEON 파스텔 블록 퍼즐"
+        title="블록 퍼즐"
         description="블록을 빈틈없이 배치해 가로줄을 지우고 오늘과 전체 온라인 랭킹에 도전해보세요."
       />
 

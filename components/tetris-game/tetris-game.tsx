@@ -384,7 +384,7 @@ export function TetrisGame() {
   return (
     <div className={styles.shell}>
       <div className={styles.gameLayout}>
-        <section className={styles.playPanel} aria-label="MAKEON 파스텔 블록 퍼즐 게임">
+        <section className={styles.playPanel} aria-label="블록 퍼즐 게임">
           <div className={styles.topBar}>
             <div><span>점수</span><strong>{snapshot.score.toLocaleString()}</strong></div>
             <div><span>라인</span><strong>{snapshot.lines}</strong></div>
