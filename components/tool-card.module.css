@@ -42,22 +42,6 @@
 .thumbnail img { object-fit: cover; transition: transform 420ms cubic-bezier(.22,.72,.25,1); }
 .card:hover .thumbnail img { transform: scale(1.035); }
 
-.previewLabel {
-  position: absolute;
-  z-index: 2;
-  right: 14px;
-  bottom: 14px;
-  border: 1px solid rgba(255,255,255,.7);
-  border-radius: 999px;
-  background: rgba(38, 50, 37, 0.76);
-  padding: 6px 10px;
-  color: white;
-  font-size: 10px;
-  font-weight: 760;
-  letter-spacing: .02em;
-  backdrop-filter: blur(8px);
-}
-
 .fallback { display: grid; height: 100%; place-content: center; gap: 8px; color: #48603f; text-align: center; }
 .fallback span { font-size: 52px; }
 .fallback small { font-size: 10px; font-weight: 800; letter-spacing: .12em; }

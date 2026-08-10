@@ -21,7 +21,6 @@ export function ToolCard({ tool }: { tool: Tool }) {
           ) : (
             <div className={styles.fallback} aria-hidden="true"><span>{tool.icon}</span><small>MAKEON TOOL</small></div>
           )}
-          <span className={styles.previewLabel}>화면 미리보기</span>
         </div>
 
         <div className={styles.content}>
