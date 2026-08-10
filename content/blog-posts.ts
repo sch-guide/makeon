@@ -7,6 +7,10 @@ import {
 } from "@/content/blog-posts-adsense-quality";
 import { applyBlogVisuals } from "@/content/blog-visuals";
 import { applyBlogPostEnhancement } from "@/content/blog-post-enhancements";
+import {
+  searchFocusedPosts,
+  searchFocusedPostSlugs,
+} from "@/content/blog-posts-search-focused";
 
 const legacyBlogPosts: BlogPost[] = [
   ...thirdClusterPosts,
@@ -1262,9 +1266,13 @@ const legacyBlogPosts: BlogPost[] = [
 ];
 
 const strengthenedSlugSet = new Set<string>(strengthenedPostSlugs);
+const searchFocusedSlugSet = new Set<string>(searchFocusedPostSlugs);
 const rawBlogPosts: BlogPost[] = [
+  ...searchFocusedPosts,
   ...adsenseQualityPosts,
-  ...legacyBlogPosts.filter((post) => !strengthenedSlugSet.has(post.slug)),
+  ...legacyBlogPosts.filter(
+    (post) => !strengthenedSlugSet.has(post.slug) && !searchFocusedSlugSet.has(post.slug),
+  ),
 ];
 
 export const blogPosts: BlogPost[] = rawBlogPosts.map((post) =>
