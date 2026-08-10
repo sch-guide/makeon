@@ -4,6 +4,8 @@ export const searchFocusedPostSlugs = [
   "codex-error-troubleshooting-guide",
   "adsense-low-value-content-checklist",
   "better-prompts-for-ai-coding",
+  "vercel-deployment-error-guide",
+  "reuse-supabase-project-multiple-apps",
 ] as const;
 
 export const searchFocusedPosts: BlogPost[] = [
@@ -554,6 +556,389 @@ export const searchFocusedPosts: BlogPost[] = [
       { label: "OpenAI Codex 프롬프트 공식 안내", href: "https://learn.chatgpt.com/docs/prompting" },
       { label: "OpenAI Codex 모범 사례", href: "https://learn.chatgpt.com/guides/best-practices" },
       { label: "OpenAI Codex 문제 해결 공식 안내", href: "https://learn.chatgpt.com/docs/reference/troubleshooting" },
+    ],
+  },
+  {
+    slug: "vercel-deployment-error-guide",
+    title: "Vercel 배포 오류 해결: Build Logs부터 환경변수까지 확인하는 순서",
+    seoTitle: "Vercel 배포 오류 해결: Build Logs·환경변수 점검 순서",
+    summary:
+      "Vercel 배포가 실패하거나 성공했는데 사이트가 바뀌지 않을 때 Build Logs의 첫 오류부터 로컬 빌드, 환경변수, Root Directory와 브랜치를 확인하는 순서입니다.",
+    description:
+      "Vercel 배포 오류를 Build Logs, 로컬 build, 환경변수, Root Directory, Node.js, 파일명 대소문자, Git 브랜치와 공개 도메인 순서로 해결하는 실전 가이드입니다.",
+    primaryKeyword: "Vercel 배포 오류",
+    relatedKeywords: [
+      "Vercel build failed",
+      "Vercel 배포 실패",
+      "Vercel 환경변수 오류",
+      "Vercel 배포 반영 안됨",
+      "Next.js Vercel 오류",
+    ],
+    publishedAt: "2026-08-10",
+    category: "배포 가이드",
+    tags: ["배포·수익화", "웹사이트·웹앱 제작"],
+    readingTime: "14분",
+    reviewNote: {
+      checkedAt: "2026-08-10",
+      environment: "Next.js 프로젝트를 GitHub main 브랜치와 Vercel에 연결한 일반적인 배포 흐름",
+      notice:
+        "Vercel 대시보드 메뉴, 런타임과 플랜 제한은 변경될 수 있습니다. 특정 버전 번호를 전제로 하지 않으며 현재 Build Logs와 공식 문서를 우선 확인하세요.",
+    },
+    sections: [
+      {
+        heading: "결론: 마지막 ‘실패’ 문구보다 Build Logs의 첫 실제 오류를 찾으세요",
+        paragraphs: [
+          "Vercel 배포 오류는 먼저 실패 지점을 분류하면 해결 시간이 줄어듭니다. 저장소 연결 전인지, 빌드가 시작되지 않았는지, 빌드 중 실패했는지, 배포는 성공했지만 공개 주소가 바뀌지 않았는지부터 구분하세요.",
+          "Vercel 공식 문제 해결 문서도 `exited with 1` 같은 마지막 결과 문구가 실제 원인이 아닐 수 있다고 안내합니다. Build Logs에서 그보다 앞에 나온 첫 TypeScript 오류, 모듈 누락, 설정 오류를 찾고 로컬에서 같은 build를 재현하는 것이 출발점입니다.",
+        ],
+        table: {
+          caption: "Vercel 배포 상태별 첫 확인 위치",
+          headers: ["보이는 상태", "첫 확인", "다음 행동"],
+          rows: [
+            ["배포가 생성되지 않음", "Git 연결·production 브랜치·Ignored Build Step", "push한 커밋과 연결 저장소 대조"],
+            ["Build Failed", "실패한 deployment의 Build Logs", "첫 실제 오류를 로컬 build에서 재현"],
+            ["로그 없이 실패", "배포 화면의 요약 메시지", "잘못된 설정·권한·빌드 시작 조건 확인"],
+            ["Ready지만 기능 오류", "Runtime Logs·브라우저 Network", "서버 실행 오류와 API 응답 확인"],
+            ["Ready지만 변경 안 보임", "커밋 SHA·production 도메인", "Preview와 Production, 캐시를 구분"],
+          ],
+        },
+      },
+      {
+        heading: "1. 실패한 배포가 어떤 커밋에서 만들어졌는지 확인합니다",
+        paragraphs: [
+          "Vercel 프로젝트의 Deployments에서 실패한 항목을 열고 연결된 Git 커밋, 브랜치와 배포 환경을 확인합니다. 로컬에서 수정한 파일이 아직 commit되지 않았거나 다른 브랜치에 push되었다면 Vercel 설정을 바꿔도 해결되지 않습니다.",
+        ],
+        bullets: [
+          "GitHub 원격 저장소와 Vercel 연결 저장소가 같은가",
+          "운영 배포가 추적하는 production 브랜치가 맞는가",
+          "배포 상세의 커밋 SHA가 방금 push한 커밋인가",
+          "Preview URL과 운영 도메인을 혼동하지 않았는가",
+          "Ignored Build Step이나 모노레포 건너뛰기 설정이 작동하지 않았는가",
+        ],
+        contextualLinks: [
+          {
+            prefix: "저장소 연결부터 정상 배포까지 처음 진행하는 중이라면",
+            label: "Next.js Vercel 배포 방법",
+            href: "/blog/nextjs-vercel-deployment-guide",
+            suffix: "을 먼저 따라가세요.",
+          },
+        ],
+      },
+      {
+        heading: "2. Build Logs에서 첫 번째 원인 오류를 찾습니다",
+        paragraphs: [
+          "로그 아래쪽의 종료 코드만 복사하지 말고 위로 올라가 처음 나온 구체적인 오류를 찾으세요. 파일 경로와 줄 번호가 있는 TypeScript 오류, `Module not found`, 환경변수 검증 오류처럼 행동으로 옮길 수 있는 메시지가 원인 후보입니다.",
+        ],
+        codeBlock: {
+          label: "오류 기록 양식",
+          code: "배포 커밋: [SHA 앞 7자리]\n배포 환경: [Production / Preview]\n실행된 Build Command: [명령]\n첫 실제 오류: [비밀값을 제거한 내용]\n관련 파일과 줄: [경로]\n로컬 재현 여부: [예 / 아니오]\n최근 변경: [package.json / 환경변수 / 경로 / 코드]",
+        },
+        callout: {
+          type: "warning",
+          title: "로그 공유 전 비밀정보를 제거하세요",
+          text: "API 키, 토큰, 이메일, 데이터베이스 주소의 식별자와 환경변수 실제 값은 가린 뒤 필요한 오류 문맥만 공유하세요.",
+        },
+      },
+      {
+        heading: "3. 같은 커밋을 로컬 production build로 재현합니다",
+        paragraphs: [
+          "개발 서버가 열린다는 사실은 production build 성공을 뜻하지 않습니다. Vercel이 사용한 커밋에서 의존성을 설치하고 프로젝트의 build 스크립트를 실행하세요. 로컬에서도 실패하면 코드·타입·의존성 문제를 먼저 해결하고, 로컬만 성공하면 환경과 프로젝트 설정의 차이를 비교합니다.",
+        ],
+        codeBlock: {
+          label: "Next.js 기본 확인",
+          code: "git status --short --branch\nnpm ci\nnpm run build",
+        },
+        bullets: [
+          "package-lock.json이 package.json 변경과 함께 commit됐는가",
+          "빌드에 필요한 패키지가 dependencies 또는 devDependencies에 존재하는가",
+          "로컬 전용 전역 패키지에 의존하지 않는가",
+          "Windows에서만 통과하는 파일명 대소문자 차이가 없는가",
+          "빌드 중 외부 API가 꼭 필요한 구조인지 확인했는가",
+        ],
+      },
+      {
+        heading: "4. 환경변수 이름·값·적용 환경을 따로 확인합니다",
+        paragraphs: [
+          "환경변수가 등록되어 있어도 Production에 적용되지 않았거나 이름의 철자·접두사가 코드와 다르면 누락으로 처리됩니다. 값은 화면이나 로그에 출력하지 말고 존재 여부와 적용 환경만 확인하세요. 새 환경변수는 이미 끝난 배포에 소급 적용되지 않으므로 새 배포가 필요한지도 확인합니다.",
+        ],
+        table: {
+          caption: "환경변수 오류 진단",
+          headers: ["증상", "확인할 항목", "주의"],
+          rows: [
+            ["빌드 중 undefined", "코드의 변수 이름과 Vercel Key 일치", "공백과 오탈자 확인"],
+            ["Preview만 성공", "Production·Preview 적용 범위", "환경별 값이 다를 수 있음"],
+            ["브라우저에서 값 없음", "클라이언트 공개 접두사 필요 여부", "비밀키를 공개 접두사로 바꾸지 않기"],
+            ["서버 API 500", "서버 전용 값과 Runtime Logs", "service role·secret key는 서버에만 보관"],
+          ],
+        },
+      },
+      {
+        heading: "5. Root Directory와 Build Command가 실제 프로젝트를 가리키는지 봅니다",
+        paragraphs: [
+          "저장소 루트에 앱이 하나라면 보통 자동 감지가 가능하지만, 하위 폴더나 모노레포에서는 Vercel 프로젝트의 Root Directory가 해당 `package.json`이 있는 위치를 가리켜야 합니다. 잘못된 폴더에서는 프레임워크를 찾지 못하거나 다른 앱을 빌드할 수 있습니다.",
+          "Framework Preset, Install Command, Build Command, Output Directory를 직접 덮어썼다면 왜 필요한지 확인하세요. 기본값으로 동작하는 프로젝트에 과거 설정이 남아 있으면 현재 코드와 충돌할 수 있습니다.",
+        ],
+      },
+      {
+        heading: "6. Node.js·패키지 관리자·파일 경로 차이를 확인합니다",
+        paragraphs: [
+          "로컬 Node.js와 Vercel 프로젝트 설정이 다르거나 lockfile이 여러 개면 다른 패키지 버전이 설치될 수 있습니다. `package.json`의 engines·packageManager 설정과 저장소의 lockfile을 확인하고, 실제 사용하지 않는 lockfile은 원인을 확인한 뒤 정리하세요.",
+          "Windows는 대소문자가 다른 import를 지나칠 수 있지만 배포 환경에서는 `Header.tsx`와 `header.tsx`가 다른 파일일 수 있습니다. Git이 파일명 변경을 기록했는지도 확인해야 합니다.",
+        ],
+      },
+      {
+        heading: "7. 배포 성공인데 사이트가 안 바뀌면 도메인과 캐시를 분리합니다",
+        paragraphs: [
+          "Ready 상태라면 해당 배포의 고유 URL에서 먼저 새 문구나 기능을 확인합니다. 고유 URL은 바뀌었는데 운영 도메인은 이전 화면이라면 production 배포 승격과 도메인 연결을 확인하세요. 두 URL 모두 새 배포인데 브라우저만 이전 화면이면 강력 새로고침과 서비스 워커·CDN 캐시 가능성을 점검합니다.",
+        ],
+        bullets: [
+          "배포 고유 URL에서 새 커밋 확인",
+          "운영 도메인이 가리키는 Production deployment 확인",
+          "HTML 소스와 브라우저 화면을 구분해 확인",
+          "API 응답과 정적 화면 캐시를 별도로 확인",
+          "Redeploy는 원인을 기록한 뒤 필요한 경우에만 사용",
+        ],
+      },
+      {
+        heading: "오류 유형별 최소 수정 순서",
+        paragraphs: [
+          "한 번에 Node 버전, 환경변수, build 명령과 코드를 모두 바꾸면 어떤 변경이 해결했는지 알 수 없습니다. 아래 순서에서 근거가 확인된 항목 하나만 수정하고 다시 배포하세요.",
+        ],
+        table: {
+          caption: "Vercel 오류 해결 우선순위",
+          headers: ["오류 유형", "먼저 수정", "다시 확인"],
+          rows: [
+            ["TypeScript", "로그에 나온 첫 파일·타입", "로컬 typecheck와 build"],
+            ["Module not found", "import 경로·설치 패키지·lockfile", "깨끗한 의존성 설치"],
+            ["환경변수", "정확한 Key와 적용 환경", "새 deployment에서 서버 동작"],
+            ["잘못된 앱 빌드", "Root Directory", "감지된 framework와 build command"],
+            ["공개 반영 안 됨", "commit·branch·domain 연결", "고유 URL과 운영 URL"],
+          ],
+        },
+        contextualLinks: [
+          {
+            prefix: "AI에게 오류 분석을 맡길 때는",
+            label: "Codex 작업 실패 해결 순서",
+            href: "/blog/codex-error-troubleshooting-guide",
+            suffix: "의 첫 오류 전달 템플릿을 사용하세요.",
+          },
+        ],
+      },
+    ],
+    faqs: [
+      { question: "Vercel의 `Command exited with 1`이 원인인가요?", answer: "대개 실패 결과를 요약한 문구입니다. Build Logs에서 그보다 앞에 나온 첫 구체적인 오류와 파일 경로를 찾으세요." },
+      { question: "로컬 build는 성공하는데 Vercel만 실패하는 이유는 무엇인가요?", answer: "환경변수, Node.js, 패키지 설치, Root Directory, 파일명 대소문자와 배포 커밋이 로컬과 다른지 확인해야 합니다." },
+      { question: "환경변수를 추가하면 기존 배포에도 적용되나요?", answer: "이미 완료된 배포에는 자동으로 소급되지 않을 수 있습니다. 변수의 적용 환경을 확인하고 새 배포에서 동작을 검증하세요." },
+      { question: "Redeploy를 누르면 모든 오류가 해결되나요?", answer: "일시적인 문제에는 도움이 될 수 있지만 코드나 설정 오류는 반복됩니다. 첫 오류와 변경 근거를 확인한 뒤 필요할 때만 재배포하세요." },
+      { question: "배포가 Ready인데 운영 사이트가 그대로인 이유는 무엇인가요?", answer: "Preview 배포를 보고 있거나 운영 도메인이 이전 Production deployment를 가리킬 수 있습니다. 커밋 SHA, 고유 URL과 도메인 연결을 비교하세요." },
+    ],
+    relatedSlugs: [
+      "nextjs-vercel-deployment-guide",
+      "codex-error-troubleshooting-guide",
+      "github-pages-vs-vercel-for-beginners",
+      "build-a-website-with-ai-without-coding",
+    ],
+    sources: [
+      { label: "Vercel Build 오류 문제 해결", href: "https://vercel.com/docs/deployments/troubleshoot-a-build" },
+      { label: "Vercel Build Logs 공식 문서", href: "https://vercel.com/docs/deployments/logs" },
+      { label: "Vercel 프로젝트 설정 공식 문서", href: "https://vercel.com/docs/project-configuration/project-settings" },
+      { label: "Vercel 모노레포와 Root Directory", href: "https://vercel.com/docs/monorepos" },
+    ],
+  },
+  {
+    slug: "reuse-supabase-project-multiple-apps",
+    title: "Supabase 프로젝트 하나를 여러 앱에서 안전하게 사용하는 방법",
+    seoTitle: "Supabase 프로젝트 하나를 여러 앱에서 쓰는 방법과 주의점",
+    summary:
+      "무료 프로젝트 한도 때문에 Supabase 프로젝트를 공유할 때 테이블 접두사, RLS, 익명 로그인, API 키와 migration을 앱별로 분리하는 방법을 설명합니다.",
+    description:
+      "Supabase 프로젝트 하나를 여러 앱에서 사용할 때 기존 데이터에 영향 없이 테이블·정책·함수·migration을 분리하고 publishable·service role 키와 RLS를 안전하게 구성하는 방법입니다.",
+    primaryKeyword: "Supabase 프로젝트 여러 앱",
+    relatedKeywords: [
+      "Supabase 프로젝트 재사용",
+      "Supabase 테이블 분리",
+      "Supabase RLS 여러 앱",
+      "Supabase 익명 로그인",
+      "Supabase service role key",
+    ],
+    publishedAt: "2026-08-10",
+    category: "AI 웹앱 제작",
+    tags: ["웹사이트·웹앱 제작", "배포·수익화"],
+    readingTime: "15분",
+    reviewNote: {
+      checkedAt: "2026-08-10",
+      environment: "기존 Supabase 프로젝트에 별도 MAKEON 게임 랭킹 테이블과 정책을 추가하는 운영 사례",
+      notice:
+        "Supabase 키 체계와 대시보드 메뉴는 변경될 수 있습니다. 이 글은 MAKEON의 분리 원칙을 일반화한 것이며, 실제 SQL 실행 전 기존 객체·RLS·백업과 최신 공식 문서를 확인하세요.",
+    },
+    sections: [
+      {
+        heading: "결론: 가능하지만 데이터베이스 경계가 아니라 ‘운영 규칙으로 분리’된다는 점을 알아야 합니다",
+        paragraphs: [
+          "Supabase 프로젝트 하나를 여러 앱에서 함께 사용할 수 있습니다. 같은 프로젝트 URL과 인증 시스템을 사용하면서 앱별 테이블, 함수, 정책을 따로 만들 수 있기 때문입니다. 다만 별도 프로젝트처럼 완전히 격리되는 것은 아닙니다. 키 회전, Auth 설정, 사용량, 장애와 관리 권한은 프로젝트 전체에 영향을 줍니다.",
+          "MAKEON은 기존 travel-album 프로젝트의 테이블을 건드리지 않고 랭킹 객체에 `makeon_` 접두사를 붙이는 방식을 선택했습니다. 이 방법의 핵심은 이름만 바꾸는 것이 아니라 RLS, 함수, 인덱스, migration과 서버 키 사용 범위까지 앱별로 분리하는 것입니다.",
+        ],
+        table: {
+          caption: "한 프로젝트 공유가 맞는 경우와 분리가 필요한 경우",
+          headers: ["상황", "한 프로젝트 공유", "별도 프로젝트 권장"],
+          rows: [
+            ["규모", "작은 개인 앱·낮은 트래픽", "독립적인 운영·높은 트래픽"],
+            ["인증", "같은 Auth 설정을 수용 가능", "로그인 정책·사용자 수명주기가 완전히 다름"],
+            ["보안", "같은 소유자와 엄격한 RLS 검토", "팀·고객·규제 경계를 분리해야 함"],
+            ["장애 영향", "한 앱 장애가 다른 앱에 미칠 위험 수용", "독립 배포·복구·키 회전 필요"],
+            ["비용", "무료 한도 안에서 실험", "앱별 사용량·비용을 명확히 분리"],
+          ],
+        },
+      },
+      {
+        heading: "1. 기존 객체를 먼저 목록화하고 소유 범위를 정합니다",
+        paragraphs: [
+          "새 migration을 실행하기 전에 기존 테이블, 함수, trigger, 정책과 Auth 사용 방식을 확인하세요. 이름이 겹치지 않아도 `drop policy if exists`나 `create or replace function`이 기존 객체를 가리키면 다른 앱이 바뀔 수 있습니다.",
+        ],
+        bullets: [
+          "기존 앱이 소유한 테이블·뷰·함수·정책 이름",
+          "기존 Auth provider와 익명 로그인 사용 여부",
+          "새 앱만 사용할 객체 접두사 또는 별도 schema",
+          "공유할 객체와 절대 수정하지 않을 객체",
+          "migration 실행 전 백업과 복구 방법",
+        ],
+        callout: {
+          type: "warning",
+          title: "접두사는 충돌 방지 규칙이지 보안 경계가 아닙니다",
+          text: "`makeon_` 이름만으로 접근이 막히지 않습니다. 실제 권한은 grants, RLS, 함수 권한과 서버 코드에서 제어해야 합니다.",
+        },
+      },
+      {
+        heading: "2. 테이블·정책·함수에 같은 앱 접두사를 사용합니다",
+        paragraphs: [
+          "public schema를 함께 쓴다면 테이블뿐 아니라 인덱스, constraint, policy와 RPC 함수 이름에도 같은 접두사를 붙이세요. migration 파일도 앱 폴더에 보관해 어느 서비스가 소유하는 변경인지 알 수 있게 합니다.",
+        ],
+        codeBlock: {
+          label: "MAKEON 전용 이름 예시",
+          code: "public.makeon_game_profiles\npublic.makeon_game_scores\nmakeon_game_scores_user_game_idx\nmakeon_game_scores_insert_own\npublic.makeon_submit_game_score(...)\nsupabase/migrations/makeon/20260810_makeon_game_ranking.sql",
+        },
+        table: {
+          caption: "객체별 분리 원칙",
+          headers: ["객체", "예시", "확인할 점"],
+          rows: [
+            ["테이블", "makeon_game_scores", "기존 테이블 참조·cascade 삭제 없음"],
+            ["인덱스", "makeon_game_scores_rank_idx", "앱 접두사와 대상 열 일치"],
+            ["정책", "makeon_game_scores_select_public", "대상 role과 using·with check"],
+            ["함수", "makeon_submit_game_score", "search_path·권한·입력 검증"],
+            ["migration", "makeon 폴더·타임스탬프", "기존 객체 drop·replace 금지"],
+          ],
+        },
+      },
+      {
+        heading: "3. 익명 로그인과 `anon` API 키를 구분합니다",
+        paragraphs: [
+          "Supabase Auth의 익명 로그인은 `signInAnonymously()`로 실제 익명 사용자와 고유 ID를 만듭니다. 이 사용자는 데이터베이스에서 일반 로그인 사용자처럼 `authenticated` 역할을 사용하며 JWT의 `is_anonymous` 값으로 구분할 수 있습니다. 반면 publishable 또는 예전 anon API 키만 사용하고 로그인하지 않은 요청은 `anon` 역할입니다.",
+          "프로젝트에서 익명 로그인을 켜면 Auth 설정은 프로젝트 전체에 적용됩니다. 기존 여행 앱이 `authenticated` 역할에 넓은 정책을 두었다면 익명 사용자도 그 정책 대상이 될 수 있으므로 반드시 검토해야 합니다. 기존 정책을 무작정 바꾸기보다 민감한 작업에 영구 사용자만 허용하는 제한이 필요한지 먼저 분석하세요.",
+        ],
+        contextualLinks: [
+          {
+            prefix: "AI에게 이런 보안 조건을 빠뜨리지 않고 전달하려면",
+            label: "AI 코딩 프롬프트 작성법",
+            href: "/blog/better-prompts-for-ai-coding",
+            suffix: "의 유지·제외 조건을 함께 사용하세요.",
+          },
+        ],
+      },
+      {
+        heading: "4. RLS는 새 테이블마다 별도로 켜고 최소 권한으로 작성합니다",
+        paragraphs: [
+          "Supabase Data API 보안은 객체에 대한 grants와 행 단위 RLS 정책을 함께 봐야 합니다. 공개 랭킹 조회가 필요하더라도 점수 제출·수정·삭제까지 모두 공개할 필요는 없습니다. 사용자가 자신의 점수만 제출할 수 있는지, 서버에서 검증한 점수만 기록해야 하는지를 게임 규칙에 맞게 결정하세요.",
+        ],
+        codeBlock: {
+          label: "정책을 설계할 때 확인할 질문",
+          code: "SELECT: 누구나 전체 랭킹을 읽어도 되는가?\nINSERT: auth.uid()가 제출 row의 user_id와 같은가?\nUPDATE: 점수 덮어쓰기를 허용할 것인가?\nDELETE: 사용자 삭제가 필요한가, 서버만 가능한가?\nRPC: 입력 범위와 호출 권한을 검증하는가?\nANONYMOUS: is_anonymous 사용자에게 허용할 행동은 무엇인가?",
+        },
+        callout: {
+          type: "tip",
+          title: "기존 RLS는 그대로 두고 새 객체만 검토하세요",
+          text: "공유 프로젝트에 기능을 추가할 때는 기존 정책을 ‘정리’한다는 이유로 바꾸지 마세요. 새 앱 객체에 필요한 정책만 추가하고 회귀 테스트를 별도로 수행합니다.",
+        },
+      },
+      {
+        heading: "5. publishable 키와 service role 키의 위치를 분리합니다",
+        paragraphs: [
+          "Supabase 공식 문서는 publishable 키를 브라우저 같은 공개 구성 요소에서 사용할 수 있는 낮은 권한 키로 설명합니다. 실제 데이터 접근은 사용자의 로그인 상태와 RLS가 제한합니다. 반면 secret 키와 기존 service role 키는 RLS를 우회할 수 있으므로 브라우저, `NEXT_PUBLIC_` 변수, 공개 저장소와 로그에 넣으면 안 됩니다.",
+        ],
+        table: {
+          caption: "Supabase 키 배치 기준",
+          headers: ["키", "사용 위치", "보호 방법"],
+          rows: [
+            ["Project URL", "브라우저·서버", "환경별 설정 관리"],
+            ["Publishable key", "브라우저 사용 가능", "RLS를 반드시 활성화·검토"],
+            ["Legacy anon key", "기존 브라우저 앱", "publishable 키와 같은 공개 구성 요소 원칙"],
+            ["Secret key", "보호된 서버 코드만", "클라이언트 번들·로그·채팅 노출 금지"],
+            ["Legacy service_role", "보호된 서버 코드만", "RLS 우회 권한을 전제로 최소 사용"],
+          ],
+        },
+      },
+      {
+        heading: "6. 환경변수는 앱별 Vercel 프로젝트에 등록합니다",
+        paragraphs: [
+          "같은 Supabase 프로젝트를 가리키더라도 각 앱의 Vercel 프로젝트에 필요한 변수만 등록하세요. MAKEON 서버가 랭킹 관리에 elevated key가 필요하다면 서버 전용 이름으로 보관하고, 클라이언트에서 참조하지 않는지 build 결과와 코드 검색으로 확인합니다.",
+        ],
+        bullets: [
+          "Project URL과 publishable key는 코드가 기대하는 정확한 이름으로 등록",
+          "secret·service role 값은 서버 전용이며 `NEXT_PUBLIC_` 접두사 금지",
+          "Production·Preview 환경별 적용 범위 확인",
+          "실제 값은 Git, README, 오류 로그와 스크린샷에 포함하지 않기",
+          "변수 변경 후 새 배포에서 API 상태 확인",
+        ],
+        contextualLinks: [
+          {
+            prefix: "환경변수를 등록한 뒤 배포가 실패하면",
+            label: "Vercel 배포 오류 해결 가이드",
+            href: "/blog/vercel-deployment-error-guide",
+            suffix: "의 적용 환경 점검표를 확인하세요.",
+          },
+        ],
+      },
+      {
+        heading: "7. migration과 회귀 테스트를 앱별로 기록합니다",
+        paragraphs: [
+          "SQL은 한 번에 실행 가능한 migration으로 보관하되 기존 travel-album 객체를 drop·alter·replace하지 않는지 먼저 검색합니다. 실행 후에는 새 테이블 존재만 확인하지 말고 기존 여행 앱 로그인·조회와 MAKEON 익명 로그인·랭킹 제출을 모두 테스트해야 합니다.",
+        ],
+        codeBlock: {
+          label: "공유 프로젝트 적용 체크리스트",
+          code: "[ ] migration이 makeon_ 객체만 생성·변경한다\n[ ] 기존 테이블·함수·정책 이름을 건드리지 않는다\n[ ] 새 테이블에 RLS가 켜져 있다\n[ ] 익명 사용자와 영구 사용자의 권한을 구분했다\n[ ] publishable과 server secret 위치가 분리됐다\n[ ] 기존 travel-album 로그인·조회가 정상이다\n[ ] MAKEON 랭킹 조회·제출·오류 응답이 정상이다\n[ ] 키와 개인정보가 Git·로그에 없다",
+        },
+      },
+      {
+        heading: "한 프로젝트 공유를 중단해야 하는 신호",
+        paragraphs: [
+          "무료 한도를 아끼는 장점보다 운영 위험이 커지면 별도 프로젝트로 옮길 시점입니다. 서로 다른 고객 데이터, 팀 권한, 백업 주기와 장애 허용 수준이 필요하거나 한 앱의 트래픽이 다른 앱 성능에 영향을 주기 시작하면 분리를 검토하세요.",
+        ],
+        bullets: [
+          "한 앱의 Auth 설정 변경이 다른 앱 요구와 충돌",
+          "RLS 정책을 앱별 담당자가 독립적으로 관리해야 함",
+          "키 회전과 사고 대응 범위를 분리해야 함",
+          "사용량·비용·백업·복구 목표를 앱별로 측정해야 함",
+          "법적·계약상 데이터 격리가 필요함",
+        ],
+      },
+    ],
+    faqs: [
+      { question: "Supabase 프로젝트 하나를 여러 앱에서 써도 되나요?", answer: "기술적으로 가능하지만 Auth 설정, 사용량, 키와 장애 범위는 공유됩니다. 작은 앱에서 명확한 객체 이름과 RLS 규칙을 운영할 수 있을 때 적합합니다." },
+      { question: "테이블에 접두사만 붙이면 데이터가 안전하게 분리되나요?", answer: "아닙니다. 접두사는 이름 충돌과 소유권 구분에 도움이 될 뿐입니다. grants, RLS, 함수 권한과 서버 키 배치를 별도로 설계해야 합니다." },
+      { question: "익명 로그인을 켜면 기존 로그인 사용자가 로그아웃되나요?", answer: "기능을 켠다는 사실만으로 기존 사용자를 자동 로그아웃시키지는 않지만, 익명 사용자도 `authenticated` 역할을 사용하므로 기존 RLS 정책의 허용 범위를 검토해야 합니다." },
+      { question: "service role key를 브라우저에서 사용해도 되나요?", answer: "안 됩니다. RLS를 우회할 수 있는 높은 권한 키이므로 보호된 서버 코드와 서버 전용 환경변수에서만 사용해야 합니다." },
+      { question: "언제 별도 Supabase 프로젝트로 분리해야 하나요?", answer: "사용자·팀·보안·비용·백업과 장애 범위를 독립적으로 관리해야 하거나 Auth 설정이 충돌하기 시작하면 분리를 검토하세요." },
+    ],
+    relatedSlugs: [
+      "build-a-mini-app-with-ai",
+      "vercel-deployment-error-guide",
+      "nextjs-vercel-deployment-guide",
+      "better-prompts-for-ai-coding",
+    ],
+    sources: [
+      { label: "Supabase 익명 로그인 공식 문서", href: "https://supabase.com/docs/guides/auth/auth-anonymous" },
+      { label: "Supabase Row Level Security 공식 문서", href: "https://supabase.com/docs/guides/database/postgres/row-level-security" },
+      { label: "Supabase API 보안 공식 문서", href: "https://supabase.com/docs/guides/api/securing-your-api" },
+      { label: "Supabase API 키 공식 문서", href: "https://supabase.com/docs/guides/getting-started/api-keys" },
     ],
   },
 ];
