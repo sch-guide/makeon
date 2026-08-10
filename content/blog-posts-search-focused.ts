@@ -417,9 +417,9 @@ export const searchFocusedPosts: BlogPost[] = [
     title: "AI 코딩 프롬프트 작성법: 원하는 결과를 얻는 10가지 조건",
     seoTitle: "AI 코딩 프롬프트 작성법: 결과를 바꾸는 10가지 조건",
     summary:
-      "AI에게 코드를 맡길 때 목표부터 수정 범위, 보존 조건, 오류 처리와 검증까지 빠뜨리지 않도록 10가지 조건과 복사 템플릿을 제공합니다.",
+      "AI에게 코드를 맡길 때 목적, 사용자, 페이지 구조, 기능, 디자인, 기술 스택, 유지 조건, 배포와 검증을 빠뜨리지 않도록 10가지 조건과 복사 템플릿을 제공합니다.",
     description:
-      "AI 코딩 프롬프트 작성법을 목표, 사용자, 현재 상태, 수정 범위, 기술, 보존·제외 조건, 예외 처리, 완료 기준, 검증의 10가지 조건과 예시로 설명합니다.",
+      "AI 코딩 프롬프트 작성법을 목적, 대상 사용자, 페이지 구조, 핵심 기능, 디자인, 기술 스택, 유지·금지 조건, 배포와 검증의 10가지 조건으로 설명합니다.",
     primaryKeyword: "AI 코딩 프롬프트 작성법",
     relatedKeywords: [
       "Codex 프롬프트 작성법",
@@ -470,16 +470,16 @@ export const searchFocusedPosts: BlogPost[] = [
           "모든 항목을 길게 쓸 필요는 없습니다. 새 기능이라면 사용자와 핵심 행동을 자세히 적고, 오류 수정이라면 현재 상태와 재현 방법을 더 자세히 적는 식으로 비중을 조절하세요.",
         ],
         subsections: [
-          { heading: "1. 목표", paragraphs: ["무엇을 만드는지가 아니라 어떤 사용자 문제를 해결할지 적습니다. ‘필터 추가’보다 ‘사용자가 카테고리를 누르면 해당 글만 즉시 찾게 한다’가 분명합니다."] },
+          { heading: "1. 목적", paragraphs: ["무엇을 만드는지가 아니라 어떤 문제를 해결할지 적습니다. ‘필터 추가’보다 ‘사용자가 카테고리를 누르면 해당 글만 즉시 찾게 한다’가 분명합니다."] },
           { heading: "2. 대상 사용자와 사용 환경", paragraphs: ["초보자·관리자·모바일 사용자처럼 누가 쓰는지, 320px 모바일·키보드·터치처럼 중요한 환경을 적습니다."] },
-          { heading: "3. 현재 상태와 재현 방법", paragraphs: ["기술 스택, 관련 URL, 이미 동작하는 기능, 오류가 발생하는 순서를 제공합니다. 오류 메시지에서는 비밀정보를 제거합니다."] },
-          { heading: "4. 수정 범위", paragraphs: ["어떤 화면·기능·파일을 바꿀 수 있는지 정합니다. 파일을 모르면 먼저 관련 파일을 찾아 설명하고 수정하게 합니다."] },
-          { heading: "5. 필요한 기능과 우선순위", paragraphs: ["필수 기능과 가능하면 추가할 기능을 분리합니다. 첫 단계에서 해결할 핵심 행동을 하나로 제한하면 검증이 쉬워집니다."] },
-          { heading: "6. 기술과 데이터 조건", paragraphs: ["Next.js·TypeScript 같은 현재 기술, API·로컬 저장·서버 저장의 위치, 환경변수 이름과 데이터 형식을 적습니다. 비밀값 자체는 넣지 않습니다."] },
-          { heading: "7. 반드시 유지할 것", paragraphs: ["URL, 데이터, 로그인, SEO, 광고 코드, 디자인 변수처럼 회귀가 생기면 안 되는 항목을 명시합니다."] },
-          { heading: "8. 제외할 것과 안전 경계", paragraphs: ["새 패키지 금지, 데이터 삭제 금지, force push 금지처럼 하지 말아야 할 행동과 승인받아야 할 외부 작업을 적습니다."] },
-          { heading: "9. 오류·빈 상태·접근성", paragraphs: ["로딩, 실패, 빈 결과, 모바일, 키보드 접근과 긴 텍스트처럼 정상 화면 밖의 조건을 정의합니다."] },
-          { heading: "10. 완료 기준과 검증", paragraphs: ["TypeScript, production build, 링크, 실제 동작, 공개 URL처럼 끝났다고 판단할 증거를 적습니다. 확인하지 못한 항목은 성공으로 보고하지 않게 합니다."] },
+          { heading: "3. 페이지 구조", paragraphs: ["홈·목록·상세·설정처럼 필요한 페이지와 각 페이지의 핵심 영역을 정합니다. 기존 URL을 유지해야 한다면 페이지별로 함께 적습니다."] },
+          { heading: "4. 핵심 기능과 구현 우선순위", paragraphs: ["필수 기능과 가능하면 추가할 기능을 분리합니다. 첫 단계에서 해결할 핵심 행동을 하나로 제한하면 검증이 쉬워집니다."] },
+          { heading: "5. 디자인 기준", paragraphs: ["색상, 여백, 카드·버튼 스타일과 참고 분위기를 설명하되 ‘예쁘게’에서 멈추지 않습니다. 기존 디자인 시스템 유지 여부와 모바일 배치도 명시합니다."] },
+          { heading: "6. 현재 상태와 기술 스택", paragraphs: ["Next.js·TypeScript 같은 기술, 관련 URL, 현재 데이터 흐름, 이미 동작하는 기능과 오류 재현 순서를 제공합니다. 환경변수는 이름만 적고 비밀값은 제외합니다."] },
+          { heading: "7. 기존 기능 유지 조건과 변경 범위", paragraphs: ["URL, 데이터, 로그인, SEO, 광고 코드처럼 유지할 항목과 수정 가능한 화면·기능·파일을 나눕니다. 파일을 모르면 먼저 관련 파일을 찾아 설명하게 합니다."] },
+          { heading: "8. 하지 말아야 할 것과 예외 처리", paragraphs: ["데이터 삭제·force push·불필요한 패키지 추가 금지 같은 안전 경계와 로딩·실패·빈 결과·접근성 처리를 함께 정의합니다."] },
+          { heading: "9. 배포 조건", paragraphs: ["로컬 확인까지만 할지, GitHub commit·main push와 Vercel 공개 반영까지 필요한지 구분합니다. 로그인이나 승인이 필요하면 기다리지 말고 보고하도록 적습니다."] },
+          { heading: "10. 검증 항목과 완료 기준", paragraphs: ["TypeScript, production build, 모바일, 내부 링크, 실제 동작과 공개 URL처럼 끝났다고 판단할 증거를 적습니다. 확인하지 못한 항목은 성공으로 보고하지 않게 합니다."] },
         ],
       },
       {
@@ -489,7 +489,7 @@ export const searchFocusedPosts: BlogPost[] = [
         ],
         codeBlock: {
           label: "AI 코딩 작업 요청 템플릿",
-          code: "[목표]\n- 해결할 사용자 문제: \n- 원하는 최종 동작: \n\n[사용자와 환경]\n- 주요 사용자: \n- 모바일·PC·접근성 기준: \n\n[현재 상태]\n- 기술과 프로젝트 구조: \n- 관련 URL 또는 기능: \n- 재현 순서와 첫 오류: \n\n[변경 범위와 우선순위]\n- 반드시 구현할 것: \n- 수정 가능한 영역: \n- 나중으로 미룰 것: \n\n[기술·데이터 조건]\n- 사용할 기술과 저장 위치: \n- 환경변수 이름(실제 값 제외): \n\n[유지·제외 조건]\n- 반드시 유지: \n- 삭제·변경 금지: \n- 승인 없이 하지 말 것: \n\n[예외와 완료 기준]\n- 빈 상태·오류 상태: \n- 완료로 볼 화면과 동작: \n\n[검증]\n- TypeScript 검사\n- production build\n- 모바일과 핵심 링크 확인\n- 변경 파일·오류·확인하지 못한 항목 보고\n\n먼저 현재 구조를 읽고 관련 파일, 원인과 계획만 설명해줘. 그다음 승인된 범위만 수정하고 검증 명령은 하나씩 실행해줘.",
+          code: "[목적]\n- 해결할 사용자 문제와 원하는 최종 동작: \n\n[대상 사용자와 환경]\n- 주요 사용자: \n- 모바일·PC·접근성 기준: \n\n[페이지 구조]\n- 필요한 페이지와 URL: \n- 페이지별 핵심 영역: \n\n[핵심 기능과 우선순위]\n- 반드시 구현할 기능: \n- 나중으로 미룰 기능: \n\n[디자인 기준]\n- 색상·여백·카드·버튼 기준: \n- 유지할 기존 디자인 시스템: \n\n[현재 상태와 기술 스택]\n- 기술과 프로젝트 구조: \n- 관련 URL·데이터 흐름: \n- 재현 순서와 첫 오류: \n\n[유지 조건과 변경 범위]\n- 반드시 유지: \n- 수정 가능한 영역: \n\n[금지 사항과 예외 처리]\n- 삭제·변경 금지: \n- 빈 상태·오류 상태: \n- 승인 없이 하지 말 것: \n\n[배포 조건]\n- 로컬 확인 / GitHub push / Vercel 반영 범위: \n- 사용자 로그인이나 승인이 필요할 때 보고: \n\n[검증과 완료 기준]\n- TypeScript 검사\n- production build\n- 모바일과 핵심 링크 확인\n- 실제 공개 URL 확인\n- 변경 파일·오류·확인하지 못한 항목 보고\n\n먼저 현재 구조를 읽고 관련 파일, 원인과 계획만 설명해줘. 그다음 승인된 범위만 수정하고 검증 명령은 하나씩 실행해줘.",
         },
       },
       {
@@ -580,7 +580,7 @@ export const searchFocusedPosts: BlogPost[] = [
   },
   {
     slug: "vercel-deployment-error-guide",
-    title: "Vercel 배포 오류 해결: Build Logs부터 환경변수까지 확인하는 순서",
+    title: "Vercel 배포 오류 해결 방법: Build Logs부터 확인하는 순서",
     seoTitle: "Vercel 배포 오류 해결: Build Logs·환경변수 점검 순서",
     summary:
       "Vercel 배포가 실패하거나 성공했는데 사이트가 바뀌지 않을 때 Build Logs의 첫 오류부터 로컬 빌드, 환경변수, Root Directory와 브랜치를 확인하는 순서입니다.",
@@ -645,7 +645,29 @@ export const searchFocusedPosts: BlogPost[] = [
         ],
       },
       {
-        heading: "2. Build Logs에서 첫 번째 원인 오류를 찾습니다",
+        heading: "2. 배포가 만들어지지 않았다면 GitHub 권한부터 확인합니다",
+        paragraphs: [
+          "push는 성공했는데 Vercel에 새 deployment가 전혀 생기지 않았다면 코드보다 Git 연결을 먼저 봐야 합니다. Vercel 프로젝트의 Settings → Git에서 연결 저장소가 맞는지 확인하고, GitHub에서 Vercel 앱이 해당 저장소에 접근할 수 있는지 점검하세요. 조직 저장소는 조직 역할과 저장소 접근 권한이 모두 필요할 수 있습니다.",
+          "개인 저장소와 조직 저장소, Hobby와 Pro 팀은 연결·배포 조건이 다를 수 있습니다. 특히 비공개 조직 저장소에서는 커밋 작성자와 Vercel 팀 소속 때문에 배포가 막힐 수 있으므로, 다른 계정으로 다시 push하기 전에 Vercel의 Git 연결 안내와 GitHub 앱 권한을 확인하세요.",
+        ],
+        table: {
+          caption: "GitHub 연결 문제를 구분하는 방법",
+          headers: ["증상", "확인 위치", "해결 방향"],
+          rows: [
+            ["Import 목록에 저장소가 없음", "GitHub의 Vercel 앱 저장소 접근 범위", "해당 저장소 접근을 허용하거나 조직 관리자에게 요청"],
+            ["기존 연결 뒤 자동 배포가 멈춤", "Vercel Settings → Git의 Connected Git Repository", "연결 저장소·production 브랜치·Git 앱 상태 확인"],
+            ["특정 작성자의 커밋만 배포 안 됨", "커밋 작성자와 Vercel 팀·저장소 권한", "공식 플랜별 권한 조건을 확인하고 계정 연결 정리"],
+            ["GitHub check가 권한 오류", "GitHub 저장소의 Checks·Deployments와 앱 설치", "Vercel 앱 권한을 재승인한 뒤 새 커밋으로 확인"],
+          ],
+        },
+        callout: {
+          type: "note",
+          title: "GitHub CLI 로그인과 Vercel Git 권한은 별개입니다",
+          text: "`gh auth status`가 정상이어도 Vercel GitHub 앱의 저장소 접근 권한이 없으면 자동 배포가 생성되지 않을 수 있습니다. 로컬 push 성공 여부와 Vercel integration 권한을 각각 확인하세요.",
+        },
+      },
+      {
+        heading: "3. Build Logs에서 첫 번째 원인 오류를 찾습니다",
         paragraphs: [
           "로그 아래쪽의 종료 코드만 복사하지 말고 위로 올라가 처음 나온 구체적인 오류를 찾으세요. 파일 경로와 줄 번호가 있는 TypeScript 오류, `Module not found`, 환경변수 검증 오류처럼 행동으로 옮길 수 있는 메시지가 원인 후보입니다.",
         ],
@@ -660,7 +682,7 @@ export const searchFocusedPosts: BlogPost[] = [
         },
       },
       {
-        heading: "3. 같은 커밋을 로컬 production build로 재현합니다",
+        heading: "4. 같은 커밋을 로컬 production build로 재현합니다",
         paragraphs: [
           "개발 서버가 열린다는 사실은 production build 성공을 뜻하지 않습니다. Vercel이 사용한 커밋에서 의존성을 설치하고 프로젝트의 build 스크립트를 실행하세요. 로컬에서도 실패하면 코드·타입·의존성 문제를 먼저 해결하고, 로컬만 성공하면 환경과 프로젝트 설정의 차이를 비교합니다.",
         ],
@@ -677,7 +699,7 @@ export const searchFocusedPosts: BlogPost[] = [
         ],
       },
       {
-        heading: "4. 환경변수 이름·값·적용 환경을 따로 확인합니다",
+        heading: "5. 환경변수 이름·값·적용 환경을 따로 확인합니다",
         paragraphs: [
           "환경변수가 등록되어 있어도 Production에 적용되지 않았거나 이름의 철자·접두사가 코드와 다르면 누락으로 처리됩니다. 값은 화면이나 로그에 출력하지 말고 존재 여부와 적용 환경만 확인하세요. 새 환경변수는 이미 끝난 배포에 소급 적용되지 않으므로 새 배포가 필요한지도 확인합니다.",
         ],
@@ -693,30 +715,31 @@ export const searchFocusedPosts: BlogPost[] = [
         },
       },
       {
-        heading: "5. Root Directory와 Build Command가 실제 프로젝트를 가리키는지 봅니다",
+        heading: "6. Root Directory와 Build Command가 실제 프로젝트를 가리키는지 봅니다",
         paragraphs: [
           "저장소 루트에 앱이 하나라면 보통 자동 감지가 가능하지만, 하위 폴더나 모노레포에서는 Vercel 프로젝트의 Root Directory가 해당 `package.json`이 있는 위치를 가리켜야 합니다. 잘못된 폴더에서는 프레임워크를 찾지 못하거나 다른 앱을 빌드할 수 있습니다.",
           "Framework Preset, Install Command, Build Command, Output Directory를 직접 덮어썼다면 왜 필요한지 확인하세요. 기본값으로 동작하는 프로젝트에 과거 설정이 남아 있으면 현재 코드와 충돌할 수 있습니다.",
         ],
       },
       {
-        heading: "6. Node.js·패키지 관리자·파일 경로 차이를 확인합니다",
+        heading: "7. Node.js·패키지 관리자·파일 경로 차이를 확인합니다",
         paragraphs: [
           "로컬 Node.js와 Vercel 프로젝트 설정이 다르거나 lockfile이 여러 개면 다른 패키지 버전이 설치될 수 있습니다. `package.json`의 engines·packageManager 설정과 저장소의 lockfile을 확인하고, 실제 사용하지 않는 lockfile은 원인을 확인한 뒤 정리하세요.",
           "Windows는 대소문자가 다른 import를 지나칠 수 있지만 배포 환경에서는 `Header.tsx`와 `header.tsx`가 다른 파일일 수 있습니다. Git이 파일명 변경을 기록했는지도 확인해야 합니다.",
         ],
       },
       {
-        heading: "7. 배포 성공인데 사이트가 안 바뀌면 도메인과 캐시를 분리합니다",
+        heading: "8. 배포 성공인데 사이트가 안 바뀌면 도메인과 캐시를 분리합니다",
         paragraphs: [
           "Ready 상태라면 해당 배포의 고유 URL에서 먼저 새 문구나 기능을 확인합니다. 고유 URL은 바뀌었는데 운영 도메인은 이전 화면이라면 production 배포 승격과 도메인 연결을 확인하세요. 두 URL 모두 새 배포인데 브라우저만 이전 화면이면 강력 새로고침과 서비스 워커·CDN 캐시 가능성을 점검합니다.",
+          "수동 재배포가 필요하면 Vercel 대시보드에서 프로젝트 → Deployments로 이동해 대상 deployment 오른쪽의 점 3개 메뉴에서 Redeploy를 선택합니다. 확인 창에서 기존 Build Cache를 사용할지 결정한 뒤 Redeploy를 실행하세요. 환경변수나 설정을 바꾼 경우 새 배포가 필요하지만, 캐시가 원인이라는 근거가 없으면 무조건 cache를 끄기보다 먼저 로그와 변경 내용을 기록하는 편이 좋습니다.",
         ],
         bullets: [
           "배포 고유 URL에서 새 커밋 확인",
           "운영 도메인이 가리키는 Production deployment 확인",
           "HTML 소스와 브라우저 화면을 구분해 확인",
           "API 응답과 정적 화면 캐시를 별도로 확인",
-          "Redeploy는 원인을 기록한 뒤 필요한 경우에만 사용",
+          "Deployments → 점 3개 → Redeploy 순서와 Build Cache 선택 확인",
         ],
       },
       {
@@ -761,6 +784,8 @@ export const searchFocusedPosts: BlogPost[] = [
     sources: [
       { label: "Vercel Build 오류 문제 해결", href: "https://vercel.com/docs/deployments/troubleshoot-a-build" },
       { label: "Vercel Build Logs 공식 문서", href: "https://vercel.com/docs/deployments/logs" },
+      { label: "Vercel GitHub 저장소 연결과 권한", href: "https://vercel.com/docs/git/vercel-for-github" },
+      { label: "Vercel 배포 관리와 Redeploy", href: "https://vercel.com/docs/deployments/managing-deployments" },
       { label: "Vercel 프로젝트 설정 공식 문서", href: "https://vercel.com/docs/project-configuration/project-settings" },
       { label: "Vercel 모노레포와 Root Directory", href: "https://vercel.com/docs/monorepos" },
     ],
@@ -881,7 +906,31 @@ export const searchFocusedPosts: BlogPost[] = [
         },
       },
       {
-        heading: "5. publishable 키와 service role 키의 위치를 분리합니다",
+        heading: "5. SQL Editor의 새 Query에서 MAKEON migration만 실행합니다",
+        paragraphs: [
+          "대시보드에서 직접 적용해야 한다면 대상 Supabase 프로젝트를 다시 확인한 뒤 SQL Editor → New Query를 엽니다. 새 Query를 쓰는 이유는 이전에 실행하던 여행 앱 SQL이나 선택 영역이 남은 탭과 섞이지 않게 하고, 이번에 실행할 MAKEON 변경문 전체를 한 단위로 검토하기 위해서입니다.",
+          "새 Query가 기존 데이터를 자동으로 보호해 주는 것은 아닙니다. 실행 전 SQL을 파일로 보관하고 `drop`, 기존 객체에 대한 `alter`, 접두사 없는 `create or replace`가 없는지 검색해야 합니다. 팀에서 Supabase CLI migration을 이미 운영한다면 Dashboard에서 직접 바꾸면 migration 기록과 어긋날 수 있으므로, 로컬 migration을 만들고 `db push`하는 기존 절차를 우선하세요.",
+        ],
+        bullets: [
+          "Supabase Dashboard에서 정확한 프로젝트 이름을 다시 확인",
+          "SQL Editor → New Query를 열고 저장한 migration 전체를 붙여넣기",
+          "생성·변경 대상이 `makeon_` 객체로만 한정됐는지 검색",
+          "실제 키·토큰·이메일과 기존 앱 데이터가 SQL에 없는지 확인",
+          "Run 후 성공 메시지뿐 아니라 테이블·RLS·정책·함수 존재 확인",
+          "기존 여행 앱 로그인·조회와 MAKEON 랭킹을 각각 회귀 테스트",
+        ],
+        codeBlock: {
+          label: "실행 전 안전 확인 메모",
+          code: "대상 프로젝트: [프로젝트 이름]\nSQL 원본 파일: supabase/migrations/makeon/[날짜]_makeon_game_ranking.sql\n생성 대상: public.makeon_game_profiles, public.makeon_game_scores\n금지 대상: 기존 travel-album 테이블·함수·정책\n실행 후 확인: 테이블 / RLS / policy / RPC / 기존 앱 회귀 테스트",
+        },
+        callout: {
+          type: "warning",
+          title: "New Query는 안전장치가 아니라 작업 범위를 분리하는 방법입니다",
+          text: "관리 권한으로 실행하는 SQL은 기존 데이터를 바꿀 수 있습니다. SQL이 MAKEON 객체만 다루는지 직접 검토하고, 실행한 최종 SQL을 migration 파일로 남겨 같은 변경을 추적할 수 있게 하세요.",
+        },
+      },
+      {
+        heading: "6. publishable 키와 service role 키의 위치를 분리합니다",
         paragraphs: [
           "Supabase 공식 문서는 publishable 키를 브라우저 같은 공개 구성 요소에서 사용할 수 있는 낮은 권한 키로 설명합니다. 실제 데이터 접근은 사용자의 로그인 상태와 RLS가 제한합니다. 반면 secret 키와 기존 service role 키는 RLS를 우회할 수 있으므로 브라우저, `NEXT_PUBLIC_` 변수, 공개 저장소와 로그에 넣으면 안 됩니다.",
         ],
@@ -898,7 +947,7 @@ export const searchFocusedPosts: BlogPost[] = [
         },
       },
       {
-        heading: "6. 환경변수는 앱별 Vercel 프로젝트에 등록합니다",
+        heading: "7. 환경변수는 앱별 Vercel 프로젝트에 등록합니다",
         paragraphs: [
           "같은 Supabase 프로젝트를 가리키더라도 각 앱의 Vercel 프로젝트에 필요한 변수만 등록하세요. MAKEON 서버가 랭킹 관리에 elevated key가 필요하다면 서버 전용 이름으로 보관하고, 클라이언트에서 참조하지 않는지 build 결과와 코드 검색으로 확인합니다.",
         ],
@@ -919,7 +968,7 @@ export const searchFocusedPosts: BlogPost[] = [
         ],
       },
       {
-        heading: "7. migration과 회귀 테스트를 앱별로 기록합니다",
+        heading: "8. migration과 회귀 테스트를 앱별로 기록합니다",
         paragraphs: [
           "SQL은 한 번에 실행 가능한 migration으로 보관하되 기존 travel-album 객체를 drop·alter·replace하지 않는지 먼저 검색합니다. 실행 후에는 새 테이블 존재만 확인하지 말고 기존 여행 앱 로그인·조회와 MAKEON 익명 로그인·랭킹 제출을 모두 테스트해야 합니다.",
         ],
@@ -960,6 +1009,7 @@ export const searchFocusedPosts: BlogPost[] = [
       { label: "Supabase Row Level Security 공식 문서", href: "https://supabase.com/docs/guides/database/postgres/row-level-security" },
       { label: "Supabase API 보안 공식 문서", href: "https://supabase.com/docs/guides/api/securing-your-api" },
       { label: "Supabase API 키 공식 문서", href: "https://supabase.com/docs/guides/getting-started/api-keys" },
+      { label: "Supabase Database migration 공식 문서", href: "https://supabase.com/docs/guides/deployment/database-migrations" },
     ],
   },
 ];
