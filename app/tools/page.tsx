@@ -25,7 +25,7 @@ export default function ToolsPage() {
           <p className="eyebrow">FREE WEB TOOLS</p>
           <h1>바로 써볼 수 있는 무료 도구 모음</h1>
           <p className={styles.heroDescription}>
-            AI 프롬프트 생성기, 디지털 말랑이 놀이, 퍼즐 게임까지 설치 없이 브라우저에서 바로 사용할 수 있는 무료 웹 도구를 모았습니다.
+            AI 프롬프트 생성기, 디지털 촉감 놀이, 퍼즐 게임까지 설치 없이 브라우저에서 바로 사용할 수 있는 무료 웹 도구를 모았습니다.
           </p>
           <div className={styles.heroActions}>
             <Link className="button button-primary" href="#tool-library">인기 도구 보기 <span aria-hidden="true">↓</span></Link>

@@ -13,7 +13,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/blog",
     "/tools",
     "/tools/ai-prompt-generator",
-    "/tools/digital-squishy-playground",
     "/tools/sensory-toy-playground",
     "/tools/pastel-stack-game",
     "/tools/pastel-memory-match",

@@ -2,23 +2,6 @@ import type { Tool } from "@/types/content";
 
 export const tools: Tool[] = [
   {
-    slug: "digital-squishy-playground",
-    name: "디지털 말랑이 놀이터",
-    description:
-      "브라우저에서 말랑한 젤을 누르고 늘리며 시각 효과와 합성 소리를 즐기는 무료 감각 놀이",
-    category: "재미 도구",
-    status: "available",
-    icon: "●",
-    href: "/tools/digital-squishy-playground",
-    thumbnail: "/images/tools/thumbnails/digital-squishy-playground.svg",
-    thumbnailAlt: "말랑한 젤을 누르고 늘리는 디지털 말랑이 놀이터 화면",
-    tags: ["브라우저 즉시 실행", "모바일 가능", "감각 놀이"],
-    popularity: 72,
-    releasedAt: "2026-08-01",
-    actionLabel: "놀러 가기",
-    featuredOnHome: false,
-  },
-  {
     slug: "ai-prompt-generator",
     name: "AI 프롬프트 생성기",
     description:
