@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { NewsletterCta } from "@/components/newsletter-cta";
-import { PageHero } from "@/components/page-hero";
-import { ToolCard } from "@/components/tool-card";
+import { ToolsLibrary } from "@/components/tools-library";
 import { tools } from "@/content/tools";
+import styles from "./page.module.css";
 
 export const metadata: Metadata = {
   title: "무료 도구",
@@ -19,27 +20,24 @@ export const metadata: Metadata = {
 export default function ToolsPage() {
   return (
     <main id="main-content" className="tools-page">
-      <PageHero
-        eyebrow="FREE WEB TOOLS"
-        title="만들고, 놀고, 바로 써보는 무료 도구"
-        description="AI로 만드는 실용 도구부터 가볍게 즐기는 퍼즐·미니게임까지, 브라우저에서 바로 사용할 수 있습니다."
-      />
+      <section className={styles.hero}>
+        <div className={`site-container ${styles.heroInner}`}>
+          <p className="eyebrow">FREE WEB TOOLS</p>
+          <h1>바로 써볼 수 있는 무료 도구 모음</h1>
+          <p className={styles.heroDescription}>
+            AI 프롬프트 생성기, 디지털 말랑이 놀이, 퍼즐 게임까지 설치 없이 브라우저에서 바로 사용할 수 있는 무료 웹 도구를 모았습니다.
+          </p>
+          <div className={styles.heroActions}>
+            <Link className="button button-primary" href="#tool-library">인기 도구 보기 <span aria-hidden="true">↓</span></Link>
+            <Link className="button button-secondary" href="/tools/ai-prompt-generator">AI 도구 먼저 보기</Link>
+          </div>
+          <div className={styles.heroCount}><strong>{tools.length}</strong><span>개의 무료 도구 · 가입 없이 바로 시작</span></div>
+        </div>
+      </section>
 
-      <section className="tools-index-section">
+      <section className={styles.indexSection}>
         <div className="site-container">
-          <div className="tools-intro-row">
-            <div>
-              <p className="eyebrow">TOOL LIBRARY</p>
-              <h2>무료 도구 전체 보기</h2>
-            </div>
-            <p>현재 {tools.length}개의 도구를 무료로 사용할 수 있습니다.</p>
-          </div>
-
-          <div className="tools-index-grid">
-            {tools.map((tool) => (
-              <ToolCard tool={tool} key={tool.slug} />
-            ))}
-          </div>
+          <ToolsLibrary tools={tools} />
         </div>
       </section>
 

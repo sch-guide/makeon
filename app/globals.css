@@ -946,18 +946,6 @@ textarea {
   word-break: keep-all;
 }
 
-.tools-page .page-hero-inner {
-  max-width: 1080px;
-}
-
-.tools-page .page-hero-inner h1 {
-  word-break: keep-all;
-}
-
-.tools-page .page-hero-inner > p:last-child {
-  max-width: 980px;
-}
-
 .blog-index-section,
 .tools-index-section,
 .contact-section,

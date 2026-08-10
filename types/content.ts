@@ -101,6 +101,13 @@ export type Tool = {
   category: string;
   status: "coming-soon" | "available";
   icon: string;
+  href: string;
+  thumbnail?: string;
+  thumbnailAlt?: string;
+  tags: string[];
+  popularity: number;
+  releasedAt: string;
+  popular?: boolean;
   actionLabel?: string;
   featuredOnHome?: boolean;
 };
