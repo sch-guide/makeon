@@ -954,6 +954,10 @@ textarea {
   word-break: keep-all;
 }
 
+.tools-page .page-hero-inner > p:last-child {
+  max-width: 980px;
+}
+
 .blog-index-section,
 .tools-index-section,
 .contact-section,
