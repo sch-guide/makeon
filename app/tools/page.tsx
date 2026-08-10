@@ -21,8 +21,8 @@ export default function ToolsPage() {
     <main id="main-content">
       <PageHero
         eyebrow="FREE WEB TOOLS"
-        title="작지만 쓸모 있는 무료 도구"
-        description="복잡한 가입이나 설치 없이 바로 쓸 수 있는 웹 도구를 하나씩 추가합니다. AI 프롬프트 생성기부터 지금 사용해 보세요."
+        title="만들고, 놀고, 바로 써보는 무료 도구"
+        description="AI로 만드는 실용 도구부터 가볍게 즐기는 퍼즐·미니게임까지, 브라우저에서 바로 사용할 수 있습니다."
       />
 
       <section className="tools-index-section">
@@ -30,7 +30,7 @@ export default function ToolsPage() {
           <div className="tools-intro-row">
             <div>
               <p className="eyebrow">TOOL LIBRARY</p>
-              <h2>전체 도구</h2>
+              <h2>무료 도구 전체 보기</h2>
             </div>
             <p>현재 {tools.length}개의 도구를 무료로 사용할 수 있습니다.</p>
           </div>
