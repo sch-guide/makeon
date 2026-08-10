@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 
 export default function ToolsPage() {
   return (
-    <main id="main-content">
+    <main id="main-content" className="tools-page">
       <PageHero
         eyebrow="FREE WEB TOOLS"
         title="만들고, 놀고, 바로 써보는 무료 도구"
@@ -39,17 +39,6 @@ export default function ToolsPage() {
             {tools.map((tool) => (
               <ToolCard tool={tool} key={tool.slug} />
             ))}
-          </div>
-
-          <div className="coming-roadmap">
-            <div className="roadmap-mark" aria-hidden="true">+</div>
-            <div>
-              <h2>직접 확인한 도구만 공개합니다.</h2>
-              <p>
-                각 도구는 모바일과 데스크톱 동작, 데이터 저장 범위와 기본 사용법을 확인한 뒤
-                공개합니다. 구현 과정과 시행착오는 블로그에서 함께 설명합니다.
-              </p>
-            </div>
           </div>
         </div>
       </section>

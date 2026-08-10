@@ -946,6 +946,14 @@ textarea {
   word-break: keep-all;
 }
 
+.tools-page .page-hero-inner {
+  max-width: 1080px;
+}
+
+.tools-page .page-hero-inner h1 {
+  word-break: keep-all;
+}
+
 .blog-index-section,
 .tools-index-section,
 .contact-section,
@@ -1624,42 +1632,6 @@ textarea {
 
 .tools-index-grid .tool-card {
   min-height: 210px;
-}
-
-.coming-roadmap {
-  display: flex;
-  align-items: center;
-  gap: 28px;
-  margin-top: 20px;
-  border: 1px dashed var(--border-sage);
-  border-radius: var(--radius-md);
-  background: var(--primary-light);
-  padding: 32px;
-}
-
-.roadmap-mark {
-  display: grid;
-  width: 62px;
-  height: 62px;
-  flex: 0 0 auto;
-  place-items: center;
-  border-radius: 18px;
-  background: var(--surface);
-  box-shadow: var(--shadow-sm);
-  color: var(--accent);
-  font-size: 28px;
-}
-
-.coming-roadmap h2 {
-  margin: 0;
-  font-size: 20px;
-}
-
-.coming-roadmap p {
-  max-width: 720px;
-  margin: 7px 0 0;
-  color: var(--muted);
-  font-size: 14px;
 }
 
 .prompt-tool-section {
@@ -3141,12 +3113,6 @@ textarea {
   .tools-intro-row {
     align-items: flex-start;
     flex-direction: column;
-  }
-
-  .coming-roadmap {
-    align-items: flex-start;
-    flex-direction: column;
-    padding: 26px;
   }
 
   .prompt-tool-section {
