@@ -114,6 +114,10 @@ export const searchFocusedPosts: BlogPost[] = [
           "GitHub push, 외부 문서 조회, 패키지 설치는 로컬 파일 편집과 다른 권한이 필요할 수 있습니다. 로그인 만료나 네트워크 차단을 코드 문제로 오해하면 파일을 불필요하게 수정하게 됩니다. 먼저 해당 서비스의 상태 확인 명령이나 현재 세션을 확인하고, 사용자 입력이 필요하면 기다리지 말고 알려 달라고 요청하세요.",
           "인증 오류를 해결하려고 토큰이나 비밀번호를 대화에 붙여 넣으면 안 됩니다. 로그인 화면이나 공식 CLI 절차를 사용하고, 로그를 공유할 때는 계정명·토큰·저장소 비공개 정보·환경변수 값을 가리세요.",
         ],
+        codeBlock: {
+          label: "GitHub CLI 인증 확인 흐름",
+          code: "gh auth status\n# 로그인 만료 또는 invalid token이면 사용자가 직접 실행\ngh auth login\n# 로그인 완료 뒤 다시 확인\ngh auth status",
+        },
       },
       {
         heading: "5. 로그의 마지막 줄이 아니라 첫 번째 실제 오류를 찾습니다",
@@ -153,6 +157,10 @@ export const searchFocusedPosts: BlogPost[] = [
           "push 후 원격 커밋 확인",
           "배포 완료 후 실제 공개 URL 확인",
         ],
+        codeBlock: {
+          label: "검증 뒤 GitHub와 Vercel 확인 순서",
+          code: "git status --short --branch\ngit diff --stat\ngit add [확인한 파일]\ngit commit -m \"변경 내용을 설명하는 메시지\"\ngit push origin main\n# Vercel에서 같은 커밋의 배포가 Ready인지 확인\n# 마지막으로 운영 URL을 직접 열어 새 내용을 확인",
+        },
         contextualLinks: [
           {
             prefix: "배포 단계에서 실패했다면",
@@ -165,6 +173,18 @@ export const searchFocusedPosts: BlogPost[] = [
           type: "tip",
           title: "완료 보고도 검증 항목으로 만드세요",
           text: "‘완료’ 대신 수정 파일, 실행한 검사, 종료 결과, 확인하지 못한 항목을 나눠 보고하도록 요청하면 다음 행동을 판단하기 쉽습니다.",
+        },
+      },
+      {
+        heading: "MAKEON에서는 장시간 작업을 이어 실행하지 않고 저장 상태부터 확인했습니다",
+        paragraphs: [
+          "MAKEON 작업 중 개발 서버와 프로세스 확인 단계가 장시간 끝나지 않은 적이 있었습니다. 다음 시도에서는 이전 명령을 그대로 이어 가지 않고 현재 폴더, 저장된 변경 파일과 `git status`만 먼저 확인했습니다. TypeScript 검사와 production build도 각각 제한 시간을 두고 따로 실행했습니다.",
+          "GitHub CLI 인증이 만료됐을 때는 코드 수정과 인증 문제를 분리했습니다. 사용자가 `gh auth login`을 완료한 뒤 상태를 다시 확인하고, commit과 main push를 한 단계씩 진행했습니다. push 성공만으로 끝내지 않고 Vercel 자동 배포 뒤 실제 공개 URL에서 새 HTML이 보이는지 확인했습니다.",
+        ],
+        callout: {
+          type: "note",
+          title: "사례에서 얻은 원칙",
+          text: "멈춘 작업을 통째로 재시도하기보다 저장 상태 → 검사 → Git → 배포 → 공개 URL 순서로 확인하면 이미 끝난 단계와 실패한 단계를 구분할 수 있습니다.",
         },
       },
     ],
@@ -705,14 +725,14 @@ export const searchFocusedPosts: BlogPost[] = [
           "한 번에 Node 버전, 환경변수, build 명령과 코드를 모두 바꾸면 어떤 변경이 해결했는지 알 수 없습니다. 아래 순서에서 근거가 확인된 항목 하나만 수정하고 다시 배포하세요.",
         ],
         table: {
-          caption: "Vercel 오류 해결 우선순위",
-          headers: ["오류 유형", "먼저 수정", "다시 확인"],
+          caption: "문제·원인·확인 방법·해결 방법으로 보는 Vercel 오류",
+          headers: ["문제", "가능한 원인", "확인 방법", "해결 방법"],
           rows: [
-            ["TypeScript", "로그에 나온 첫 파일·타입", "로컬 typecheck와 build"],
-            ["Module not found", "import 경로·설치 패키지·lockfile", "깨끗한 의존성 설치"],
-            ["환경변수", "정확한 Key와 적용 환경", "새 deployment에서 서버 동작"],
-            ["잘못된 앱 빌드", "Root Directory", "감지된 framework와 build command"],
-            ["공개 반영 안 됨", "commit·branch·domain 연결", "고유 URL과 운영 URL"],
+            ["TypeScript build 실패", "코드의 타입 오류", "첫 오류의 파일·줄과 로컬 typecheck", "해당 타입을 최소 수정한 뒤 build 재실행"],
+            ["Module not found", "import 경로·패키지·lockfile 불일치", "대소문자와 package.json·lockfile", "경로를 바로잡거나 의존성과 lockfile을 함께 반영"],
+            ["환경변수 누락", "Key 오탈자·적용 환경 불일치", "코드의 변수 이름과 Production 설정", "정확한 Key를 서버/클라이언트 범위에 맞게 등록하고 새 배포"],
+            ["다른 앱이 빌드됨", "Root Directory 오류", "배포 로그의 framework·package.json 위치", "프로젝트의 Root Directory를 실제 앱 폴더로 설정"],
+            ["Ready인데 공개 반영 안 됨", "다른 commit·branch·domain 또는 캐시", "배포 SHA, 고유 URL과 운영 URL", "올바른 Production 배포와 도메인을 연결한 뒤 공개 URL 재확인"],
           ],
         },
         contextualLinks: [
@@ -747,14 +767,15 @@ export const searchFocusedPosts: BlogPost[] = [
   },
   {
     slug: "reuse-supabase-project-multiple-apps",
-    title: "Supabase 프로젝트 하나를 여러 앱에서 안전하게 사용하는 방법",
-    seoTitle: "Supabase 프로젝트 하나를 여러 앱에서 쓰는 방법과 주의점",
+    title: "Supabase 무료 프로젝트가 가득 찼을 때 기존 프로젝트를 여러 앱에서 사용하는 방법",
+    seoTitle: "Supabase 무료 프로젝트 재사용: 여러 앱 안전하게 분리하기",
     summary:
       "무료 프로젝트 한도 때문에 Supabase 프로젝트를 공유할 때 테이블 접두사, RLS, 익명 로그인, API 키와 migration을 앱별로 분리하는 방법을 설명합니다.",
     description:
       "Supabase 프로젝트 하나를 여러 앱에서 사용할 때 기존 데이터에 영향 없이 테이블·정책·함수·migration을 분리하고 publishable·service role 키와 RLS를 안전하게 구성하는 방법입니다.",
-    primaryKeyword: "Supabase 프로젝트 여러 앱",
+    primaryKeyword: "Supabase 무료 프로젝트 재사용",
     relatedKeywords: [
+      "Supabase 프로젝트 여러 앱",
       "Supabase 프로젝트 재사용",
       "Supabase 테이블 분리",
       "Supabase RLS 여러 앱",
