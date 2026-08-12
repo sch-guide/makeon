@@ -34,7 +34,7 @@ export default function AboutPage() {
       <PageHero
         eyebrow="ABOUT MAKEON"
         title="만들고, 배우고, 나눕니다."
-        description="MAKEON은 AI 시대에 아이디어를 가진 누구나 만드는 사람이 될 수 있도록 제작 과정에서 확인한 내용과 유용한 도구를 공유하는 공간입니다."
+        description="MAKEON은 AI 활용과 웹사이트 제작 과정을 기록하고, 직접 만든 무료 웹 도구와 가볍게 즐길 수 있는 미니게임을 공유하는 공간입니다."
       />
 
       <section className="about-story-section">
@@ -58,6 +58,8 @@ export default function AboutPage() {
             <p>
               이곳의 글과 도구가 거창한 서비스를 만드는 지름길은 아닐 수 있습니다. 대신
               머릿속에만 있던 생각을 작은 결과물로 꺼내는 첫 계기가 되기를 바랍니다.
+              AI 프롬프트처럼 작업에 쓰는 도구와 퍼즐·기억력 게임처럼 브라우저에서 바로
+              즐기는 미니앱을 함께 운영하며 아이디어가 실제 기능으로 바뀌는 과정을 보여드립니다.
             </p>
             <p>
               MAKEON 운영자는 전문 개발자나 광고 승인 전문가를 사칭하지 않습니다. Next.js,

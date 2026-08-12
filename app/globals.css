@@ -4012,6 +4012,7 @@ textarea {
 .sensory-control-panel,
 .sensory-play-column,
 .sensory-result,
+.sensory-guide,
 .sensory-safety,
 .sensory-faq,
 .sensory-related {
@@ -4133,7 +4134,7 @@ textarea {
 .sensory-option-list button,
 .sensory-color-list button {
   display: inline-flex;
-  min-height: 42px;
+  min-height: 44px;
   align-items: center;
   justify-content: center;
   gap: 5px;
@@ -5184,6 +5185,7 @@ textarea {
   color: var(--text-subtle);
 }
 
+.sensory-guide,
 .sensory-safety,
 .sensory-faq,
 .sensory-related {
@@ -5194,6 +5196,29 @@ textarea {
 .sensory-safety {
   background: linear-gradient(140deg, var(--primary-light), rgba(255, 255, 255, 0.88));
 }
+
+.sensory-guide > div {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.sensory-guide article {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface);
+  padding: 20px;
+}
+
+.sensory-guide article > span {
+  color: var(--primary-strong);
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.sensory-guide h3 { margin: 8px 0 7px; color: var(--deep); font-size: 17px; }
+.sensory-guide article p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.75; }
 
 .sensory-faq > div {
   display: grid;
@@ -5343,6 +5368,8 @@ textarea {
     grid-template-columns: repeat(2, 1fr);
   }
 
+  .sensory-guide > div { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
   .sensory-related {
     align-items: flex-start;
     flex-direction: column;
@@ -5432,6 +5459,7 @@ textarea {
   }
 
   .sensory-result,
+  .sensory-guide,
   .sensory-safety,
   .sensory-faq,
   .sensory-related {
@@ -5458,6 +5486,17 @@ textarea {
   .sensory-decoration-catalog {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
+
+  .sensory-option-list button,
+  .sensory-color-list button,
+  .sensory-decoration-quick-tabs button,
+  .sensory-decoration-quick-actions button,
+  .sensory-decoration-quick-storage button {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .sensory-guide > div { grid-template-columns: 1fr; }
 
   .sensory-decoration-text > div,
   .sensory-decoration-storage {

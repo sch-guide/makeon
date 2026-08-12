@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { PageHero } from "@/components/page-hero";
 import { siteConfig } from "@/lib/site";
 
@@ -14,7 +15,7 @@ export default function ContactPage() {
       <PageHero
         eyebrow="CONTACT"
         title="궁금한 점을 들려주세요."
-        description="콘텐츠에 대한 질문, 도구 아이디어, 오류 제보와 협업 제안을 이메일로 보내주세요. 확인 후 차분히 답변드리겠습니다."
+        description="콘텐츠 질문, 도구 아이디어, 오류 제보, 광고·제휴와 협업 제안을 이메일로 보내주세요. 확인 후 차분히 답변드리겠습니다."
       />
 
       <section className="contact-section">
@@ -38,7 +39,7 @@ export default function ContactPage() {
             <ol>
               <li>
                 <span>01</span>
-                <div><strong>문의 목적</strong><p>질문, 오류 제보, 협업 등 목적을 먼저 알려주세요.</p></div>
+                <div><strong>문의 목적</strong><p>질문, 오류 제보, 기능 제안, 광고·제휴 또는 협업 등 목적을 먼저 알려주세요.</p></div>
               </li>
               <li>
                 <span>02</span>
@@ -51,6 +52,9 @@ export default function ContactPage() {
             </ol>
             <p className="contact-note">
               광고성 제안이나 사이트 주제와 관련 없는 요청에는 답변이 어려울 수 있습니다.
+            </p>
+            <p className="contact-note">
+              문의 전 <Link href="/about">MAKEON 소개</Link>와 <Link href="/privacy">개인정보처리방침</Link>도 확인할 수 있습니다.
             </p>
           </div>
         </div>

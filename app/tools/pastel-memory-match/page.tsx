@@ -74,7 +74,7 @@ export default function PastelMemoryMatchPage() {
           </section>
           <nav className={styles.related} aria-label="관련 페이지">
             <div><p className="eyebrow">KEEP PLAYING</p><h2>MAKEON의 다른 무료 도구도 만나보세요.</h2></div>
-            <div><Link className="button button-secondary" href="/tools">무료 도구 전체 보기</Link><Link className="button button-primary" href="/tools/pastel-color-sort">컬러 정렬 퍼즐</Link></div>
+            <div><Link className="button button-secondary" href="/tools">무료 도구 전체 보기</Link><Link className="button button-secondary" href="/tools/memory-token-battle">메모리 토큰 배틀</Link><Link className="button button-primary" href="/tools/pastel-color-sort">컬러 정렬 퍼즐</Link></div>
           </nav>
         </div>
       </section>

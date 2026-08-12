@@ -145,6 +145,11 @@ export default function AiPromptGeneratorPage() {
           <h2 id="prompt-update-title">업데이트 기록</h2>
           <p><strong>2026-08-05</strong> — 결과 해석, 실제 사용 사례, 한계, 개인정보, 지원 환경과 FAQ를 추가했습니다.</p>
           <p><Link href="/blog/free-ai-prompt-generator-guide">프롬프트 생성기 사용 예시</Link> · <Link href="/privacy">개인정보처리방침</Link></p>
+          <p>
+            관련 무료 도구: <Link href="/tools/pastel-stack-game">파스텔 스택 쌓기</Link> · {" "}
+            <Link href="/tools/pastel-memory-match">메모리 카드 맞추기</Link> · {" "}
+            <Link href="/tools/pastel-block-puzzle">블록 퍼즐</Link>
+          </p>
         </div>
       </section>
     </main>

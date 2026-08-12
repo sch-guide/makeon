@@ -5,20 +5,24 @@ import { ToolCard } from "@/components/tool-card";
 import type { Tool } from "@/types/content";
 import styles from "./tools-library.module.css";
 
-type FilterKey = "전체" | "인기 도구" | string;
+const TOOL_CATEGORIES = ["전체", "AI 도구", "재미 도구", "퍼즐 게임", "대전 게임"] as const;
+type FilterKey = (typeof TOOL_CATEGORIES)[number];
 type SortKey = "latest" | "popular" | "name";
 
 export function ToolsLibrary({ tools }: { tools: Tool[] }) {
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<FilterKey>("전체");
   const [sort, setSort] = useState<SortKey>("popular");
-  const categories = useMemo(() => ["전체", "인기 도구", ...Array.from(new Set(tools.map((tool) => tool.category)))], [tools]);
+  const categories = useMemo(
+    () => TOOL_CATEGORIES.filter((category) => category === "전체" || tools.some((tool) => tool.category === category)),
+    [tools],
+  );
 
   const visibleTools = useMemo(() => {
     const normalizedQuery = query.trim().toLocaleLowerCase("ko-KR");
     return tools
       .filter((tool) => {
-        const matchesFilter = filter === "전체" || (filter === "인기 도구" ? tool.popular : tool.category === filter);
+        const matchesFilter = filter === "전체" || tool.category === filter;
         const searchable = `${tool.name} ${tool.description} ${tool.category} ${tool.tags.join(" ")}`.toLocaleLowerCase("ko-KR");
         return matchesFilter && (!normalizedQuery || searchable.includes(normalizedQuery));
       })
@@ -32,7 +36,7 @@ export function ToolsLibrary({ tools }: { tools: Tool[] }) {
   return (
     <div className={styles.library} id="tool-library">
       <div className={styles.heading}>
-        <div><p className="eyebrow">TOOL LIBRARY</p><h2>원하는 도구를 <span className={styles.headingSecondLine}>빠르게 찾아보세요.</span></h2></div>
+        <div><p className="eyebrow">TOOL LIBRARY</p><h2>무료 도구 전체 보기</h2></div>
         <p>총 {tools.length}개 중 <strong>{visibleTools.length}개</strong> 표시</p>
       </div>
 

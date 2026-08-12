@@ -104,6 +104,16 @@ export default function PastelStackGamePage() {
             </div>
           </section>
 
+          <section className={styles.guide} aria-labelledby="stack-record-title">
+            <p className="eyebrow">SCORE & RECORDS</p>
+            <h2 id="stack-record-title">겹친 너비가 사라지면 게임이 끝납니다.</h2>
+            <div className={styles.guideGrid}>
+              <article><span>01</span><h3>점수와 높이</h3><p>블록을 한 층 쌓을 때마다 높이가 늘고, 정확한 배치와 연속 퍼펙트에 따라 점수 보너스가 커집니다.</p></article>
+              <article><span>02</span><h3>실패 조건</h3><p>움직이는 블록이 아래 블록과 전혀 겹치지 않으면 즉시 종료됩니다. 잘린 너비가 계속 줄어들수록 다음 배치가 어려워집니다.</p></article>
+              <article><span>03</span><h3>두 가지 기록</h3><p>로컬 최고 기록은 현재 브라우저에 남습니다. 닉네임을 정해 참여한 온라인 랭킹에는 검증된 개인 최고 기록만 저장됩니다.</p></article>
+            </div>
+          </section>
+
           <section className={styles.faq} aria-labelledby="stack-faq-title">
             <p className="eyebrow">FAQ</p>
             <h2 id="stack-faq-title">자주 묻는 질문</h2>
@@ -123,7 +133,8 @@ export default function PastelStackGamePage() {
             <div>
               <Link className="button button-secondary" href="/tools">무료 도구 전체 보기</Link>
               <Link className="button button-secondary" href="/tools/sensory-toy-playground">디지털 촉감 놀이터</Link>
-              <Link className="button button-primary" href="/tools/ai-prompt-generator">AI 프롬프트 생성기</Link>
+              <Link className="button button-secondary" href="/tools/pastel-block-puzzle">블록 퍼즐</Link>
+              <Link className="button button-primary" href="/tools/pastel-memory-match">메모리 카드 맞추기</Link>
             </div>
           </nav>
         </div>

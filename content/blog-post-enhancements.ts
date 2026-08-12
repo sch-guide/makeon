@@ -8,12 +8,115 @@ type BlogEnhancement = {
 };
 
 const makeonReviewNote = (environment: string, notice: string): NonNullable<BlogPost["reviewNote"]> => ({
-  checkedAt: "2026-08-05",
+  checkedAt: "2026-08-12",
   environment,
   notice,
 });
 
 const enhancements: Record<string, BlogEnhancement> = {
+  "build-a-website-with-ai-without-coding": {
+    updatedAt: "2026-08-12",
+    reviewNote: makeonReviewNote(
+      "MAKEON의 공개 Next.js 사이트, GitHub main 브랜치와 Vercel 배포 흐름",
+      "무료 플랜의 범위와 제품 화면은 바뀔 수 있습니다. 배포 직전에는 사용하는 서비스의 공식 플랜·배포 문서를 다시 확인하세요.",
+    ),
+    sections: [
+      {
+        heading: "처음 만들 때는 페이지 수보다 완료 기준을 먼저 정하세요",
+        paragraphs: [
+          "MAKEON처럼 블로그와 무료 도구를 함께 운영하려면 첫 버전에서 홈, 소개, 문의, 개인정보처리방침과 실제로 완성할 도구 한 개만 정해도 충분합니다. 로그인, 결제, 데이터베이스를 동시에 추가하면 오류 범위와 개인정보 안내가 함께 커져 초보자가 결과를 확인하기 어려워집니다.",
+          "배포 완료의 기준도 ‘화면이 열린다’에서 끝내지 않습니다. 모바일 가로 넘침, 메뉴 링크, canonical, sitemap, robots.txt, 환경변수 제외, TypeScript와 production build를 확인해야 공개 뒤 검색엔진과 방문자가 같은 페이지를 안정적으로 볼 수 있습니다.",
+        ],
+        bullets: [
+          "목적과 대상 사용자를 한 문장으로 정하기",
+          "첫 공개에 꼭 필요한 페이지와 기능만 선택하기",
+          "AI 요청에 유지할 URL과 제외할 기능 적기",
+          "로컬 검사 후 GitHub push와 공개 URL을 각각 확인하기",
+        ],
+        contextualLinks: [
+          { prefix: "구현 요청을 먼저 정리하려면", label: "AI 프롬프트 생성기", href: "/tools/ai-prompt-generator", suffix: "에서 목표·기능·검증 항목을 나눠 작성할 수 있습니다." },
+        ],
+      },
+    ],
+  },
+  "codex-vscode-guide": {
+    updatedAt: "2026-08-12",
+    reviewNote: makeonReviewNote(
+      "Windows의 VS Code, Git 저장소와 MAKEON Next.js 프로젝트 작업 흐름",
+      "Codex와 VS Code의 버튼 이름이나 화면 배치는 버전에 따라 달라질 수 있습니다. 화면 이름보다 프로젝트 경로, 변경 파일과 명령 결과를 기준으로 확인하세요.",
+    ),
+    sections: [
+      {
+        heading: "수정이 보이지 않을 때는 세 위치부터 대조하세요",
+        paragraphs: [
+          "AI가 작업을 완료했다고 알려도 VS Code에서 연 폴더, 터미널의 현재 경로, 실제 Git 저장소가 서로 다르면 원하는 사이트에는 변경이 나타나지 않습니다. MAKEON 작업에서도 바탕화면의 동명 폴더와 실제 OneDrive 저장소를 구분하는 일이 먼저였습니다.",
+          "변경 파일을 확인한 다음에만 타입 검사와 빌드를 실행하고, 검사 성공 뒤 `git status`로 커밋 대상을 다시 봅니다. 실행 중인 개발 서버 화면만 보고 저장 여부를 판단하지 않는 것이 안전합니다.",
+        ],
+        codeBlock: { label: "작업 위치와 변경 확인", code: "pwd\ngit status -sb\ngit diff --stat\nnpm run typecheck\nnpm run build" },
+        callout: { type: "warning", title: "기존 변경을 지우지 마세요", text: "예상하지 못한 수정 파일이 보이면 reset이나 checkout으로 되돌리기 전에 누가 만든 변경인지 먼저 확인하세요." },
+      },
+    ],
+  },
+  "nextjs-vercel-deployment-guide": {
+    updatedAt: "2026-08-12",
+    reviewNote: makeonReviewNote(
+      "MAKEON main 브랜치의 GitHub push와 Vercel production 배포",
+      "Vercel의 메뉴 이름과 무료 플랜 조건은 변경될 수 있습니다. 오류 원인은 배포 화면의 첫 번째 실제 Build Error와 해당 시점의 공식 문서를 기준으로 판단하세요.",
+    ),
+    sections: [
+      {
+        heading: "배포 성공은 GitHub, Vercel, 공개 주소를 따로 확인해야 합니다",
+        paragraphs: [
+          "GitHub push 성공은 원격 저장소에 커밋이 도착했다는 뜻이고 Vercel Ready는 해당 커밋의 빌드가 완료됐다는 뜻입니다. 공개 도메인이 새 배포를 가리키는지까지 확인해야 사용자가 보는 결과가 갱신됐다고 판단할 수 있습니다.",
+          "오류가 나면 마지막 줄만 복사하기보다 Build Logs에서 처음 등장한 실제 오류를 찾습니다. 환경변수 이름 오타, 잠금 파일 불일치, TypeScript 오류와 잘못된 프로젝트 루트는 뒤쪽에 연쇄 오류를 만들 수 있습니다.",
+        ],
+        bullets: [
+          "GitHub main에 의도한 커밋이 있는지 확인",
+          "Vercel 배포가 그 커밋 해시를 사용하는지 확인",
+          "Ready 상태와 production 도메인 연결 확인",
+          "공개 페이지의 HTML·링크·환경별 기능 다시 확인",
+        ],
+        contextualLinks: [
+          { prefix: "빌드가 실패했다면", label: "Vercel 배포 오류 해결 순서", href: "/blog/vercel-deployment-error-guide", suffix: "에서 Build Logs를 읽는 순서를 이어서 확인하세요." },
+        ],
+      },
+    ],
+  },
+  "nextjs-google-search-console-setup": {
+    updatedAt: "2026-08-12",
+    reviewNote: makeonReviewNote(
+      "MAKEON의 공개 sitemap.xml, robots.txt, canonical과 Search Console URL 검사 흐름",
+      "색인 생성 요청은 색인을 보장하지 않습니다. Google이 다시 크롤링한 뒤에도 페이지의 독창성, 내부 링크와 전체 사이트 품질을 기준으로 색인 여부를 판단할 수 있습니다.",
+    ),
+    sections: [
+      {
+        heading: "‘크롤링됨 - 현재 색인이 생성되지 않음’은 요청 반복보다 페이지 점검이 먼저입니다",
+        paragraphs: [
+          "URL 검사에서 페이지 가져오기가 성공하고 색인 생성이 허용돼도 Google이 바로 색인을 선택하는 것은 아닙니다. canonical이 자기 자신을 가리키는지, sitemap에 포함됐는지, 목록 페이지에서 직접 연결되는지, 비슷한 글보다 고유한 답을 제공하는지를 먼저 확인합니다.",
+          "내용을 실제로 개선한 뒤 한 번 색인 생성을 요청하고 기다리는 편이 낫습니다. 같은 내용을 바꾸지 않은 채 요청만 반복해도 페이지 품질 신호가 새로 생기지는 않습니다.",
+        ],
+        bullets: ["HTTP 200과 noindex 부재 확인", "자기 참조 canonical 확인", "sitemap과 목록 페이지의 직접 링크 확인", "중복되지 않는 본문·FAQ·관련 자료 보강", "수정 뒤 색인 생성 요청"],
+      },
+    ],
+  },
+  "vercel-adsense-setup-review-process": {
+    updatedAt: "2026-08-12",
+    reviewNote: makeonReviewNote(
+      "MAKEON 공개 HTML head, ads.txt, 개인정보처리방침과 AdSense 검토 준비 상태",
+      "광고 코드와 ads.txt가 정상이어도 승인을 의미하지 않습니다. 재심사 전 AdSense 정책 센터와 계정에 표시된 실제 사유를 다시 확인해야 합니다.",
+    ),
+    sections: [
+      {
+        heading: "재심사 전에는 연결 상태와 콘텐츠 품질을 분리해 확인하세요",
+        paragraphs: [
+          "연결 점검에서는 공개 HTML head의 게시자 스크립트, 게시자 ID, ads.txt의 한 줄과 HTTP 응답을 확인합니다. 콘텐츠 점검에서는 기능만 있는 짧은 페이지, 잘못된 개인정보 안내, 깨진 내부 링크, 비슷한 글과 과장된 승인 표현을 별도로 살펴봅니다.",
+          "MAKEON은 도구 페이지마다 사용법, 실제 저장 범위, 제한, FAQ와 관련 도구를 보강하고 개인정보처리방침에 Supabase 익명 랭킹과 Google 광고 쿠키를 실제 운영 상태에 맞춰 적었습니다. 이는 승인 요령이 아니라 방문자가 기능과 데이터 처리를 이해하도록 만드는 기본 정보입니다.",
+        ],
+        bullets: ["AdSense 코드와 publisher ID를 공개 head에서 확인", "ads.txt 200 및 평문 한 줄 확인", "개인정보처리방침과 실제 저장 동작 대조", "도구 페이지의 사용법·FAQ·관련 링크 확인", "정책 센터의 실제 사유를 해결한 뒤 재심사 요청"],
+        callout: { type: "warning", title: "승인 결과는 보장할 수 없습니다", text: "글 개수나 특정 문구만으로 승인이 결정된다는 공식 기준은 없습니다. 사이트 전체의 정책 준수와 사용자 가치를 지속해서 관리해야 합니다." },
+      },
+    ],
+  },
   "fix-chatgpt-prompts-for-better-answers": {
     updatedAt: "2026-08-05",
     reviewNote: makeonReviewNote(

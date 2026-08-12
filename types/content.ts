@@ -107,6 +107,7 @@ export type Tool = {
   tags: string[];
   popularity: number;
   releasedAt: string;
+  updatedAt?: string;
   popular?: boolean;
   actionLabel?: string;
   featuredOnHome?: boolean;

@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { blogPosts } from "@/content/blog-posts";
+import { tools } from "@/content/tools";
 import { siteConfig } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -8,26 +9,26 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/blog": "2026-08-04",
     "/about": "2026-08-04",
   };
-  const staticRoutes = [
+  const coreRoutes = [
     "",
     "/blog",
     "/tools",
-    "/tools/ai-prompt-generator",
-    "/tools/sensory-toy-playground",
-    "/tools/pastel-stack-game",
-    "/tools/pastel-memory-match",
-    "/tools/memory-token-battle",
-    "/tools/pastel-color-sort",
-    "/tools/pastel-block-puzzle",
     "/about",
     "/contact",
     "/privacy",
   ];
+  const toolRoutes = tools
+    .filter((tool) => tool.status === "available")
+    .map((tool) => ({ route: tool.href, lastModified: tool.updatedAt ?? tool.releasedAt }));
+  const staticRoutes = [
+    ...coreRoutes.map((route) => ({ route, lastModified: staticRouteUpdatedAt[route] ?? "2026-08-12" })),
+    ...toolRoutes,
+  ];
 
   return [
-    ...staticRoutes.map((route) => ({
+    ...staticRoutes.map(({ route, lastModified }) => ({
       url: `${siteConfig.url}${route}`,
-      lastModified: new Date(staticRouteUpdatedAt[route] ?? "2026-07-22"),
+      lastModified: new Date(lastModified),
       changeFrequency: route === "" ? ("weekly" as const) : ("monthly" as const),
       priority:
         route === ""

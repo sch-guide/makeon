@@ -37,7 +37,7 @@ const faqs = [
   {
     question: "놀이 결과나 개인정보가 저장되나요?",
     answer:
-      "아니요. 설정과 기록은 현재 페이지의 브라우저 메모리에서만 처리하며 서버나 데이터베이스에 저장하지 않습니다.",
+      "온라인 계정이나 서버에는 저장하지 않습니다. 다만 ‘내 꾸미기 저장’을 선택하면 장식의 종류, 위치, 크기와 회전값이 현재 브라우저의 localStorage에 저장됩니다. 장식 전체 지우기 또는 브라우저 데이터 삭제로 없앨 수 있습니다.",
   },
 ];
 
@@ -78,11 +78,34 @@ export default function SensoryToyPlaygroundPage() {
             <p>
               말랑이를 누르고, 슬랑이를 늘리고, 크런치 재료를 섞고,
               왁뿌볼 껍질을 여러 번 눌러 깨뜨려보세요. 모든 동작은
-              로그인이나 저장 없이 현재 브라우저 안에서만 처리합니다.
+              로그인 없이 현재 브라우저에서 처리하며, 꾸미기 저장은 이용자가 선택할 때만
+              이 기기의 브라우저 저장소를 사용합니다.
             </p>
           </div>
 
           <SensoryToyPlayground />
+
+          <section className="sensory-guide" aria-labelledby="sensory-mode-guide-title">
+            <p className="eyebrow">FOUR PLAY MODES</p>
+            <h2 id="sensory-mode-guide-title">네 가지 장난감은 움직임과 소리가 서로 다릅니다.</h2>
+            <div>
+              <article><span>01</span><h3>말랑이</h3><p>누른 지점이 움푹 들어가고 놓으면 천천히 복원됩니다. 부드러운 폼 압축 계열의 합성 소리를 사용합니다.</p></article>
+              <article><span>02</span><h3>슬랑이</h3><p>누르기보다 드래그 방향으로 길게 늘어나는 반응이 중심입니다. 낮고 점성이 있는 젤 마찰음을 표현합니다.</p></article>
+              <article><span>03</span><h3>크런치 말랑이</h3><p>말랑한 본체 안의 토핑 입자가 함께 움직입니다. 본체 압축음 위에 선택한 재료의 작은 바스락임을 더합니다.</p></article>
+              <article><span>04</span><h3>왁뿌볼</h3><p>같은 부분을 반복해서 누르면 껍질이 갈라지고 조각이 분리됩니다. 드러난 안쪽은 다시 말랑이처럼 반응합니다.</p></article>
+            </div>
+          </section>
+
+          <section className="sensory-guide" aria-labelledby="sensory-use-guide-title">
+            <p className="eyebrow">USE & STORAGE</p>
+            <h2 id="sensory-use-guide-title">터치 환경과 저장 범위를 먼저 확인하세요.</h2>
+            <div>
+              <article><span>01</span><h3>모바일과 PC</h3><p>놀이 영역에서는 한 손가락 드래그와 마우스 포인터를 지원합니다. 페이지 이동은 놀이 영역 바깥에서 스크롤하세요.</p></article>
+              <article><span>02</span><h3>소리와 진동</h3><p>소리는 첫 사용자 동작 뒤 재생될 수 있습니다. 진동은 일부 Android 브라우저처럼 Vibration API를 지원하는 환경에서만 작동합니다.</p></article>
+              <article><span>03</span><h3>꾸미기 저장</h3><p>저장 버튼을 누른 장식만 현재 브라우저에 남습니다. 서버 동기화가 없어 다른 기기나 다른 브라우저로 옮겨지지 않습니다.</p></article>
+              <article><span>04</span><h3>추천 이용자</h3><p>짧게 화면 반응을 즐기거나 나만의 장식을 배치하고 싶은 이용자에게 맞습니다. 실제 촉감이나 치료 효과를 제공하지는 않습니다.</p></article>
+            </div>
+          </section>
 
           <section className="sensory-safety" aria-labelledby="sensory-safety-title">
             <p className="eyebrow">PLEASE NOTE</p>
@@ -118,9 +141,10 @@ export default function SensoryToyPlaygroundPage() {
             </div>
             <div>
               <Link className="button button-secondary" href="/tools">무료 도구 전체 보기</Link>
-              <Link className="button button-secondary" href="/tools/ai-prompt-generator">AI 프롬프트 생성기</Link>
+              <Link className="button button-secondary" href="/tools/pastel-stack-game">파스텔 스택 쌓기</Link>
+              <Link className="button button-secondary" href="/tools/pastel-memory-match">메모리 카드 맞추기</Link>
               <Link className="button button-secondary" href="/privacy">개인정보처리방침</Link>
-              <Link className="button button-primary" href="/about">MAKEON 소개</Link>
+              <Link className="button button-primary" href="/tools/ai-prompt-generator">AI 프롬프트 생성기</Link>
             </div>
           </nav>
         </div>

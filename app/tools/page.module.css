@@ -14,6 +14,7 @@
 .heroInner::after { right: 5%; bottom: 48px; width: 42px; height: 42px; background: rgba(224,190,154,.17); }
 .heroInner h1 { max-width: 920px; margin: 0 auto; color: #2c3029; font-size: clamp(42px, 5.2vw, 68px); font-weight: 880; letter-spacing: -.06em; line-height: 1.13; word-break: keep-all; }
 .heroDescription { max-width: none; margin: 22px auto 0; color: #5d6559; font-size: 16px; line-height: 1.8; word-break: keep-all; }
+.descriptionBreak { display: none; }
 .heroActions { display: flex; justify-content: center; gap: 10px; margin-top: 28px; }
 .heroActions a { min-width: 158px; }
 .heroCount { display: inline-flex; align-items: center; gap: 9px; margin-top: 28px; border: 1px solid rgba(157,177,145,.52); border-radius: 999px; background: rgba(255,255,252,.72); padding: 8px 14px; color: #687064; box-shadow: 0 8px 20px rgba(66,79,59,.05); }
@@ -23,6 +24,10 @@
 
 @media (min-width: 1024px) {
   .heroDescription { white-space: nowrap; }
+}
+
+@media (min-width: 681px) and (max-width: 1023px) {
+  .descriptionBreak { display: block; }
 }
 
 @media (max-width: 680px) {
