@@ -954,6 +954,107 @@ textarea {
   padding-block: 96px 110px;
 }
 
+.blog-bgm-control {
+  position: fixed;
+  z-index: 45;
+  right: 22px;
+  bottom: 22px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  border: 1px solid rgba(203, 216, 188, 0.9);
+  border-radius: 999px;
+  background: rgba(255, 254, 250, 0.94);
+  padding: 6px 9px 6px 6px;
+  box-shadow: 0 10px 30px rgba(53, 64, 47, 0.13);
+  backdrop-filter: blur(14px);
+}
+
+.blog-bgm-toggle {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  gap: 6px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--primary-light);
+  padding: 8px 11px;
+  color: var(--accent-strong);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 780;
+  line-height: 1;
+}
+
+.blog-bgm-toggle[aria-pressed="false"] {
+  background: var(--surface-muted);
+  color: var(--muted);
+}
+
+.blog-bgm-toggle:hover,
+.blog-bgm-toggle:focus-visible {
+  background: var(--primary-soft);
+}
+
+.blog-bgm-toggle:focus-visible,
+.blog-bgm-volume input:focus-visible {
+  outline: 3px solid rgba(143, 179, 106, 0.3);
+  outline-offset: 2px;
+}
+
+.blog-bgm-volume {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-subtle);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.blog-bgm-volume input {
+  width: 74px;
+  margin: 0;
+  accent-color: var(--primary);
+  cursor: pointer;
+}
+
+.blog-bgm-volume input:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+  .blog-bgm-control {
+    right: 12px;
+    bottom: max(12px, env(safe-area-inset-bottom));
+    max-width: calc(100vw - 24px);
+    gap: 7px;
+    padding-right: 8px;
+  }
+
+  .blog-bgm-toggle {
+    padding-inline: 10px;
+  }
+
+  .blog-bgm-volume {
+    gap: 5px;
+  }
+
+  .blog-bgm-volume input {
+    width: 58px;
+  }
+}
+
 .category-row {
   display: flex;
   flex-wrap: wrap;
