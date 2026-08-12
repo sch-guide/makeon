@@ -23,14 +23,14 @@ export default function ToolsPage() {
       <section className={styles.hero}>
         <div className={`site-container ${styles.heroInner}`}>
           <p className="eyebrow">FREE WEB TOOLS</p>
-          <h1>바로 써볼 수 있는 무료 도구 모음</h1>
+          <h1>만들고, 놀고, 바로 써보는 무료 도구</h1>
           <p className={styles.heroDescription}>
-            AI 프롬프트 생성기부터 퍼즐·기억력 게임까지,<br className={styles.descriptionBreak} />
-            설치 없이 브라우저에서 바로 사용할 수 있는 무료 웹 도구를 모았습니다.
+            AI로 만드는 실용 도구부터 가볍게 즐기는 퍼즐·미니게임까지,<br className={styles.descriptionBreak} />
+            가입과 설치 없이 브라우저에서 바로 사용할 수 있습니다.
           </p>
           <div className={styles.heroActions}>
-            <Link className="button button-primary" href="#tool-library">인기 도구 보기 <span aria-hidden="true">↓</span></Link>
-            <Link className="button button-secondary" href="/tools/ai-prompt-generator">AI 도구 먼저 보기</Link>
+            <Link className="button button-primary" href="#tool-library">전체 도구 둘러보기 <span aria-hidden="true">↓</span></Link>
+            <Link className="button button-secondary" href="/tools/ai-prompt-generator">AI 도구 바로 사용</Link>
           </div>
           <div className={styles.heroCount}><strong>{tools.length}</strong><span>개의 무료 도구 · 가입 없이 바로 시작</span></div>
         </div>

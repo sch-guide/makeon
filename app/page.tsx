@@ -34,28 +34,30 @@ export default function Home() {
       <section className="home-hero">
         <div className="site-container hero-grid">
           <div className="hero-copy">
-            <p className="eyebrow">BUILD WITH AI · SHARE WITH EVERYONE</p>
+            <p className="eyebrow">LEARN · BUILD · PLAY WITH AI</p>
             <h1>
-              AI로 아이디어를
+              AI로 배우고, 만들고,
               <br />
-              <span>현실로.</span>
+              <span>직접 써보세요.</span>
             </h1>
-            <p className="hero-description">{siteConfig.description}</p>
+            <p className="hero-description">
+              AI 활용법과 웹사이트 제작 가이드를 읽고, 무료 웹도구와 퍼즐·미니게임도 직접 즐겨보세요.
+            </p>
             <div className="hero-actions">
               <Link className="button button-primary" href="/blog">
-                블로그 둘러보기 <span aria-hidden="true">→</span>
+                AI 가이드 읽기 <span aria-hidden="true">→</span>
               </Link>
               <Link className="button button-secondary" href="/tools">
-                무료 도구 사용하기
+                무료 도구·게임 보기
               </Link>
             </div>
             <div className="hero-note">
               <span className="live-dot" aria-hidden="true" />
-              <span>코딩 초보자도 따라갈 수 있는 제작 과정을 정리합니다.</span>
+              <span>AI가 처음이어도 따라갈 수 있는 쉬운 가이드를 제공합니다.</span>
             </div>
           </div>
 
-          <div className="hero-visual" aria-label="아이디어가 서비스로 만들어지는 과정">
+          <div className="hero-visual" aria-label="AI 가이드와 무료 웹도구를 탐색하는 화면">
             <div className="visual-window">
               <div className="window-bar">
                 <span />
@@ -73,7 +75,7 @@ export default function Home() {
                 </div>
                 <div className="build-line">
                   <span />
-                  <b>AI와 함께 만드는 중</b>
+                  <b>AI로 정리하는 중</b>
                   <span />
                 </div>
                 <div className="result-card">
@@ -88,14 +90,14 @@ export default function Home() {
                   </div>
                   <div>
                     <span>READY TO SHARE</span>
-                    <strong>아이디어가 웹앱이 되었어요.</strong>
-                    <p>기획 · 제작 · 공개까지 한 걸음씩</p>
+                    <strong>브라우저에서 바로 사용할 수 있어요.</strong>
+                    <p>읽기 · 도구 · 게임을 한곳에서</p>
                   </div>
                 </div>
               </div>
             </div>
-            <div className="floating-badge badge-top">코딩 경험 0도 시작</div>
-            <div className="floating-badge badge-bottom">✓ 모바일까지 반응형</div>
+            <div className="floating-badge badge-top">AI 가이드부터 시작</div>
+            <div className="floating-badge badge-bottom">✓ 무료 도구와 미니게임</div>
           </div>
         </div>
       </section>
@@ -105,7 +107,7 @@ export default function Home() {
           <SectionHeading
             eyebrow="LATEST STORIES"
             title="최신 블로그 글"
-            description="AI와 함께 제작하며 확인한 과정과 초보자를 위한 쉬운 가이드를 나눕니다."
+            description="AI 활용, 코딩, 웹사이트 제작과 배포에서 자주 막히는 문제를 초보자도 이해하기 쉽게 정리합니다."
             href="/blog"
             linkLabel="모든 글 보기"
           />
@@ -121,8 +123,8 @@ export default function Home() {
         <div className="site-container">
           <SectionHeading
             eyebrow="FREE TOOLS"
-            title="인기 무료 도구"
-            description="설치 없이 바로 쓰는 작고 유용한 도구를 하나씩 만들고 있습니다."
+            title="무료 도구와 미니게임"
+            description="AI 프롬프트 도구부터 퍼즐·미니게임까지, 가입과 설치 없이 브라우저에서 바로 체험해 보세요."
             href="/tools"
             linkLabel="도구 모아보기"
           />
@@ -138,16 +140,16 @@ export default function Home() {
         <div className="site-container about-grid">
           <div>
             <p className="eyebrow">ABOUT MAKEON</p>
-            <h2>몰라도 괜찮습니다.<br />함께 만들면 되니까요.</h2>
+            <h2>배우고, 써보고,<br />가볍게 즐겨보세요.</h2>
           </div>
           <div className="about-copy">
             <p>
-              MAKEON은 코딩을 모르는 사람도 AI와 함께 자신의 아이디어를 실제 웹사이트와
-              앱으로 만들어 볼 수 있다는 믿음에서 시작했습니다.
+              MAKEON은 AI 활용법을 쉽게 읽고, 웹도구를 직접 사용하고, 퍼즐과 미니게임도
+              가볍게 즐길 수 있는 실용형 AI 놀이터입니다.
             </p>
             <p>
-              완성된 결과만 보여주기보다 제작 중 확인한 문제와 해결 방법을 단계별로 정리하고,
-              그 과정에서 만든 도구를 누구나 무료로 사용할 수 있게 나눕니다.
+              블로그는 검색자의 문제를 해결하는 실용 가이드에 집중하고, 무료 도구와 게임은
+              설명에 그치지 않고 브라우저에서 바로 체험할 수 있도록 제공합니다.
             </p>
             <Link className="text-link" href="/about">
               MAKEON 더 알아보기 <span aria-hidden="true">→</span>

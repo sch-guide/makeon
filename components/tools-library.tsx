@@ -36,7 +36,7 @@ export function ToolsLibrary({ tools }: { tools: Tool[] }) {
   return (
     <div className={styles.library} id="tool-library">
       <div className={styles.heading}>
-        <div><p className="eyebrow">TOOL LIBRARY</p><h2>무료 도구 전체 보기</h2></div>
+        <div><p className="eyebrow">TOOL LIBRARY</p><h2>AI 도구와 미니게임 전체 보기</h2></div>
         <p>총 {tools.length}개 중 <strong>{visibleTools.length}개</strong> 표시</p>
       </div>
 

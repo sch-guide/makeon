@@ -387,8 +387,8 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           <aside className="article-aside" aria-label="글 안내">
             <div className="aside-card">
               <span className="aside-label">MAKEON</span>
-              <h2>AI와 함께 직접 만들어갑니다.</h2>
-              <p>쉬운 설명, 솔직한 과정, 누구나 쓰는 무료 도구를 공유합니다.</p>
+              <h2>막히는 문제를 쉽게 풀어드립니다.</h2>
+              <p>AI 활용과 웹사이트 제작에 필요한 실용 가이드와 무료 도구를 제공합니다.</p>
               <Link className="button button-primary" href="/about">
                 MAKEON 소개
               </Link>

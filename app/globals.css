@@ -713,7 +713,7 @@ textarea {
 
 .tools-showcase {
   display: grid;
-  grid-template-columns: minmax(0, 1.45fr) minmax(280px, 0.75fr);
+  grid-template-columns: 1fr;
   gap: 22px;
 }
 

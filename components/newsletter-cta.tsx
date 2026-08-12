@@ -5,9 +5,9 @@ export function NewsletterCta() {
     <section className="site-container cta-wrap" aria-labelledby="cta-title">
       <div className="cta-card">
         <div>
-          <p className="eyebrow eyebrow-light">MAKE SOMETHING REAL</p>
-          <h2 id="cta-title">아이디어를 작은 결과물로 시작해 보세요.</h2>
-          <p>MAKEON의 제작 기록과 무료 도구를 차근차근 만나보세요.</p>
+          <p className="eyebrow eyebrow-light">LEARN · TRY · PLAY</p>
+          <h2 id="cta-title">필요한 가이드를 읽고, 바로 체험해 보세요.</h2>
+          <p>AI 활용 가이드와 무료 웹도구, 퍼즐·미니게임을 한곳에서 만나보세요.</p>
         </div>
         <div className="cta-actions">
           <Link className="button button-light" href="/blog">

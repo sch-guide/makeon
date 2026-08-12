@@ -101,8 +101,8 @@ export default function PastelColorSortPage() {
         <div className="site-container pastel-sort-guide-grid">
           <article>
             <p className="eyebrow">RELATED GUIDE</p>
-            <h2 id="pastel-sort-related-title">AI로 미니게임을 다듬은 실제 과정을 읽어보세요.</h2>
-            <p>기존 규칙과 기록 구조를 유지하면서 화면, 애니메이션, 접근성, 빌드 검증 조건을 구체적인 요청으로 바꾸는 방법을 MAKEON 사례로 정리했습니다.</p>
+            <h2 id="pastel-sort-related-title">AI 코딩 결과를 더 정확하게 요청하는 방법</h2>
+            <p>화면, 애니메이션, 접근성과 검증 조건을 구체적인 요청으로 정리해 원하는 결과에 가까워지는 방법을 확인해 보세요.</p>
             <Link className="button button-primary" href="/blog/improve-ai-coding-output-quality">AI 코딩 결과 품질 높이기</Link>
           </article>
           <article>

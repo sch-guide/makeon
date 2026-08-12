@@ -36,7 +36,7 @@ export function Footer() {
       </div>
       <div className="site-container footer-bottom">
         <p>© {new Date().getFullYear()} MAKEON. All rights reserved.</p>
-        <p>AI와 함께, 작게 만들고 세상에 공개합니다.</p>
+        <p>AI로 배우고, 만들고, 직접 써보세요.</p>
       </div>
     </footer>
   );

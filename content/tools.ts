@@ -73,7 +73,7 @@ export const tools: Tool[] = [
     releasedAt: "2026-08-02",
     popular: true,
     actionLabel: "게임 시작",
-    featuredOnHome: false,
+    featuredOnHome: true,
   },
   {
     slug: "pastel-memory-match",

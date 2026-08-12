@@ -14,17 +14,17 @@ const values = [
   {
     number: "01",
     title: "쉽게 설명합니다",
-    description: "전문 용어보다 처음 만드는 사람도 바로 이해할 수 있는 말로 기록합니다.",
+    description: "전문 용어를 줄이고 AI가 처음인 사람도 바로 이해할 수 있는 말로 안내합니다.",
   },
   {
     number: "02",
-    title: "제작 과정을 확인합니다",
-    description: "이론만 나열하지 않고 작은 아이디어를 결과물로 만드는 과정을 단계별로 확인합니다.",
+    title: "문제 해결에 집중합니다",
+    description: "검색자가 막힌 지점에서 바로 적용할 수 있는 단계와 확인 방법을 제공합니다.",
   },
   {
     number: "03",
-    title: "유용함을 나눕니다",
-    description: "과정에서 만든 도구를 누구나 부담 없이 쓸 수 있도록 무료로 공유합니다.",
+    title: "직접 체험할 수 있습니다",
+    description: "무료 웹도구와 퍼즐·미니게임을 가입 없이 브라우저에서 바로 사용할 수 있습니다.",
   },
 ];
 
@@ -33,43 +33,37 @@ export default function AboutPage() {
     <main id="main-content">
       <PageHero
         eyebrow="ABOUT MAKEON"
-        title="만들고, 배우고, 나눕니다."
-        description="MAKEON은 AI 활용과 웹사이트 제작 과정을 기록하고, 직접 만든 무료 웹 도구와 가볍게 즐길 수 있는 미니게임을 공유하는 공간입니다."
+        title="AI를 배우고, 만들고, 직접 써보는 공간"
+        description="MAKEON은 AI를 어렵게 설명하기보다 직접 배우고, 만들고, 써볼 수 있도록 실용적인 가이드와 무료 웹도구, 가볍게 즐길 수 있는 미니게임을 제공하는 공간입니다."
       />
 
       <section className="about-story-section">
         <div className="site-container about-story-grid">
           <div className="story-sticky">
-            <p className="eyebrow">OUR STORY</p>
-            <h2>코딩을 몰라도<br />시작할 수 있을까?</h2>
+            <p className="eyebrow">AI PLAYGROUND</p>
+            <h2>읽고, 써보고,<br />자유롭게 탐색하세요.</h2>
           </div>
           <div className="story-copy">
             <p className="story-lead">
-              MAKEON은 이 단순한 질문에서 시작했습니다. AI와 대화하며 아이디어를 정리하고,
-              코드를 만들고, 프로젝트를 공개하는 과정에서 중요한 것은 모든 기술을 아는 일이
-              아니었습니다.
+              MAKEON은 AI를 어렵게 설명하기보다 직접 배우고, 만들고, 써볼 수 있도록
+              실용적인 가이드와 무료 웹도구, 가볍게 즐길 수 있는 미니게임을 제공하는 공간입니다.
             </p>
             <p>
-              해결하고 싶은 문제를 작게 정의하고, 결과를 직접 확인하며, 한 단계씩 개선하는
-              태도가 더 중요했습니다. MAKEON은 그 과정을 초보자의 눈높이로 정리합니다.
-              어떤 요청이 도움이 되는지, 어디에서 오류가 생길 수 있는지, 무엇을 확인해야
-              하는지 구체적으로 설명합니다.
+              여기서 ‘AI 놀이터’는 어린이 전용 사이트를 뜻하지 않습니다. AI 활용법과 웹도구를
+              부담 없이 둘러보고, 필요한 기능을 직접 실행하며 자신에게 맞는 활용법을 찾는
+              열린 체험 공간이라는 의미입니다.
             </p>
             <p>
-              이곳의 글과 도구가 거창한 서비스를 만드는 지름길은 아닐 수 있습니다. 대신
-              머릿속에만 있던 생각을 작은 결과물로 꺼내는 첫 계기가 되기를 바랍니다.
-              AI 프롬프트처럼 작업에 쓰는 도구와 퍼즐·기억력 게임처럼 브라우저에서 바로
-              즐기는 미니앱을 함께 운영하며 아이디어가 실제 기능으로 바뀌는 과정을 보여드립니다.
+              블로그에서는 AI 활용, Codex, 웹사이트 제작, 배포와 검색 문제를 초보자도 따라 할 수
+              있게 정리합니다. 무료 도구에서는 입력과 결과를 바로 확인하고, 게임에서는 설명보다
+              플레이가 먼저 보이도록 구성해 각 영역의 역할을 분명하게 나눕니다.
             </p>
             <p>
-              MAKEON 운영자는 전문 개발자나 광고 승인 전문가를 사칭하지 않습니다. Next.js,
-              GitHub, Vercel, Supabase와 AI 코딩 도구를 사용해 사이트와 무료 미니앱을 직접
-              운영하면서 배운 내용을 기록합니다. 성공한 설정뿐 아니라 배포 오류, 권한 수정,
-              범위를 너무 크게 잡아 결과가 단순해진 과정과 AdSense 검토에서 승인되지 않은
-              결과도 함께 공개합니다.
+              모든 콘텐츠는 사용자가 다음 행동을 선택하기 쉽게 연결됩니다. 글에서 해결 방법을
+              확인한 뒤 관련 도구를 사용하거나, 잠시 쉬고 싶을 때 퍼즐과 미니게임을 즐길 수 있습니다.
             </p>
             <Link className="button button-primary" href="/blog">
-              제작 기록 읽기 <span aria-hidden="true">→</span>
+              실용 가이드 읽기 <span aria-hidden="true">→</span>
             </Link>
           </div>
         </div>
@@ -99,25 +93,25 @@ export default function AboutPage() {
         <div className="site-container">
           <div className="section-heading">
             <div>
-              <p className="eyebrow">HOW WE VERIFY</p>
-              <h2 id="verification-title">글을 확인하는 방법</h2>
+              <p className="eyebrow">WHAT YOU CAN DO</p>
+              <h2 id="verification-title">MAKEON에서 할 수 있는 것</h2>
             </div>
           </div>
           <div className="values-grid">
             <article className="value-card">
               <span>01</span>
-              <h3>저장소 기록을 확인합니다</h3>
-              <p>관련 파일, Git 커밋과 변경 흐름으로 실제 구현 여부를 확인합니다.</p>
+              <h3>AI 활용법을 쉽게 읽습니다</h3>
+              <p>프롬프트, AI 코딩, 웹사이트 제작과 배포 문제를 검색 의도에 맞는 가이드로 확인합니다.</p>
             </article>
             <article className="value-card">
               <span>02</span>
-              <h3>공개 결과를 다시 봅니다</h3>
-              <p>로컬 설명만 믿지 않고 공개 URL, HTML, sitemap과 사용자 동작을 대조합니다.</p>
+              <h3>무료 웹도구를 바로 씁니다</h3>
+              <p>별도 설치나 가입 없이 AI 프롬프트 생성기와 실용 도구를 브라우저에서 실행합니다.</p>
             </article>
             <article className="value-card">
               <span>03</span>
-              <h3>확인되지 않은 수치를 만들지 않습니다</h3>
-              <p>계정 화면이나 로그가 없는 오류, 시간, 검색량과 승인 결과는 단정하지 않습니다.</p>
+              <h3>퍼즐과 미니게임을 즐깁니다</h3>
+              <p>파스텔 퍼즐, 기억력 게임과 대전 게임을 모바일과 PC에서 가볍게 플레이합니다.</p>
             </article>
           </div>
         </div>
