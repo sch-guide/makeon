@@ -956,9 +956,9 @@ textarea {
 
 .blog-bgm-control {
   position: fixed;
-  z-index: 45;
+  z-index: 49;
+  top: 92px;
   right: 22px;
-  bottom: 22px;
   display: flex;
   align-items: center;
   gap: 9px;
@@ -1035,8 +1035,8 @@ textarea {
 
 @media (max-width: 480px) {
   .blog-bgm-control {
+    top: 80px;
     right: 12px;
-    bottom: max(12px, env(safe-area-inset-bottom));
     max-width: calc(100vw - 24px);
     gap: 7px;
     padding-right: 8px;

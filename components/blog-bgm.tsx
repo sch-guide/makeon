@@ -242,6 +242,11 @@ export function BlogBgm({ children }: Readonly<{ children: ReactNode }>) {
   }, []);
 
   useEffect(() => {
+    if (enabled !== true || userStartedRef.current) return;
+    void startBgm();
+  }, [enabled, startBgm]);
+
+  useEffect(() => {
     if (enabled === false || userStartedRef.current) return;
 
     const beginAfterInteraction = (event: Event) => {
@@ -342,7 +347,8 @@ export function BlogBgm({ children }: Readonly<{ children: ReactNode }>) {
   };
 
   const isEnabled = enabled === true;
-  const stateLabel = !isEnabled ? "BGM 끔" : playback === "playing" ? "BGM 켬" : "BGM 시작";
+  const isPlaying = playback === "playing";
+  const stateLabel = isPlaying ? "BGM 끄기" : "BGM 켜기";
 
   const beginFromBlogInteraction = (event: SyntheticEvent) => {
     if (
@@ -366,12 +372,8 @@ export function BlogBgm({ children }: Readonly<{ children: ReactNode }>) {
         <button
           className="blog-bgm-toggle"
           type="button"
-          aria-label={playback === "waiting" && isEnabled
-            ? "블로그 배경음악 재생"
-            : isEnabled
-              ? "블로그 배경음악 끄기"
-              : "블로그 배경음악 켜기"}
-          aria-pressed={isEnabled}
+          aria-label={isPlaying ? "블로그 배경음악 끄기" : "블로그 배경음악 켜기"}
+          aria-pressed={isPlaying}
           onClick={toggleBgm}
         >
           <span aria-hidden="true">♪</span>
