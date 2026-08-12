@@ -1256,28 +1256,11 @@ textarea {
   min-width: 0;
 }
 
-.article-lead {
-  border-left: 3px solid var(--accent);
-  border-radius: 0 12px 12px 0;
-  background: var(--primary-light);
-  padding: 22px 26px;
-}
-
-.article-lead span {
-  color: var(--accent);
-  font-size: 10px;
-  font-weight: 850;
-  letter-spacing: 0.12em;
-}
-
-.article-lead p {
-  margin: 7px 0 0;
-  color: var(--text-soft);
-  font-size: 15px;
-  line-height: 1.8;
-}
-
 .article-body > section {
+  margin-top: 0;
+}
+
+.article-body > section + section {
   margin-top: 66px;
 }
 
@@ -3169,49 +3152,46 @@ textarea {
   }
 }
 
-.article-review-note {
+.article-author {
   display: grid;
-  gap: 14px;
-  margin: 0 0 48px;
+  gap: 12px;
+  margin-top: 72px;
   border: 1px solid var(--border);
   border-radius: 18px;
   background: var(--primary-light);
   padding: 22px 24px;
 }
 
-.article-review-note > span {
+.article-author > span {
   color: var(--accent);
   font-size: 11px;
   font-weight: 800;
   letter-spacing: 0.13em;
 }
 
-.article-review-meta {
+.article-author dl {
   display: grid;
-  grid-template-columns: minmax(110px, 0.35fr) minmax(0, 1fr);
-  gap: 10px 24px;
+  gap: 8px;
+  margin: 0;
 }
 
-.article-review-meta div {
+.article-author dl div {
   display: grid;
-  gap: 4px;
+  grid-template-columns: 52px minmax(0, 1fr);
+  gap: 12px;
 }
 
-.article-review-meta strong {
+.article-author dt {
   color: var(--text);
   font-size: 12px;
+  font-weight: 750;
 }
 
-.article-review-meta span,
-.article-review-meta time,
-.article-review-note p {
+.article-author dd {
+  margin: 0;
   color: var(--muted);
   font-size: 13px;
-  line-height: 1.75;
-}
-
-.article-review-note p {
-  margin: 0;
+  line-height: 1.7;
 }
 
 @media (max-width: 640px) {
@@ -3263,13 +3243,15 @@ textarea {
     padding: 17px 18px;
   }
 
-  .article-review-note {
-    margin-bottom: 38px;
-    padding: 20px;
+  .article-meta {
+    gap: 5px 7px;
+    max-width: 100%;
+    line-height: 1.6;
   }
 
-  .article-review-meta {
-    grid-template-columns: 1fr;
+  .article-author {
+    margin-top: 56px;
+    padding: 19px 20px;
   }
 }
 

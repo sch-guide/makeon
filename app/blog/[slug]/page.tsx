@@ -191,17 +191,11 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             <h1>{post.title}</h1>
             <p className="article-summary">{post.summary}</p>
             <div className="article-meta">
-              <span>MAKEON 운영자</span>
+              <time dateTime={post.publishedAt}>작성일 {formatDate(post.publishedAt)}</time>
               <span aria-hidden="true">·</span>
-              <time dateTime={post.publishedAt}>{formatDate(post.publishedAt)}</time>
-              {post.updatedAt && post.updatedAt !== post.publishedAt ? (
-                <>
-                  <span aria-hidden="true">·</span>
-                  <span>업데이트 {formatDate(post.updatedAt)}</span>
-                </>
-              ) : null}
-              <span aria-hidden="true">·</span>
-              <span>{post.readingTime} 읽기</span>
+              <time dateTime={post.reviewNote?.checkedAt ?? post.updatedAt ?? post.publishedAt}>
+                최종 검토 {formatDate(post.reviewNote?.checkedAt ?? post.updatedAt ?? post.publishedAt)}
+              </time>
             </div>
           </div>
         </header>
@@ -222,49 +216,6 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
         <div className="site-container article-layout">
           <div className="article-body">
-            <div className="article-lead">
-              <span>MAKEON NOTE</span>
-              <p>{post.description}</p>
-            </div>
-
-            {post.reviewNote ? (
-              <aside className="article-review-note" aria-label="글 최신성 안내">
-                <span>LAST REVIEWED</span>
-                <div className="article-review-meta">
-                  <div>
-                    <strong>확인일</strong>
-                    <time dateTime={post.reviewNote.checkedAt}>
-                      {formatDate(post.reviewNote.checkedAt)}
-                    </time>
-                  </div>
-                  <div>
-                    <strong>확인 환경</strong>
-                    <span>{post.reviewNote.environment}</span>
-                  </div>
-                </div>
-                <p>{post.reviewNote.notice}</p>
-              </aside>
-            ) : null}
-
-            <aside className="article-review-note" aria-label="작성자와 검증 방식">
-              <span>ABOUT THE AUTHOR</span>
-              <div className="article-review-meta">
-                <div>
-                  <strong>작성</strong>
-                  <span>MAKEON 운영자</span>
-                </div>
-                <div>
-                  <strong>관점</strong>
-                  <span>AI 코딩을 직접 운영하며 배우는 초보자</span>
-                </div>
-              </div>
-              <p>
-                전문 개발자를 사칭하지 않습니다. 저장소의 코드와 Git 기록, 공개 페이지에서
-                확인한 내용과 공식 문서를 대조하고, 확인하지 못한 결과는 성공 사례로 쓰지 않습니다. {" "}
-                <Link href="/about">작성 및 검증 원칙 보기</Link>
-              </p>
-            </aside>
-
             {post.sections.map((section) => (
               <section key={section.heading}>
                 <h2>{section.heading}</h2>
@@ -409,6 +360,20 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 </ul>
               </section>
             ) : null}
+
+            <aside className="article-author" aria-label="작성자 소개">
+              <span>ABOUT THE AUTHOR</span>
+              <dl>
+                <div>
+                  <dt>작성</dt>
+                  <dd>MAKEON 운영자</dd>
+                </div>
+                <div>
+                  <dt>소개</dt>
+                  <dd>AI 도구와 웹서비스를 직접 만들고 기록합니다.</dd>
+                </div>
+              </dl>
+            </aside>
 
             <div className="article-end">
               <span aria-hidden="true">✦</span>
