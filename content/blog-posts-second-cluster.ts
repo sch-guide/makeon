@@ -209,8 +209,8 @@ export const secondClusterPosts: BlogPost[] = [
     ],
     publishedAt: "2026-07-23",
     updatedAt: "2026-07-23",
-    category: "무료 도구",
-    tags: ["AI 활용·프롬프트", "무료 도구"],
+    category: "AI 활용 & 프롬프트",
+    tags: ["AI 활용·프롬프트"],
     readingTime: "10분",
     sections: [
       {
@@ -377,7 +377,7 @@ export const secondClusterPosts: BlogPost[] = [
     publishedAt: "2026-07-23",
     updatedAt: "2026-07-25",
     category: "AI 웹앱 제작",
-    tags: ["AI 코딩·Codex", "웹사이트·웹앱 제작", "배포·수익화"],
+    tags: ["AI 코딩·Codex", "웹사이트·웹앱 제작", "배포·Google 검색"],
     readingTime: "14분",
     reviewNote: {
       checkedAt: "2026-07-25",
@@ -609,9 +609,9 @@ export const secondClusterPosts: BlogPost[] = [
       "무료 도구 사이트 수익화",
     ],
     publishedAt: "2026-07-23",
-    updatedAt: "2026-07-23",
-    category: "AI 수익화",
-    tags: ["웹사이트·웹앱 제작", "배포·수익화"],
+    updatedAt: "2026-08-12",
+    category: "웹사이트 운영",
+    tags: ["웹사이트·웹앱 제작"],
     readingTime: "14분",
     sections: [
       {
@@ -681,7 +681,7 @@ export const secondClusterPosts: BlogPost[] = [
             suffix: "에 정리했습니다.",
           },
           {
-            prefix: "현재 MAKEON 도구가 제공하는 기능과 입력 예시는",
+            prefix: "프롬프트 생성 도구의 기능과 입력 예시는",
             label: "무료 AI 프롬프트 생성기 사용법",
             href: "/blog/free-ai-prompt-generator-guide",
             suffix: "에서 확인할 수 있습니다.",
@@ -692,7 +692,7 @@ export const secondClusterPosts: BlogPost[] = [
         heading: "4. 제휴 마케팅은 실제 선택을 돕는 문맥에서만 사용합니다",
         paragraphs: [
           "도구 비교나 사용 후기에 제휴 링크를 넣을 수 있지만 링크를 클릭시키기 위한 글이 되어서는 안 됩니다. 어떤 사용자를 위한 제품인지, 직접 확인한 범위는 어디까지인지, 장점과 제한은 무엇인지 함께 설명하고 제휴 관계를 눈에 띄게 공개하세요.",
-          "MAKEON 주제라면 호스팅, 개발 도구, 생산성 서비스가 후보가 될 수 있지만 실제 독자의 문제와 무관한 고가 상품을 억지로 연결하면 신뢰와 검색 의도를 모두 해칠 수 있습니다.",
+          "AI·웹 제작 주제라면 호스팅, 개발 도구, 생산성 서비스가 후보가 될 수 있지만 실제 독자의 문제와 무관한 고가 상품을 억지로 연결하면 신뢰와 검색 의도를 모두 해칠 수 있습니다.",
         ],
       },
       {

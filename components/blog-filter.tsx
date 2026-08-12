@@ -8,8 +8,7 @@ const filterCategories = [
   "AI 활용·프롬프트",
   "AI 코딩·Codex",
   "웹사이트·웹앱 제작",
-  "배포·수익화",
-  "무료 도구",
+  "배포·Google 검색",
 ] as const;
 
 type BlogFilterProps = {

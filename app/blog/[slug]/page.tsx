@@ -370,7 +370,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 </div>
                 <div>
                   <dt>소개</dt>
-                  <dd>AI 도구와 웹서비스를 직접 만들고 기록합니다.</dd>
+                  <dd>AI 도구와 웹서비스 활용 방법을 쉽게 정리합니다.</dd>
                 </div>
               </dl>
             </aside>

@@ -26,6 +26,7 @@ export const searchFocusedPosts: BlogPost[] = [
       "Codex 작업 재개",
     ],
     publishedAt: "2026-08-10",
+    updatedAt: "2026-08-12",
     category: "Codex 가이드",
     tags: ["AI 코딩·Codex"],
     readingTime: "13분",
@@ -176,10 +177,10 @@ export const searchFocusedPosts: BlogPost[] = [
         },
       },
       {
-        heading: "MAKEON에서는 장시간 작업을 이어 실행하지 않고 저장 상태부터 확인했습니다",
+        heading: "문제 해결 사례: 장시간 작업은 저장 상태부터 다시 확인합니다",
         paragraphs: [
-          "MAKEON 작업 중 개발 서버와 프로세스 확인 단계가 장시간 끝나지 않은 적이 있었습니다. 다음 시도에서는 이전 명령을 그대로 이어 가지 않고 현재 폴더, 저장된 변경 파일과 `git status`만 먼저 확인했습니다. TypeScript 검사와 production build도 각각 제한 시간을 두고 따로 실행했습니다.",
-          "GitHub CLI 인증이 만료됐을 때는 코드 수정과 인증 문제를 분리했습니다. 사용자가 `gh auth login`을 완료한 뒤 상태를 다시 확인하고, commit과 main push를 한 단계씩 진행했습니다. push 성공만으로 끝내지 않고 Vercel 자동 배포 뒤 실제 공개 URL에서 새 HTML이 보이는지 확인했습니다.",
+          "개발 서버나 프로세스 확인 단계가 장시간 끝나지 않았다면 이전 명령을 그대로 이어 가지 말고 현재 폴더, 저장된 변경 파일과 `git status`만 먼저 확인하세요. TypeScript 검사와 production build도 각각 제한 시간을 두고 따로 실행합니다.",
+          "GitHub CLI 인증이 만료됐다면 코드 수정과 인증 문제를 분리합니다. `gh auth login` 완료 뒤 상태를 다시 확인하고 commit과 main push를 한 단계씩 진행하세요. push 성공만으로 끝내지 말고 Vercel 자동 배포 뒤 실제 공개 URL에서 새 HTML이 보이는지 확인합니다.",
         ],
         callout: {
           type: "note",
@@ -247,8 +248,9 @@ export const searchFocusedPosts: BlogPost[] = [
       "애드센스 승인 체크리스트",
     ],
     publishedAt: "2026-08-10",
+    updatedAt: "2026-08-12",
     category: "AI 수익화",
-    tags: ["배포·수익화"],
+    tags: ["배포·Google 검색"],
     readingTime: "14분",
     reviewNote: {
       checkedAt: "2026-08-10",
@@ -596,7 +598,7 @@ export const searchFocusedPosts: BlogPost[] = [
     ],
     publishedAt: "2026-08-10",
     category: "배포 가이드",
-    tags: ["배포·수익화", "웹사이트·웹앱 제작"],
+    tags: ["배포·Google 검색", "웹사이트·웹앱 제작"],
     readingTime: "14분",
     reviewNote: {
       checkedAt: "2026-08-10",
@@ -808,21 +810,22 @@ export const searchFocusedPosts: BlogPost[] = [
       "Supabase service role key",
     ],
     publishedAt: "2026-08-10",
+    updatedAt: "2026-08-12",
     category: "AI 웹앱 제작",
-    tags: ["웹사이트·웹앱 제작", "배포·수익화"],
+    tags: ["웹사이트·웹앱 제작", "배포·Google 검색"],
     readingTime: "15분",
     reviewNote: {
       checkedAt: "2026-08-10",
-      environment: "기존 Supabase 프로젝트에 별도 MAKEON 게임 랭킹 테이블과 정책을 추가하는 운영 사례",
+      environment: "Supabase 익명 인증, RLS, API 키와 여러 앱의 객체 분리 방식",
       notice:
-        "Supabase 키 체계와 대시보드 메뉴는 변경될 수 있습니다. 이 글은 MAKEON의 분리 원칙을 일반화한 것이며, 실제 SQL 실행 전 기존 객체·RLS·백업과 최신 공식 문서를 확인하세요.",
+        "Supabase 키 체계와 대시보드 메뉴는 변경될 수 있습니다. 실제 SQL 실행 전 기존 객체·RLS·백업과 최신 공식 문서를 확인하세요.",
     },
     sections: [
       {
         heading: "결론: 가능하지만 데이터베이스 경계가 아니라 ‘운영 규칙으로 분리’된다는 점을 알아야 합니다",
         paragraphs: [
           "Supabase 프로젝트 하나를 여러 앱에서 함께 사용할 수 있습니다. 같은 프로젝트 URL과 인증 시스템을 사용하면서 앱별 테이블, 함수, 정책을 따로 만들 수 있기 때문입니다. 다만 별도 프로젝트처럼 완전히 격리되는 것은 아닙니다. 키 회전, Auth 설정, 사용량, 장애와 관리 권한은 프로젝트 전체에 영향을 줍니다.",
-          "MAKEON은 기존 travel-album 프로젝트의 테이블을 건드리지 않고 랭킹 객체에 `makeon_` 접두사를 붙이는 방식을 선택했습니다. 이 방법의 핵심은 이름만 바꾸는 것이 아니라 RLS, 함수, 인덱스, migration과 서버 키 사용 범위까지 앱별로 분리하는 것입니다.",
+          "예를 들어 기존 여행 앱과 게임 랭킹을 같은 프로젝트에서 운영한다면 새 랭킹 객체에 앱 전용 접두사를 붙일 수 있습니다. 핵심은 이름만 바꾸는 것이 아니라 RLS, 함수, 인덱스, migration과 서버 키 사용 범위까지 앱별로 분리하는 것입니다.",
         ],
         table: {
           caption: "한 프로젝트 공유가 맞는 경우와 분리가 필요한 경우",
@@ -851,7 +854,7 @@ export const searchFocusedPosts: BlogPost[] = [
         callout: {
           type: "warning",
           title: "접두사는 충돌 방지 규칙이지 보안 경계가 아닙니다",
-          text: "`makeon_` 이름만으로 접근이 막히지 않습니다. 실제 권한은 grants, RLS, 함수 권한과 서버 코드에서 제어해야 합니다.",
+          text: "`game_` 같은 접두사만으로 접근이 막히지 않습니다. 실제 권한은 grants, RLS, 함수 권한과 서버 코드에서 제어해야 합니다.",
         },
       },
       {
@@ -860,17 +863,17 @@ export const searchFocusedPosts: BlogPost[] = [
           "public schema를 함께 쓴다면 테이블뿐 아니라 인덱스, constraint, policy와 RPC 함수 이름에도 같은 접두사를 붙이세요. migration 파일도 앱 폴더에 보관해 어느 서비스가 소유하는 변경인지 알 수 있게 합니다.",
         ],
         codeBlock: {
-          label: "MAKEON 전용 이름 예시",
-          code: "public.makeon_game_profiles\npublic.makeon_game_scores\nmakeon_game_scores_user_game_idx\nmakeon_game_scores_insert_own\npublic.makeon_submit_game_score(...)\nsupabase/migrations/makeon/20260810_makeon_game_ranking.sql",
+          label: "게임 앱 전용 이름 예시",
+          code: "public.game_profiles\npublic.game_scores\ngame_scores_user_game_idx\ngame_scores_insert_own\npublic.submit_game_score(...)\nsupabase/migrations/game/20260810_game_ranking.sql",
         },
         table: {
           caption: "객체별 분리 원칙",
           headers: ["객체", "예시", "확인할 점"],
           rows: [
-            ["테이블", "makeon_game_scores", "기존 테이블 참조·cascade 삭제 없음"],
-            ["인덱스", "makeon_game_scores_rank_idx", "앱 접두사와 대상 열 일치"],
-            ["정책", "makeon_game_scores_select_public", "대상 role과 using·with check"],
-            ["함수", "makeon_submit_game_score", "search_path·권한·입력 검증"],
+            ["테이블", "game_scores", "기존 테이블 참조·cascade 삭제 없음"],
+            ["인덱스", "game_scores_rank_idx", "앱 접두사와 대상 열 일치"],
+            ["정책", "game_scores_select_public", "대상 role과 using·with check"],
+            ["함수", "submit_game_score", "search_path·권한·입력 검증"],
             ["migration", "makeon 폴더·타임스탬프", "기존 객체 drop·replace 금지"],
           ],
         },
@@ -906,27 +909,27 @@ export const searchFocusedPosts: BlogPost[] = [
         },
       },
       {
-        heading: "5. SQL Editor의 새 Query에서 MAKEON migration만 실행합니다",
+        heading: "5. SQL Editor의 새 Query에서 새 앱 migration만 실행합니다",
         paragraphs: [
-          "대시보드에서 직접 적용해야 한다면 대상 Supabase 프로젝트를 다시 확인한 뒤 SQL Editor → New Query를 엽니다. 새 Query를 쓰는 이유는 이전에 실행하던 여행 앱 SQL이나 선택 영역이 남은 탭과 섞이지 않게 하고, 이번에 실행할 MAKEON 변경문 전체를 한 단위로 검토하기 위해서입니다.",
+          "대시보드에서 직접 적용해야 한다면 대상 Supabase 프로젝트를 다시 확인한 뒤 SQL Editor → New Query를 엽니다. 새 Query를 쓰는 이유는 이전 앱의 SQL이나 선택 영역이 남은 탭과 섞이지 않게 하고, 이번 앱의 변경문 전체를 한 단위로 검토하기 위해서입니다.",
           "새 Query가 기존 데이터를 자동으로 보호해 주는 것은 아닙니다. 실행 전 SQL을 파일로 보관하고 `drop`, 기존 객체에 대한 `alter`, 접두사 없는 `create or replace`가 없는지 검색해야 합니다. 팀에서 Supabase CLI migration을 이미 운영한다면 Dashboard에서 직접 바꾸면 migration 기록과 어긋날 수 있으므로, 로컬 migration을 만들고 `db push`하는 기존 절차를 우선하세요.",
         ],
         bullets: [
           "Supabase Dashboard에서 정확한 프로젝트 이름을 다시 확인",
           "SQL Editor → New Query를 열고 저장한 migration 전체를 붙여넣기",
-          "생성·변경 대상이 `makeon_` 객체로만 한정됐는지 검색",
+          "생성·변경 대상이 새 앱 접두사 객체로만 한정됐는지 검색",
           "실제 키·토큰·이메일과 기존 앱 데이터가 SQL에 없는지 확인",
           "Run 후 성공 메시지뿐 아니라 테이블·RLS·정책·함수 존재 확인",
-          "기존 여행 앱 로그인·조회와 MAKEON 랭킹을 각각 회귀 테스트",
+          "기존 앱 로그인·조회와 새 앱 랭킹을 각각 회귀 테스트",
         ],
         codeBlock: {
           label: "실행 전 안전 확인 메모",
-          code: "대상 프로젝트: [프로젝트 이름]\nSQL 원본 파일: supabase/migrations/makeon/[날짜]_makeon_game_ranking.sql\n생성 대상: public.makeon_game_profiles, public.makeon_game_scores\n금지 대상: 기존 travel-album 테이블·함수·정책\n실행 후 확인: 테이블 / RLS / policy / RPC / 기존 앱 회귀 테스트",
+          code: "대상 프로젝트: [프로젝트 이름]\nSQL 원본 파일: supabase/migrations/[앱]/[날짜]_game_ranking.sql\n생성 대상: public.game_profiles, public.game_scores\n금지 대상: 기존 앱의 테이블·함수·정책\n실행 후 확인: 테이블 / RLS / policy / RPC / 기존 앱 회귀 테스트",
         },
         callout: {
           type: "warning",
           title: "New Query는 안전장치가 아니라 작업 범위를 분리하는 방법입니다",
-          text: "관리 권한으로 실행하는 SQL은 기존 데이터를 바꿀 수 있습니다. SQL이 MAKEON 객체만 다루는지 직접 검토하고, 실행한 최종 SQL을 migration 파일로 남겨 같은 변경을 추적할 수 있게 하세요.",
+          text: "관리 권한으로 실행하는 SQL은 기존 데이터를 바꿀 수 있습니다. SQL이 새 앱 객체만 다루는지 직접 검토하고, 실행한 최종 SQL을 migration 파일로 남겨 같은 변경을 추적할 수 있게 하세요.",
         },
       },
       {
@@ -949,7 +952,7 @@ export const searchFocusedPosts: BlogPost[] = [
       {
         heading: "7. 환경변수는 앱별 Vercel 프로젝트에 등록합니다",
         paragraphs: [
-          "같은 Supabase 프로젝트를 가리키더라도 각 앱의 Vercel 프로젝트에 필요한 변수만 등록하세요. MAKEON 서버가 랭킹 관리에 elevated key가 필요하다면 서버 전용 이름으로 보관하고, 클라이언트에서 참조하지 않는지 build 결과와 코드 검색으로 확인합니다.",
+          "같은 Supabase 프로젝트를 가리키더라도 각 앱의 Vercel 프로젝트에 필요한 변수만 등록하세요. 랭킹 관리에 elevated key가 필요하다면 서버 전용 이름으로 보관하고, 클라이언트에서 참조하지 않는지 build 결과와 코드 검색으로 확인합니다.",
         ],
         bullets: [
           "Project URL과 publishable key는 코드가 기대하는 정확한 이름으로 등록",
@@ -970,11 +973,11 @@ export const searchFocusedPosts: BlogPost[] = [
       {
         heading: "8. migration과 회귀 테스트를 앱별로 기록합니다",
         paragraphs: [
-          "SQL은 한 번에 실행 가능한 migration으로 보관하되 기존 travel-album 객체를 drop·alter·replace하지 않는지 먼저 검색합니다. 실행 후에는 새 테이블 존재만 확인하지 말고 기존 여행 앱 로그인·조회와 MAKEON 익명 로그인·랭킹 제출을 모두 테스트해야 합니다.",
+          "SQL은 한 번에 실행 가능한 migration으로 보관하되 기존 앱 객체를 drop·alter·replace하지 않는지 먼저 검색합니다. 실행 후에는 새 테이블 존재만 확인하지 말고 기존 앱 로그인·조회와 새 앱 익명 로그인·랭킹 제출을 모두 테스트해야 합니다.",
         ],
         codeBlock: {
           label: "공유 프로젝트 적용 체크리스트",
-          code: "[ ] migration이 makeon_ 객체만 생성·변경한다\n[ ] 기존 테이블·함수·정책 이름을 건드리지 않는다\n[ ] 새 테이블에 RLS가 켜져 있다\n[ ] 익명 사용자와 영구 사용자의 권한을 구분했다\n[ ] publishable과 server secret 위치가 분리됐다\n[ ] 기존 travel-album 로그인·조회가 정상이다\n[ ] MAKEON 랭킹 조회·제출·오류 응답이 정상이다\n[ ] 키와 개인정보가 Git·로그에 없다",
+          code: "[ ] migration이 새 앱 객체만 생성·변경한다\n[ ] 기존 테이블·함수·정책 이름을 건드리지 않는다\n[ ] 새 테이블에 RLS가 켜져 있다\n[ ] 익명 사용자와 영구 사용자의 권한을 구분했다\n[ ] publishable과 server secret 위치가 분리됐다\n[ ] 기존 앱 로그인·조회가 정상이다\n[ ] 새 앱 랭킹 조회·제출·오류 응답이 정상이다\n[ ] 키와 개인정보가 Git·로그에 없다",
         },
       },
       {

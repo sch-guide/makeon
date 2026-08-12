@@ -33,7 +33,7 @@ const legacyBlogPosts: BlogPost[] = [
     publishedAt: "2026-07-18",
     updatedAt: "2026-07-25",
     category: "AI 웹사이트 제작",
-    tags: ["AI 코딩·Codex", "웹사이트·웹앱 제작", "배포·수익화"],
+    tags: ["AI 코딩·Codex", "웹사이트·웹앱 제작", "배포·Google 검색"],
     readingTime: "14분",
     featured: true,
     reviewNote: {
@@ -79,7 +79,7 @@ const legacyBlogPosts: BlogPost[] = [
       {
         heading: "2단계: 제작 방식을 고릅니다",
         paragraphs: [
-          "AI 홈페이지 제작에는 완성형 빌더를 쓰는 방법과 Next.js 같은 코드 프로젝트를 AI와 함께 만드는 방법이 있습니다. 빠른 소개 페이지가 목표라면 빌더가 편할 수 있고, 블로그와 무료 도구를 계속 추가하려면 코드 기반 프로젝트가 유리합니다. MAKEON은 콘텐츠와 미니앱을 함께 확장하기 위해 Next.js 방식을 선택했습니다.",
+          "AI 홈페이지 제작에는 완성형 빌더를 쓰는 방법과 Next.js 같은 코드 프로젝트를 AI와 함께 만드는 방법이 있습니다. 빠른 소개 페이지가 목표라면 빌더가 편할 수 있고, 블로그와 무료 도구를 계속 추가하거나 라우트와 데이터 흐름을 직접 관리하려면 코드 기반 프로젝트가 유리합니다.",
         ],
         table: {
           caption: "초보자가 선택할 수 있는 제작 방식",
@@ -463,7 +463,7 @@ const legacyBlogPosts: BlogPost[] = [
     publishedAt: "2026-07-23",
     updatedAt: "2026-07-25",
     category: "배포 가이드",
-    tags: ["AI 코딩·Codex", "배포·수익화"],
+    tags: ["AI 코딩·Codex", "배포·Google 검색"],
     readingTime: "13분",
     coverImage: "/images/blog/nextjs-vercel-deployment-workflow.png",
     coverImageAlt:
@@ -1058,7 +1058,7 @@ const legacyBlogPosts: BlogPost[] = [
     publishedAt: "2026-07-11",
     updatedAt: "2026-07-25",
     category: "배포 가이드",
-    tags: ["웹사이트·웹앱 제작", "배포·수익화"],
+    tags: ["웹사이트·웹앱 제작", "배포·Google 검색"],
     readingTime: "11분",
     reviewNote: {
       checkedAt: "2026-07-25",
@@ -1269,9 +1269,9 @@ const strengthenedSlugSet = new Set<string>(strengthenedPostSlugs);
 const searchFocusedSlugSet = new Set<string>(searchFocusedPostSlugs);
 const rawBlogPosts: BlogPost[] = [
   ...searchFocusedPosts,
-  ...adsenseQualityPosts,
+  ...adsenseQualityPosts.filter((post) => !strengthenedSlugSet.has(post.slug)),
   ...legacyBlogPosts.filter(
-    (post) => !strengthenedSlugSet.has(post.slug) && !searchFocusedSlugSet.has(post.slug),
+    (post) => !searchFocusedSlugSet.has(post.slug),
   ),
 ];
 

@@ -20,7 +20,7 @@ export const adsenseQualityPosts: BlogPost[] = [
     publishedAt: "2026-07-18",
     updatedAt: "2026-08-04",
     category: "AI 웹사이트 제작",
-    tags: ["AI 코딩·Codex", "웹사이트·웹앱 제작", "배포·수익화"],
+    tags: ["AI 코딩·Codex", "웹사이트·웹앱 제작", "배포·Google 검색"],
     readingTime: "16분",
     featured: true,
     reviewNote: {
@@ -354,7 +354,7 @@ export const adsenseQualityPosts: BlogPost[] = [
     publishedAt: "2026-07-23",
     updatedAt: "2026-08-04",
     category: "배포 가이드",
-    tags: ["웹사이트·웹앱 제작", "배포·수익화", "AI 코딩·Codex"],
+    tags: ["웹사이트·웹앱 제작", "배포·Google 검색", "AI 코딩·Codex"],
     readingTime: "16분",
     featured: true,
     reviewNote: {
@@ -490,31 +490,31 @@ export const adsenseQualityPosts: BlogPost[] = [
   },
   {
     slug: "nextjs-google-search-console-setup",
-    title: "Next.js 사이트를 Google Search Console에 등록한 실제 과정",
-    seoTitle: "Next.js Search Console 등록: 인증·sitemap 실제 과정",
+    title: "Next.js 사이트 Google Search Console 등록 방법",
+    seoTitle: "Next.js Search Console 등록 방법: 인증·sitemap 설정",
     summary:
-      "MAKEON에 Google 인증 메타데이터를 넣고 sitemap과 robots를 공개한 뒤 Search Console에서 확인할 수 있도록 준비한 과정을 코드와 공개 URL 기준으로 정리했습니다.",
+      "Next.js App Router에서 Google 인증 메타데이터, sitemap과 robots를 설정하고 Search Console에서 확인하는 순서를 정리했습니다.",
     description:
       "Next.js App Router에서 Google Search Console 인증 메타 태그, sitemap.ts, robots.ts를 설정하고 배포 후 공개 HTML과 URL을 확인하는 실제 과정을 설명합니다.",
     primaryKeyword: "Next.js Google Search Console 등록",
     relatedKeywords: ["Next.js 검색 등록", "구글 사이트 인증 메타태그", "Next.js sitemap", "Search Console 사이트맵"],
     publishedAt: "2026-08-04",
-    updatedAt: "2026-08-04",
+    updatedAt: "2026-08-12",
     category: "검색 등록",
-    tags: ["웹사이트·웹앱 제작", "배포·수익화"],
+    tags: ["웹사이트·웹앱 제작", "배포·Google 검색"],
     readingTime: "13분",
     featured: true,
     reviewNote: {
       checkedAt: "2026-08-04",
-      environment: "MAKEON Next.js 16 App Router, Vercel 공개 사이트, Google Search Console",
+      environment: "Next.js 16 App Router, Vercel 공개 사이트, Google Search Console 공식 안내",
       notice:
-        "저장소 커밋과 공개 HTML에서 인증 코드, sitemap과 robots 접근을 확인했습니다. Search Console 계정 내부의 색인 수와 과거 오류 화면은 공개 자료가 아니므로 확인되지 않은 상태를 만들지 않았습니다.",
+        "공개 HTML의 인증 코드와 sitemap·robots 접근 방식을 확인했습니다. Search Console 화면과 메뉴는 변경될 수 있으므로 현재 계정의 표시와 공식 안내를 함께 확인하세요.",
     },
     sections: [
       {
         heading: "결론: 인증 태그, sitemap, robots, 공개 배포를 각각 확인해야 합니다",
         paragraphs: [
-          "Next.js 사이트를 Search Console에 등록하려면 먼저 소유권을 확인하고 Google이 찾을 URL을 알려줘야 합니다. MAKEON은 루트 metadata에 Google 인증값을 넣고 `app/sitemap.ts`와 `app/robots.ts`를 만들었습니다. 이후 Git에 기록하고 Vercel 공개 주소에서 세 결과를 다시 확인했습니다.",
+          "Next.js 사이트를 Search Console에 등록하려면 먼저 소유권을 확인하고 Google이 찾을 URL을 알려줘야 합니다. App Router에서는 루트 metadata에 Google 인증값을 넣고 `app/sitemap.ts`와 `app/robots.ts`로 검색 파일을 만들 수 있습니다. 배포 뒤에는 공개 주소에서 세 결과를 각각 확인합니다.",
           "인증 성공은 사이트 소유권 확인이고 색인 성공은 별도 과정입니다. 사이트맵을 제출해도 모든 URL이 즉시 검색 결과에 나타나는 것은 아닙니다.",
         ],
       },
@@ -533,7 +533,7 @@ export const adsenseQualityPosts: BlogPost[] = [
       {
         heading: "2. Next.js 루트 metadata에 Google 인증값을 넣습니다",
         paragraphs: [
-          "Next.js는 metadata 객체의 `verification.google` 값을 Google 사이트 인증 메타 태그로 출력할 수 있습니다. MAKEON은 모든 페이지가 공유하는 루트 layout의 metadata에 값을 추가했습니다. 인증값 전체를 글이나 스크린샷에 공개할 필요는 없습니다.",
+          "Next.js는 metadata 객체의 `verification.google` 값을 Google 사이트 인증 메타 태그로 출력할 수 있습니다. 모든 페이지가 공유하는 루트 layout의 metadata에 값을 추가하면 공통 head에 출력됩니다. 인증값 전체를 글이나 스크린샷에 공개할 필요는 없습니다.",
         ],
         codeBlock: {
           label: "구조 예시",
@@ -548,7 +548,7 @@ export const adsenseQualityPosts: BlogPost[] = [
       {
         heading: "3. sitemap.ts에 검색에 공개할 URL만 포함합니다",
         paragraphs: [
-          "MAKEON의 sitemap은 홈, 블로그, 도구, 정책 페이지와 각 블로그 슬러그를 포함합니다. `/api` 같은 서버 엔드포인트나 사용자별 화면은 넣지 않습니다. 글의 수정일은 콘텐츠의 `updatedAt`을 사용합니다.",
+          "sitemap에는 홈, 블로그, 공개 도구, 정책 페이지와 각 블로그 슬러그처럼 검색 가치가 있는 canonical URL을 포함합니다. `/api` 같은 서버 엔드포인트나 사용자별 화면은 넣지 않습니다. 글의 수정일은 실제 콘텐츠의 `updatedAt`을 사용합니다.",
         ],
         codeBlock: {
           label: "Next.js sitemap 핵심 형태",
@@ -564,7 +564,7 @@ export const adsenseQualityPosts: BlogPost[] = [
       {
         heading: "4. robots.ts에서 sitemap 위치를 알립니다",
         paragraphs: [
-          "MAKEON robots 설정은 일반 페이지 크롤링을 허용하고 API 경로는 제외하며 sitemap의 전체 주소를 제공합니다. robots는 색인 승인을 보장하는 파일이 아니라 크롤러가 접근 규칙과 사이트맵 위치를 확인하는 자료입니다.",
+          "robots 설정은 일반 공개 페이지의 크롤링을 허용하고 필요하면 API 경로를 제외하며 sitemap의 절대 주소를 제공합니다. robots는 색인을 보장하는 파일이 아니라 크롤러가 접근 규칙과 사이트맵 위치를 확인하는 자료입니다.",
         ],
         codeBlock: {
           label: "robots 구조 예시",
@@ -572,10 +572,10 @@ export const adsenseQualityPosts: BlogPost[] = [
         },
       },
       {
-        heading: "5. Git에 기록하고 Vercel 공개 HTML을 확인합니다",
+        heading: "5. 배포한 뒤 공개 HTML과 검색 파일을 확인합니다",
         paragraphs: [
-          "MAKEON Git 기록에는 `Add Google Search Console verification`과 `Prepare MAKEON for Google Search indexing` 커밋이 별도로 남아 있습니다. 소유권 인증과 검색 파일 준비를 한 번에 뭉치지 않아 변경 목적을 확인할 수 있습니다.",
-          "배포 후에는 홈 페이지 소스에서 `google-site-verification` 태그를 찾고 `/sitemap.xml`, `/robots.txt`를 직접 열었습니다. 로컬 파일이 존재하는 것만으로는 Search Console이 접근할 수 없습니다.",
+          "소유권 인증과 검색 파일 준비를 별도 커밋으로 남기면 인증 문제와 sitemap 문제를 구분하기 쉽습니다. 배포가 완료된 커밋과 production 도메인이 일치하는지도 함께 확인하세요.",
+          "배포 후에는 홈 페이지 소스에서 `google-site-verification` 태그를 찾고 `/sitemap.xml`, `/robots.txt`를 직접 엽니다. 로컬 파일이 존재하는 것만으로는 Search Console이 접근할 수 없습니다.",
         ],
         contextualLinks: [
           { prefix: "배포 확인 방법은", label: "Next.js Vercel 배포 가이드", href: "/blog/nextjs-vercel-deployment-guide", suffix: "에서 이어서 볼 수 있습니다." },
@@ -628,37 +628,37 @@ export const adsenseQualityPosts: BlogPost[] = [
   },
   {
     slug: "vercel-adsense-setup-review-process",
-    title: "Vercel 사이트에 AdSense 코드를 넣고 검토 요청한 과정",
-    seoTitle: "Vercel AdSense 설정: 코드·ads.txt·검토 요청 과정",
+    title: "Vercel AdSense 설정 방법: 코드·ads.txt·검토 전 점검",
+    seoTitle: "Vercel AdSense 설정: 코드·ads.txt·검토 전 체크리스트",
     summary:
-      "MAKEON의 Next.js 루트에 AdSense 코드를 넣고 ads.txt를 공개한 뒤 사이트 검토를 요청했지만 콘텐츠 품질 사유로 승인되지 않은 과정을 사실대로 정리했습니다.",
+      "Vercel에 배포한 Next.js 사이트에 AdSense 코드를 넣고 ads.txt를 공개한 뒤, 연결 상태와 콘텐츠 검토 항목을 나눠 확인하는 방법을 정리했습니다.",
     description:
       "Vercel에 배포한 Next.js 사이트에서 AdSense 스크립트와 ads.txt를 설정하고 공개 HTML을 확인한 과정, 코드 연결과 콘텐츠 승인의 차이를 설명합니다.",
     primaryKeyword: "Vercel AdSense 설정",
     relatedKeywords: ["Next.js 애드센스 코드", "Vercel ads.txt", "애드센스 검토 요청", "가치가 별로 없는 콘텐츠"],
     publishedAt: "2026-08-04",
-    updatedAt: "2026-08-04",
-    category: "배포·수익화",
-    tags: ["배포·수익화", "웹사이트·웹앱 제작"],
+    updatedAt: "2026-08-12",
+    category: "배포·Google 검색",
+    tags: ["배포·Google 검색", "웹사이트·웹앱 제작"],
     readingTime: "14분",
     featured: true,
     reviewNote: {
       checkedAt: "2026-08-04",
-      environment: "MAKEON Next.js 16, Vercel 공개 사이트, Google AdSense 사이트 검토",
+      environment: "Next.js 16, Vercel 공개 배포, Google AdSense 공식 안내",
       notice:
-        "MAKEON은 현재 AdSense 승인 사례가 아닙니다. 공개 코드와 ads.txt 연결은 확인됐지만 콘텐츠 품질 사유로 승인되지 않았으며, 이 글은 실패와 개선 과정을 포함합니다.",
+        "AdSense 화면과 정책은 변경될 수 있습니다. 공개 코드와 ads.txt는 기술 연결 항목이며 승인 여부는 계정에 표시되는 실제 검토 결과를 기준으로 확인하세요.",
     },
     sections: [
       {
         heading: "결론: 광고 코드 연결에 성공해도 AdSense 승인을 의미하지 않습니다",
         paragraphs: [
-          "MAKEON은 공개 사이트의 모든 주요 페이지에 AdSense 스크립트가 한 번씩 출력되고, 루트의 ads.txt도 정상적으로 열립니다. 그 상태에서 사이트 검토를 진행했지만 ‘가치가 별로 없는 콘텐츠’ 사유로 승인되지 않았습니다.",
-          "이 경험에서 확인한 핵심은 연결 문제와 콘텐츠 심사를 분리해야 한다는 것입니다. 스크립트와 ads.txt는 Google이 사이트와 게시자 정보를 확인하는 기술 설정이고, 승인은 사이트 전체 콘텐츠와 정책을 별도로 검토한 결과입니다.",
+          "공개 사이트의 모든 주요 페이지에 AdSense 스크립트가 출력되고 루트의 ads.txt가 정상적으로 열려도 사이트 승인을 의미하지는 않습니다.",
+          "스크립트와 ads.txt는 Google이 사이트와 게시자 정보를 확인하는 기술 설정입니다. 콘텐츠의 독창성, 탐색 구조, 정책 준수와 사용자 가치는 별도의 검토 항목으로 나눠 확인해야 합니다.",
         ],
         callout: {
           type: "warning",
-          title: "승인 후기 아님",
-          text: "이 글은 승인 성공을 약속하거나 우회 방법을 소개하지 않습니다. 실제 설정, 거절 결과와 재검토 전에 개선한 항목을 기록합니다.",
+          title: "승인을 보장하는 설정은 없습니다",
+          text: "코드와 ads.txt가 정상이어도 승인은 보장되지 않습니다. 계정에 표시되는 실제 상태와 최신 정책을 기준으로 점검하세요.",
         },
       },
       {
@@ -677,7 +677,7 @@ export const adsenseQualityPosts: BlogPost[] = [
       {
         heading: "2. Next.js 루트 layout에 AdSense 스크립트를 한 번 넣었습니다",
         paragraphs: [
-          "Google은 사이트 연결 코드 조각을 페이지의 head 안에 넣는 방법을 안내합니다. MAKEON은 모든 페이지가 공유하는 루트 layout에 비동기 스크립트를 배치했습니다. 각 글이나 도구 페이지에 같은 스크립트를 반복해서 넣지 않았습니다.",
+          "Google은 사이트 연결 코드 조각을 페이지의 head 안에 넣는 방법을 안내합니다. App Router에서는 모든 페이지가 공유하는 루트 layout에 비동기 스크립트를 배치할 수 있습니다. 각 글이나 도구 페이지에 같은 스크립트를 반복해서 넣지 마세요.",
         ],
         codeBlock: {
           label: "게시자 번호를 숨긴 구조 예시",
@@ -692,7 +692,7 @@ export const adsenseQualityPosts: BlogPost[] = [
       {
         heading: "3. public/ads.txt를 만들고 루트 주소에서 확인했습니다",
         paragraphs: [
-          "MAKEON 저장소에는 `Add AdSense ads.txt` 커밋이 있고 파일은 `public/ads.txt`에 있습니다. Next.js가 배포되면 사이트 루트의 `/ads.txt`로 제공됩니다. 브라우저에서 직접 열어 HTTP 200과 게시자 행을 확인했습니다.",
+          "Next.js 프로젝트에서는 `public/ads.txt`에 파일을 두면 배포 후 사이트 루트의 `/ads.txt`로 제공할 수 있습니다. 브라우저에서 직접 열어 HTTP 200, `text/plain` 응답과 게시자 행을 확인하세요.",
         ],
         codeBlock: {
           label: "형식 예시",
@@ -708,7 +708,7 @@ export const adsenseQualityPosts: BlogPost[] = [
       {
         heading: "4. Git push와 Vercel 배포 후 공개 HTML을 검사했습니다",
         paragraphs: [
-          "저장소에 코드가 있어도 배포되지 않았다면 AdSense가 볼 수 없습니다. MAKEON은 AdSense 인증 코드와 ads.txt를 서로 다른 커밋으로 남겼고, 공개 페이지 HTML에서 스크립트가 한 번 출력되는지 검사했습니다.",
+          "저장소에 코드가 있어도 production에 배포되지 않았다면 AdSense가 볼 수 없습니다. 인증 코드와 ads.txt 변경을 추적 가능한 커밋으로 남기고, 공개 페이지 HTML에서 스크립트가 중복되지 않는지 검사하세요.",
           "검사할 때는 React 컴포넌트 파일이 아니라 실제 공개 주소의 HTML을 기준으로 봅니다. ads.txt도 로컬 파일 존재 여부보다 공개 루트 응답이 중요합니다.",
         ],
         contextualLinks: [
@@ -716,10 +716,10 @@ export const adsenseQualityPosts: BlogPost[] = [
         ],
       },
       {
-        heading: "5. 검토 요청 뒤 콘텐츠 품질 사유로 승인되지 않았습니다",
+        heading: "5. 콘텐츠 품질 문제는 코드 재설치로 해결되지 않습니다",
         paragraphs: [
-          "코드 연결과 공개 파일이 정상이어도 MAKEON은 승인되지 않았습니다. 거절 사유는 ‘가치가 별로 없는 콘텐츠’였습니다. 따라서 같은 코드를 다시 넣거나 글 수만 늘리는 방식으로는 원인을 해결했다고 보기 어려웠습니다.",
-          "기존 글을 점검해 보니 분량과 FAQ는 있었지만 MAKEON이 실제로 어떤 파일을 바꾸고 어떤 오류를 겪었는지 설명하는 부분이 약했습니다. 작성자도 ‘MAKEON 편집팀’이라는 브랜드 표기만 있어 실제 운영 방식과 검증 기준이 충분히 드러나지 않았습니다.",
+          "코드 연결과 공개 파일이 정상인데 콘텐츠 품질 관련 사유가 표시된다면 같은 코드를 다시 넣거나 글 수만 늘리는 방식으로는 원인을 해결하기 어렵습니다.",
+          "각 글이 검색 질문에 직접 답하는지, 도구 페이지가 기능·사용법·저장 범위·한계를 설명하는지, 작성자와 문의·개인정보 안내가 실제 운영과 일치하는지 점검하세요.",
         ],
         table: {
           caption: "거절 후 나눈 개선 항목",
@@ -736,7 +736,7 @@ export const adsenseQualityPosts: BlogPost[] = [
         heading: "6. CMP는 코드 검색만으로 설정 여부를 단정하지 않았습니다",
         paragraphs: [
           "Google은 EEA, 영국과 스위스 사용자에게 광고를 제공할 때 동의 관리 요구사항을 안내합니다. Google CMP는 AdSense의 개인정보 보호 및 메시지 설정에서 운영할 수 있어 저장소 HTML에 별도 문자열이 항상 보이지 않을 수 있습니다.",
-          "MAKEON 공개 정적 HTML과 저장소에서는 CMP 설정 상태를 확정할 수 없었습니다. 따라서 ‘설정 완료’라고 쓰지 않고 AdSense 대시보드에서 유럽 규정 메시지, 대상 사이트와 게시 상태를 별도로 확인할 항목으로 남겼습니다.",
+          "CMP 설정은 공개 정적 HTML과 저장소 코드만으로 확정할 수 없는 경우가 있습니다. AdSense 대시보드에서 유럽 규정 메시지, 대상 사이트와 게시 상태를 별도로 확인하세요.",
         ],
       },
       {
@@ -777,29 +777,29 @@ export const adsenseQualityPosts: BlogPost[] = [
     title: "AI 코딩 결과의 완성도를 높이는 요청 방법: 기능 목록보다 중요한 것",
     seoTitle: "AI 코딩 완성도를 높이는 프롬프트와 검수 방법",
     summary:
-      "기능을 많이 적는 대신 목표, 현재 상태, 유지 조건과 완료 기준을 명확히 해 AI 코딩 결과를 실제로 개선한 MAKEON의 요청 방식을 설명합니다.",
+      "기능을 많이 적는 대신 목표, 현재 상태, 유지 조건과 완료 기준을 명확히 해 AI 코딩 결과를 개선하는 방법을 설명합니다.",
     description:
       "AI 코딩 결과가 단순하거나 기존 기능을 깨뜨릴 때 사용하는 목표, 맥락, 제약, 완료 기준 기반 요청 템플릿과 단계별 검수 방법을 실제 게임 개선 사례로 안내합니다.",
     primaryKeyword: "AI 코딩 결과 완성도 높이기",
     relatedKeywords: ["AI 코딩 프롬프트", "Codex 프롬프트", "AI 코딩 요청 방법", "AI 웹사이트 완성도"],
     publishedAt: "2026-08-04",
-    updatedAt: "2026-08-04",
+    updatedAt: "2026-08-12",
     category: "AI 코딩",
     tags: ["AI 코딩·Codex", "웹사이트·웹앱 제작", "프롬프트"],
     readingTime: "15분",
     featured: true,
     reviewNote: {
       checkedAt: "2026-08-04",
-      environment: "MAKEON 게임·블로그 Git 이력, Codex 작업 흐름, Next.js·TypeScript 검사",
+      environment: "Codex 작업 흐름, Next.js·TypeScript 검사와 Git 변경 검토",
       notice:
-        "결과 개선 사례는 MAKEON Git 기록에서 확인되는 범위 축소와 반복 수정 흐름을 기준으로 작성했습니다. 특정 AI 모델이 항상 같은 결과를 낸다는 뜻은 아닙니다.",
+        "예시는 범위 축소와 반복 검수 원칙을 설명하기 위한 것입니다. 같은 프롬프트라도 모델, 저장소 상태와 실행 환경에 따라 결과가 달라질 수 있습니다.",
     },
     sections: [
       {
         heading: "결론: 기능 수보다 현재 상태와 완료 기준을 정확히 적어야 합니다",
         paragraphs: [
           "‘기능을 많이 넣어 고퀄리티로 만들어 줘’라는 요청은 목표가 커 보이지만 결과를 판단할 기준이 없습니다. AI는 무엇을 유지해야 하는지, 어느 화면이 가장 중요한지, 어떤 검사를 통과해야 하는지 추측하게 됩니다.",
-          "MAKEON에서는 넓은 게임 묶음을 만든 뒤 한 게임에 집중하는 방향으로 바꾸고, 물리 효과, 오디오, 모바일과 랭킹을 여러 단계로 개선했습니다. 결과가 좋아진 지점은 기능 목록이 길어진 때가 아니라 한 번의 요청이 한 사용자 경험에 집중하기 시작한 때였습니다.",
+          "여러 게임의 물리 효과, 오디오, 모바일과 랭킹을 한 번에 요청하면 검수 범위가 지나치게 커집니다. 게임 하나와 사용자 행동 하나에 집중하고 다음 단계로 확장해야 결과의 성공 여부를 분명하게 판단할 수 있습니다.",
         ],
       },
       {
@@ -821,7 +821,7 @@ export const adsenseQualityPosts: BlogPost[] = [
       {
         heading: "2. 먼저 현재 프로젝트에서 유지할 것을 찾습니다",
         paragraphs: [
-          "새로 만드는 것보다 기존 프로젝트를 안전하게 바꾸는 일이 어렵습니다. MAKEON의 파스텔 컬러 정렬을 리디자인할 때도 게임 규칙, 라우트, 레벨, 기록과 랭킹 구조를 유지 조건으로 두었습니다. 비주얼만 보고 상태 구조를 바꾸면 사용자의 진행 기록이 사라질 수 있기 때문입니다.",
+          "새로 만드는 것보다 기존 프로젝트를 안전하게 바꾸는 일이 어렵습니다. 컬러 정렬 게임을 리디자인한다면 게임 규칙, 라우트, 레벨, 기록과 랭킹 구조를 유지 조건으로 먼저 적으세요. 비주얼만 보고 상태 구조를 바꾸면 사용자의 진행 기록이 사라질 수 있기 때문입니다.",
         ],
         bullets: [
           "현재 라우트와 외부에서 연결된 URL",
@@ -835,18 +835,18 @@ export const adsenseQualityPosts: BlogPost[] = [
       {
         heading: "3. 목표, 맥락, 제약, 완료 조건을 한 세트로 적습니다",
         paragraphs: [
-          "OpenAI의 Codex 안내도 작업 목표와 맥락, 제약, 완료 조건을 구체적으로 제공하고 계획과 검증을 포함하는 방식을 권합니다. MAKEON에서는 여기에 ‘먼저 관련 파일을 설명할 것’과 ‘변경 파일 목록을 보고할 것’을 추가했습니다.",
+          "작업 목표와 맥락, 제약, 완료 조건을 구체적으로 제공하고 계획과 검증을 포함하세요. 기존 프로젝트라면 ‘먼저 관련 파일을 설명할 것’과 ‘변경 파일 목록을 보고할 것’도 추가하면 예상 밖 수정 범위를 찾기 쉽습니다.",
         ],
         codeBlock: {
-          label: "MAKEON에서 사용하는 요청 템플릿",
+          label: "기존 프로젝트 수정 요청 템플릿",
           code: "목표\n- 사용자가 느껴야 할 변화 한 가지\n\n현재 상태\n- 라우트, 기술, 이미 동작하는 기능\n\n유지 조건\n- URL, 규칙, 기록, 데이터, 광고 코드\n\n수정 조건\n- 시각·동작·모바일 기준을 수치로 작성\n\n완료 조건\n- 접근성, typecheck, build, 공개 확인\n\n작업 방식\n- 관련 파일 설명 → 구현 → 검사 → 변경 목록 보고",
         },
       },
       {
-        heading: "4. MAKEON에서 잘되지 않았던 요청 방식",
+        heading: "4. 너무 넓은 요청이 실패하기 쉬운 이유",
         paragraphs: [
-          "디지털 휴식 놀이터를 넓게 확장했을 때 기능은 늘었지만 각 놀이의 깊이와 사용 목적이 흐려졌습니다. Git 기록에는 1단계 놀이터 추가, 전체 게임 확장, 이후 파스텔 스택 게임으로 교체한 흐름이 남아 있습니다.",
-          "이 경험만으로 AI가 많은 기능을 만들 수 없다고 말할 수는 없습니다. 문제는 한 번의 검수 범위가 너무 커졌다는 점입니다. 모든 게임의 물리, 소리, 모바일, 저장과 접근성을 한 번에 확인하기 어려웠습니다.",
+          "여러 미니게임을 한 요청에서 확장하면 기능 수는 늘어도 각 놀이의 규칙과 사용 목적이 흐려질 수 있습니다. 한 번의 검수 범위가 너무 커져 물리, 소리, 모바일, 저장과 접근성을 모두 확인하기 어렵기 때문입니다.",
+          "AI가 많은 기능을 만들 수 있는지보다 사용자가 각 기능을 검증할 수 있는지가 중요합니다. 독립적인 기능은 별도 작업과 커밋으로 나누고, 앞 단계가 통과한 뒤 다음 단계로 이동하세요.",
         ],
         subsections: [
           {
