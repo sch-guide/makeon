@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="900" viewBox="0 0 1440 900" role="img" aria-labelledby="title desc">
+  <title id="title">무료 AI 도구 결정 지도</title><desc id="desc">입력 자료와 원하는 결과로 범용 대화형, 문서 기반, 이미지, 코딩 도구를 고르는 흐름</desc>
+  <rect width="1440" height="900" rx="42" fill="#f7fcfa"/>
+  <text x="80" y="105" fill="#173b31" font-family="Arial, sans-serif" font-size="44" font-weight="800">무료 AI 도구 결정 지도</text>
+  <g font-family="Arial, sans-serif" text-anchor="middle">
+    <rect x="490" y="175" width="460" height="100" rx="50" fill="#315e50"/>
+    <text x="720" y="238" fill="#fff" font-size="29" font-weight="800">지금 넣을 자료는 무엇인가?</text>
+    <path d="M720 275v80M720 355H240M720 355h480" fill="none" stroke="#73a997" stroke-width="7"/>
+    <g font-size="25" font-weight="800">
+      <rect x="100" y="390" width="280" height="90" rx="26" fill="#e6f2ee"/><text x="240" y="445" fill="#275444">짧은 질문·메모</text>
+      <rect x="440" y="390" width="280" height="90" rx="26" fill="#eee8f8"/><text x="580" y="445" fill="#54436b">긴 문서·출처</text>
+      <rect x="780" y="390" width="240" height="90" rx="26" fill="#fff0e6"/><text x="900" y="445" fill="#754933">시각 장면</text>
+      <rect x="1080" y="390" width="260" height="90" rx="26" fill="#e7eef8"/><text x="1210" y="445" fill="#37516f">코드·저장소</text>
+    </g>
+    <g stroke="#9abdb1" stroke-width="6"><path d="M240 355v35"/><path d="M580 355v35"/><path d="M900 355v35"/><path d="M1200 355v35"/></g>
+    <g font-size="24">
+      <rect x="100" y="570" width="280" height="150" rx="28" fill="#fff" stroke="#b9d8ce" stroke-width="3"/><text x="240" y="625" fill="#275444" font-weight="800">범용 대화형 AI</text><text x="240" y="672" fill="#547268">초안·아이디어·정리</text>
+      <rect x="440" y="570" width="280" height="150" rx="28" fill="#fff" stroke="#d2c5e6" stroke-width="3"/><text x="580" y="625" fill="#54436b" font-weight="800">문서 기반 AI</text><text x="580" y="672" fill="#746587">소스 질문·근거 요약</text>
+      <rect x="780" y="570" width="240" height="150" rx="28" fill="#fff" stroke="#efd2bf" stroke-width="3"/><text x="900" y="625" fill="#754933" font-weight="800">이미지 생성</text><text x="900" y="672" fill="#866553">구도·빛·비율</text>
+      <rect x="1080" y="570" width="260" height="150" rx="28" fill="#fff" stroke="#c5d5e9" stroke-width="3"/><text x="1210" y="625" fill="#37516f" font-weight="800">코드 보조</text><text x="1210" y="672" fill="#5b6e84">작은 수정·diff 검토</text>
+    </g>
+    <g stroke="#9abdb1" stroke-width="6"><path d="M240 480v90"/><path d="M580 480v90"/><path d="M900 480v90"/><path d="M1210 480v90"/></g>
+  </g>
+  <rect x="100" y="780" width="1240" height="70" rx="22" fill="#dff1eb"/>
+  <text x="720" y="825" fill="#275444" font-family="Arial, sans-serif" font-size="24" font-weight="700" text-anchor="middle">같은 샘플로 정확성 · 형식 · 수정 횟수 · 검수 편의를 비교합니다.</text>
+</svg>

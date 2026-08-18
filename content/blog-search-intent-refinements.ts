@@ -173,7 +173,7 @@ const refinements: Record<string, BlogSearchIntentRefinement> = {
       { question: "디자인 참고 사이트 링크만 전달해도 되나요?", answer: "링크와 함께 참고할 요소를 여백, 색상, 카드 구조처럼 구체적으로 적어야 합니다. 그대로 복제하라는 요청은 피해야 합니다." },
       { question: "로그인과 결제도 첫 브리프에 넣어야 하나요?", answer: "서비스의 핵심이 아니라면 첫 버전의 제외 범위로 두는 편이 안전합니다. 콘텐츠와 기본 탐색을 먼저 검증한 뒤 별도 기능 명세로 추가하세요." },
     ],
-    relatedSlugs: ["build-a-website-with-ai-without-coding", "better-prompts-for-ai-coding", "codex-vscode-guide", "nextjs-vercel-deployment-guide"],
+    relatedSlugs: ["build-a-website-with-ai-without-coding", "ai-image-prompt-guide", "better-prompts-for-ai-coding", "codex-vscode-guide"],
     toolCta: { title: "제작 브리프를 요청문 초안으로 바꿔 보세요", description: "사이트 목적과 대상 사용자, 페이지와 디자인 요구를 입력한 뒤 콘텐츠 구조와 제외 범위를 보완하세요.", href: "/tools/ai-prompt-generator", label: "웹사이트 요청문 만들기" },
   },
 
@@ -600,16 +600,36 @@ const refinements: Record<string, BlogSearchIntentRefinement> = {
         paragraphs: ["답변 형식과 검토 기준이 안정되면 이메일, 회의록과 보고서 같은 작은 반복 업무의 초안부터 재사용할 수 있습니다."],
         contextualLinks: [
           { prefix: "업무별 복사 예시는", label: "AI 업무 자동화 프롬프트 7가지", href: "/blog/ai-work-automation-prompts", suffix: "에서 확인하세요." },
+          { prefix: "같은 질문을 A/B/C로 바꿔 결과 차이를 직접 보려면", label: "ChatGPT 프롬프트 비교 실험", href: "/blog/chatgpt-prompt-comparison-experiment", suffix: "을 따라 해 보세요." },
         ],
       },
     ],
-    relatedSlugs: ["ai-work-automation-prompts", "free-ai-prompt-generator-guide", "better-prompts-for-ai-coding"],
+    relatedSlugs: ["chatgpt-prompt-comparison-experiment", "chatgpt-work-organization-examples", "ai-work-automation-prompts"],
   },
   "free-ai-prompt-generator-guide": {
-    relatedSlugs: ["fix-chatgpt-prompts-for-better-answers", "ai-work-automation-prompts", "better-prompts-for-ai-coding"],
+    appendSections: [
+      {
+        heading: "생성한 요청문을 다른 AI 도구에서도 같은 조건으로 비교합니다",
+        paragraphs: ["프롬프트 생성기는 요청문의 구조를 만드는 출발점입니다. 같은 초안을 범용 AI 두 곳에 넣고 형식 준수와 수정 횟수를 비교하면 내 작업에 맞는 도구를 고를 수 있습니다."],
+        contextualLinks: [
+          { prefix: "작업별 후보와 10분 평가표는", label: "무료 AI 도구 선택 가이드", href: "/blog/free-ai-tools-by-task", suffix: "에서 확인하세요." },
+          { prefix: "조건을 한 단계씩 바꾸는 방법은", label: "ChatGPT 프롬프트 비교 실험", href: "/blog/chatgpt-prompt-comparison-experiment", suffix: "으로 연습할 수 있습니다." },
+        ],
+      },
+    ],
+    relatedSlugs: ["chatgpt-prompt-comparison-experiment", "free-ai-tools-by-task", "fix-chatgpt-prompts-for-better-answers"],
   },
   "ai-work-automation-prompts": {
-    relatedSlugs: ["fix-chatgpt-prompts-for-better-answers", "free-ai-prompt-generator-guide"],
+    appendSections: [
+      {
+        heading: "자동화 전에 이메일·회의록·보고서 한 건을 직접 검증합니다",
+        paragraphs: ["반복 흐름을 만들기 전에는 실제 업무 한 건에서 입력, 출력과 사람의 검수 기준이 안정적으로 작동하는지 먼저 확인하세요."],
+        contextualLinks: [
+          { prefix: "세 가지 문서를 입력부터 최종 검수까지 따라 하려면", label: "ChatGPT 업무 정리 실전 예시", href: "/blog/chatgpt-work-organization-examples", suffix: "를 확인하세요." },
+        ],
+      },
+    ],
+    relatedSlugs: ["chatgpt-work-organization-examples", "fix-chatgpt-prompts-for-better-answers", "free-ai-prompt-generator-guide"],
     removeContextualHrefs: ["/blog/better-prompts-for-ai-coding"],
   },
   "reuse-supabase-project-multiple-apps": {

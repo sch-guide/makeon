@@ -128,7 +128,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       name: "MAKEON 운영자",
       url: `${siteConfig.url}/about`,
       description:
-        "AI 코딩으로 Next.js 사이트와 무료 도구를 직접 만들고, 저장소와 공개 결과를 대조해 기록하는 초보 운영자",
+        "AI를 배우고 활용하고 직접 체험할 수 있도록 실용 가이드와 무료 웹도구를 만드는 MAKEON 운영자",
     },
     publisher: { "@type": "Organization", name: "MAKEON" },
     keywords: [post.primaryKeyword, ...(post.relatedKeywords ?? [])]
@@ -388,7 +388,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             <div className="aside-card">
               <span className="aside-label">MAKEON</span>
               <h2>막히는 문제를 쉽게 풀어드립니다.</h2>
-              <p>AI 활용과 웹사이트 제작에 필요한 실용 가이드와 무료 도구를 제공합니다.</p>
+              <p>AI 활용, 생산성, 콘텐츠 생성과 웹사이트 제작을 직접 따라 하는 실용 가이드와 무료 도구를 제공합니다.</p>
               <Link className="button button-primary" href="/about">
                 MAKEON 소개
               </Link>

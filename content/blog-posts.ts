@@ -1,4 +1,5 @@
 import type { BlogPost } from "@/types/content";
+import { practicalAiPosts } from "@/content/blog-posts-practical-ai";
 import { secondClusterPosts } from "@/content/blog-posts-second-cluster";
 import { thirdClusterPosts } from "@/content/blog-posts-third-cluster";
 import {
@@ -1269,6 +1270,7 @@ const legacyBlogPosts: BlogPost[] = [
 const strengthenedSlugSet = new Set<string>(strengthenedPostSlugs);
 const searchFocusedSlugSet = new Set<string>(searchFocusedPostSlugs);
 const rawBlogPosts: BlogPost[] = [
+  ...practicalAiPosts,
   ...searchFocusedPosts,
   ...adsenseQualityPosts.filter((post) => !searchFocusedSlugSet.has(post.slug)),
   ...legacyBlogPosts.filter(

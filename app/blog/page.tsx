@@ -7,11 +7,11 @@ import { blogPosts } from "@/content/blog-posts";
 export const metadata: Metadata = {
   title: "블로그",
   description:
-    "AI 활용, 프롬프트, Codex, 웹사이트 제작, Vercel 배포와 Google 검색 문제를 해결하는 초보자용 실전 가이드입니다.",
+    "ChatGPT 실용 활용, 생산성, AI 이미지와 무료 AI 도구부터 AI 코딩·웹사이트 제작까지 초보자가 바로 써먹는 실전 가이드입니다.",
   alternates: { canonical: "/blog" },
   openGraph: {
     title: "MAKEON 블로그",
-    description: "AI 활용부터 웹사이트 제작과 배포까지 단계별 해결 방법을 확인하세요.",
+    description: "AI를 배우고 활용하고 직접 써보는 실전 가이드와 체험 콘텐츠를 확인하세요.",
     url: "/blog",
     images: [{ url: "/og.png", alt: "MAKEON - AI로 아이디어를 현실로" }],
   },
@@ -22,8 +22,8 @@ export default function BlogPage() {
     <main id="main-content">
       <PageHero
         eyebrow="MAKEON BLOG"
-        title="AI 활용과 웹사이트 제작 가이드"
-        description="프롬프트 작성, AI 코딩, 웹사이트·웹앱 제작, 배포와 Google 검색 문제를 초보자도 따라 할 수 있게 단계별로 정리합니다."
+        title="AI를 바로 써먹는 실전 가이드"
+        description="ChatGPT 업무 활용, 생산성, AI 이미지·무료 도구와 AI 코딩·웹사이트 제작을 초보자도 직접 따라 할 수 있게 정리합니다."
       />
 
       <section className="blog-index-section">

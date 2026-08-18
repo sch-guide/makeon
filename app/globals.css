@@ -3128,10 +3128,14 @@ textarea {
 
   .article-header h1 {
     font-size: clamp(32px, 9.5vw, 43px);
+    overflow-wrap: anywhere;
+    word-break: normal;
   }
 
   .article-summary {
     font-size: 16px;
+    overflow-wrap: anywhere;
+    word-break: normal;
   }
 
   .article-layout {

@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1536" height="960" viewBox="0 0 1536 960" role="img" aria-labelledby="title desc">
+  <title id="title">작업별 무료 AI 도구 선택</title><desc id="desc">글쓰기, 문서, 이미지, 코딩, 번역 작업에서 도구 종류를 선택하는 지도</desc>
+  <rect width="1536" height="960" rx="48" fill="#eef8f5"/>
+  <path d="M0 0h570L260 960H0z" fill="#d9f0e8"/>
+  <text x="100" y="135" fill="#25745a" font-family="Arial, sans-serif" font-size="30" font-weight="700">MAKEON TOOL MAP</text>
+  <text x="100" y="225" fill="#173b31" font-family="Arial, sans-serif" font-size="60" font-weight="800">도구보다</text>
+  <text x="100" y="300" fill="#173b31" font-family="Arial, sans-serif" font-size="60" font-weight="800">작업을 먼저 선택</text>
+  <text x="100" y="370" fill="#416d60" font-family="Arial, sans-serif" font-size="27">같은 샘플로 10분 동안 비교하세요.</text>
+  <g transform="translate(520 165)" font-family="Arial, sans-serif">
+    <circle cx="410" cy="310" r="150" fill="#3d6d5f"/>
+    <text x="410" y="292" fill="#fff" font-size="34" font-weight="800" text-anchor="middle">원하는</text><text x="410" y="338" fill="#fff" font-size="34" font-weight="800" text-anchor="middle">결과</text>
+    <g font-size="25" font-weight="800" text-anchor="middle">
+      <g transform="translate(410 25)"><rect x="-115" y="-42" width="230" height="84" rx="42" fill="#fff"/><text y="9" fill="#3d5367">글 초안</text></g>
+      <g transform="translate(720 150)"><rect x="-115" y="-42" width="230" height="84" rx="42" fill="#fff"/><text y="9" fill="#5a4770">문서 근거</text></g>
+      <g transform="translate(770 465)"><rect x="-115" y="-42" width="230" height="84" rx="42" fill="#fff"/><text y="9" fill="#744d39">이미지</text></g>
+      <g transform="translate(410 620)"><rect x="-115" y="-42" width="230" height="84" rx="42" fill="#fff"/><text y="9" fill="#355c49">코드</text></g>
+      <g transform="translate(100 465)"><rect x="-115" y="-42" width="230" height="84" rx="42" fill="#fff"/><text y="9" fill="#654a6b">번역</text></g>
+      <g transform="translate(90 150)"><rect x="-115" y="-42" width="230" height="84" rx="42" fill="#fff"/><text y="9" fill="#73514c">요청문</text></g>
+    </g>
+    <g stroke="#75aa99" stroke-width="7" fill="none"><path d="M410 175V85"/><path d="M535 220 640 170"/><path d="m540 395 120 55"/><path d="M410 460v115"/><path d="m285 395-105 50"/><path d="M285 220 180 170"/></g>
+  </g>
+  <rect x="100" y="760" width="395" height="105" rx="28" fill="#fff"/>
+  <text x="135" y="810" fill="#25745a" font-family="Arial, sans-serif" font-size="24" font-weight="800">무료 범위는 공식 페이지에서</text><text x="135" y="842" fill="#416d60" font-family="Arial, sans-serif" font-size="21">사용 직전에 다시 확인</text>
+</svg>

@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1536" height="960" viewBox="0 0 1536 960" role="img" aria-labelledby="title desc">
+  <title id="title">ChatGPT 프롬프트 A B C 비교 실험</title><desc id="desc">같은 질문에 맥락과 완료 기준을 단계적으로 더해 답변을 비교하는 도식</desc>
+  <rect width="1536" height="960" rx="48" fill="#f3f0ff"/>
+  <text x="110" y="135" fill="#684f9d" font-family="Arial, sans-serif" font-size="30" font-weight="700">MAKEON AI PLAYGROUND</text>
+  <text x="110" y="225" fill="#241c33" font-family="Arial, sans-serif" font-size="58" font-weight="800">같은 질문,</text>
+  <text x="110" y="300" fill="#241c33" font-family="Arial, sans-serif" font-size="58" font-weight="800">다른 조건, 얼마나 달라질까?</text>
+  <g transform="translate(110 400)" font-family="Arial, sans-serif">
+    <g><rect width="375" height="320" rx="34" fill="#fff" stroke="#d8ccef" stroke-width="4"/><circle cx="65" cy="65" r="35" fill="#9a86c7"/><text x="65" y="76" fill="#fff" font-size="31" font-weight="800" text-anchor="middle">A</text><text x="120" y="75" fill="#4a3a68" font-size="28" font-weight="800">기본 질문</text><text x="45" y="155" fill="#6c5b83" font-size="23">"계획을 짜 줘"</text><rect x="45" y="215" width="285" height="45" rx="22" fill="#eee9f7"/></g>
+    <path d="M395 560h55" stroke="#8c78b7" stroke-width="10"/><path d="m438 538 24 22-24 22" fill="none" stroke="#8c78b7" stroke-width="10"/>
+    <g transform="translate(475)"><rect width="375" height="320" rx="34" fill="#eee8fa" stroke="#b9a5df" stroke-width="4"/><circle cx="65" cy="65" r="35" fill="#765ca8"/><text x="65" y="76" fill="#fff" font-size="31" font-weight="800" text-anchor="middle">B</text><text x="120" y="75" fill="#4a3a68" font-size="28" font-weight="800">맥락 추가</text><text x="45" y="155" fill="#5e4b79" font-size="23">대상 · 상황 · 자료</text><rect x="45" y="215" width="285" height="45" rx="22" fill="#d8cbed"/></g>
+    <path d="M870 560h55" stroke="#6ca68f" stroke-width="10"/><path d="m913 538 24 22-24 22" fill="none" stroke="#6ca68f" stroke-width="10"/>
+    <g transform="translate(950)"><rect width="375" height="320" rx="34" fill="#ddf2ea" stroke="#70b39a" stroke-width="4"/><circle cx="65" cy="65" r="35" fill="#327960"/><text x="65" y="76" fill="#fff" font-size="31" font-weight="800" text-anchor="middle">C</text><text x="120" y="75" fill="#214b3e" font-size="28" font-weight="800">완료 기준</text><text x="45" y="155" fill="#356554" font-size="23">형식 · 금지 · 검수</text><rect x="45" y="215" width="285" height="45" rx="22" fill="#bfe3d5"/></g>
+  </g>
+  <g font-family="Arial, sans-serif" font-size="23" font-weight="700" fill="#4a3a68">
+    <text x="115" y="820">정확성</text><text x="355" y="820">구체성</text><text x="600" y="820">실행 가능성</text><text x="890" y="820">검수 편의</text>
+  </g>
+  <path d="M110 855h1200" stroke="#c5b8de" stroke-width="6" stroke-linecap="round"/><circle cx="1310" cy="855" r="18" fill="#327960"/>
+</svg>
