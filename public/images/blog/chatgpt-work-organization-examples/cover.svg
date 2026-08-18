@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1536" height="960" viewBox="0 0 1536 960" role="img" aria-labelledby="title desc">
+  <title id="title">ChatGPT 업무 정리 실전 흐름</title>
+  <desc id="desc">흩어진 업무 메모를 이메일, 회의록, 보고서 초안으로 정리하고 사람이 검수하는 흐름</desc>
+  <rect width="1536" height="960" rx="48" fill="#f7f4ff"/>
+  <circle cx="1340" cy="130" r="170" fill="#e8def8"/>
+  <circle cx="170" cy="820" r="210" fill="#dff5ee"/>
+  <text x="120" y="150" fill="#695789" font-family="Arial, sans-serif" font-size="30" font-weight="700">MAKEON PRACTICAL AI</text>
+  <text x="120" y="230" fill="#241c33" font-family="Arial, sans-serif" font-size="62" font-weight="800">흩어진 업무를</text>
+  <text x="120" y="305" fill="#241c33" font-family="Arial, sans-serif" font-size="62" font-weight="800">검토 가능한 초안으로</text>
+  <g font-family="Arial, sans-serif">
+    <rect x="120" y="410" width="330" height="300" rx="34" fill="#fff" stroke="#cfc3e6" stroke-width="4"/>
+    <text x="165" y="475" fill="#695789" font-size="25" font-weight="700">업무 원문</text>
+    <rect x="165" y="525" width="220" height="18" rx="9" fill="#ded5ef"/>
+    <rect x="165" y="570" width="170" height="18" rx="9" fill="#ded5ef"/>
+    <rect x="165" y="615" width="245" height="18" rx="9" fill="#ded5ef"/>
+    <path d="M470 560h105" stroke="#8b74b2" stroke-width="12" stroke-linecap="round"/>
+    <path d="m555 530 35 30-35 30" fill="none" stroke="#8b74b2" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="610" y="410" width="360" height="300" rx="34" fill="#493b63"/>
+    <text x="660" y="475" fill="#f8f4ff" font-size="25" font-weight="700">목적 + 형식 + 금지</text>
+    <text x="660" y="555" fill="#fff" font-size="34" font-weight="800">AI 초안</text>
+    <text x="660" y="610" fill="#dcd2ec" font-size="23">사실은 원문 범위 안에서</text>
+    <path d="M990 560h105" stroke="#55a88b" stroke-width="12" stroke-linecap="round"/>
+    <path d="m1075 530 35 30-35 30" fill="none" stroke="#55a88b" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="1130" y="410" width="286" height="300" rx="34" fill="#e5f5ef" stroke="#74bda3" stroke-width="4"/>
+    <text x="1175" y="475" fill="#256c55" font-size="25" font-weight="700">사람 검수</text>
+    <text x="1175" y="555" fill="#214b3e" font-size="29" font-weight="800">이름 · 날짜</text>
+    <text x="1175" y="605" fill="#214b3e" font-size="29" font-weight="800">수치 · 어조</text>
+  </g>
+  <g font-family="Arial, sans-serif" font-size="25" font-weight="700">
+    <rect x="360" y="785" width="220" height="70" rx="35" fill="#fff"/><text x="430" y="829" fill="#493b63">이메일</text>
+    <rect x="625" y="785" width="220" height="70" rx="35" fill="#fff"/><text x="685" y="829" fill="#493b63">회의록</text>
+    <rect x="890" y="785" width="220" height="70" rx="35" fill="#fff"/><text x="950" y="829" fill="#493b63">보고서</text>
+  </g>
+</svg>

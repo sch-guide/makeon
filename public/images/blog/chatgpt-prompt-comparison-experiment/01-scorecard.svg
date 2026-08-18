@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="900" viewBox="0 0 1440 900" role="img" aria-labelledby="title desc">
+  <title id="title">프롬프트 비교 실험 점수표</title><desc id="desc">A 기본, B 맥락, C 완료 기준 답변을 네 가지 항목으로 비교</desc>
+  <rect width="1440" height="900" rx="42" fill="#faf8ff"/>
+  <text x="80" y="105" fill="#241c33" font-family="Arial, sans-serif" font-size="44" font-weight="800">A / B / C 답변 점수표</text>
+  <text x="80" y="155" fill="#695789" font-family="Arial, sans-serif" font-size="23">질문 주제는 고정하고 조건만 한 단계씩 더합니다.</text>
+  <g transform="translate(80 225)" font-family="Arial, sans-serif">
+    <rect width="1280" height="500" rx="30" fill="#fff" stroke="#d9ceeb" stroke-width="4"/>
+    <rect width="1280" height="95" rx="30" fill="#493b63"/><rect y="65" width="1280" height="30" fill="#493b63"/>
+    <g fill="#fff" font-size="25" font-weight="800" text-anchor="middle"><text x="150" y="58">버전</text><text x="410" y="58">정확성</text><text x="650" y="58">구체성</text><text x="900" y="58">실행 가능성</text><text x="1135" y="58">검수 편의</text></g>
+    <g font-size="26" font-weight="800" text-anchor="middle">
+      <text x="150" y="175" fill="#6f5a94">A 기본</text><text x="410" y="175" fill="#806c9e">1</text><text x="650" y="175" fill="#806c9e">0</text><text x="900" y="175" fill="#806c9e">0</text><text x="1135" y="175" fill="#806c9e">0</text>
+      <text x="150" y="300" fill="#5b4780">B 맥락</text><text x="410" y="300" fill="#6d578f">1</text><text x="650" y="300" fill="#6d578f">1</text><text x="900" y="300" fill="#6d578f">1</text><text x="1135" y="300" fill="#6d578f">1</text>
+      <rect x="20" y="355" width="1240" height="120" rx="22" fill="#e2f3ed"/>
+      <text x="150" y="430" fill="#23664f">C 기준</text><text x="410" y="430" fill="#23664f">2</text><text x="650" y="430" fill="#23664f">2</text><text x="900" y="430" fill="#23664f">2</text><text x="1135" y="430" fill="#23664f">2</text>
+    </g>
+    <g stroke="#e3dcec" stroke-width="3"><path d="M20 220h1240"/><path d="M20 345h1240"/><path d="M285 20v455"/><path d="M530 20v455"/><path d="M770 20v455"/><path d="M1030 20v455"/></g>
+  </g>
+  <rect x="80" y="770" width="1280" height="70" rx="22" fill="#eee9f8"/>
+  <text x="720" y="815" fill="#493b63" font-family="Arial, sans-serif" font-size="24" font-weight="700" text-anchor="middle">0 = 부족 · 1 = 수정 필요 · 2 = 바로 검수 가능한 수준</text>
+</svg>
