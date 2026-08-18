@@ -100,18 +100,18 @@ export default function AboutPage() {
           <div className="values-grid">
             <article className="value-card">
               <span>01</span>
-              <h3>AI 활용법을 쉽게 읽습니다</h3>
-              <p>프롬프트, AI 코딩, 웹사이트 제작과 배포 문제를 검색 의도에 맞는 가이드로 확인합니다.</p>
+              <h3>블로그에서 실용 정보를 찾습니다</h3>
+              <p>검색으로 찾아온 AI 활용, 프롬프트, 웹사이트 제작과 배포 문제를 단계별 가이드로 해결합니다.</p>
             </article>
             <article className="value-card">
               <span>02</span>
-              <h3>무료 웹도구를 바로 씁니다</h3>
-              <p>별도 설치나 가입 없이 AI 프롬프트 생성기와 실용 도구를 브라우저에서 실행합니다.</p>
+              <h3>무료 도구와 게임을 직접 체험합니다</h3>
+              <p>별도 설치나 가입 없이 AI 프롬프트 생성기, 웹도구와 퍼즐·미니게임을 브라우저에서 실행합니다.</p>
             </article>
             <article className="value-card">
               <span>03</span>
-              <h3>퍼즐과 미니게임을 즐깁니다</h3>
-              <p>파스텔 퍼즐, 기억력 게임과 대전 게임을 모바일과 PC에서 가볍게 플레이합니다.</p>
+              <h3>실용형 AI 놀이터를 자유롭게 탐색합니다</h3>
+              <p>AI를 배우고 활용한 뒤 직접 써보는 경험과 가볍게 즐기는 플레이를 한곳에서 이어갑니다.</p>
             </article>
           </div>
         </div>

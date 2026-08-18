@@ -41,7 +41,7 @@ export default function Home() {
               <span>직접 써보세요.</span>
             </h1>
             <p className="hero-description">
-              AI 활용법과 웹사이트 제작 가이드를 읽고, 무료 웹도구와 퍼즐·미니게임도 직접 즐겨보세요.
+              AI 활용법과 웹사이트 제작 가이드를 읽고, 무료 웹도구와 퍼즐·미니게임을 직접 체험해 보세요.
             </p>
             <div className="hero-actions">
               <Link className="button button-primary" href="/blog">
@@ -144,12 +144,12 @@ export default function Home() {
           </div>
           <div className="about-copy">
             <p>
-              MAKEON은 AI 활용법을 쉽게 읽고, 웹도구를 직접 사용하고, 퍼즐과 미니게임도
-              가볍게 즐길 수 있는 실용형 AI 놀이터입니다.
+              MAKEON은 AI를 배우고 활용하고 직접 써보는 실용형 AI 놀이터입니다. 블로그는
+              검색으로 찾아온 질문에 단계별 해결 방법과 실용 정보를 제공합니다.
             </p>
             <p>
-              블로그는 검색자의 문제를 해결하는 실용 가이드에 집중하고, 무료 도구와 게임은
-              설명에 그치지 않고 브라우저에서 바로 체험할 수 있도록 제공합니다.
+              무료 도구와 게임은 설명에 그치지 않고 브라우저에서 바로 체험할 수 있도록 제공합니다.
+              읽어서 해결하고, 직접 써보고, 가볍게 즐기는 경험을 한곳에서 연결합니다.
             </p>
             <Link className="text-link" href="/about">
               MAKEON 더 알아보기 <span aria-hidden="true">→</span>

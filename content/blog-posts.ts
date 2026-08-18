@@ -1269,9 +1269,11 @@ const strengthenedSlugSet = new Set<string>(strengthenedPostSlugs);
 const searchFocusedSlugSet = new Set<string>(searchFocusedPostSlugs);
 const rawBlogPosts: BlogPost[] = [
   ...searchFocusedPosts,
-  ...adsenseQualityPosts.filter((post) => !strengthenedSlugSet.has(post.slug)),
+  ...adsenseQualityPosts.filter((post) => !searchFocusedSlugSet.has(post.slug)),
   ...legacyBlogPosts.filter(
-    (post) => !searchFocusedSlugSet.has(post.slug),
+    (post) =>
+      !strengthenedSlugSet.has(post.slug) &&
+      !searchFocusedSlugSet.has(post.slug),
   ),
 ];
 
