@@ -11,7 +11,7 @@ const FADE_IN_DURATION_MS = 800;
 export function BlogBgm({ children }: Readonly<{ children: ReactNode }>) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const controlRef = useRef<HTMLDivElement | null>(null);
-  const enabledRef = useRef(true);
+  const enabledRef = useRef(false);
   const playPromiseRef = useRef<Promise<void> | null>(null);
   const fadeFrameRef = useRef<number | null>(null);
   const [enabled, setEnabled] = useState<boolean | null>(null);
@@ -82,11 +82,11 @@ export function BlogBgm({ children }: Readonly<{ children: ReactNode }>) {
   }, [cancelFade]);
 
   useEffect(() => {
-    let storedEnabled = true;
+    let storedEnabled = false;
     try {
-      storedEnabled = window.localStorage.getItem(ENABLED_STORAGE_KEY) !== "false";
+      storedEnabled = window.localStorage.getItem(ENABLED_STORAGE_KEY) === "true";
     } catch {
-      // 저장소가 차단되어도 현재 페이지에서는 기본 ON 상태로 동작합니다.
+      // 저장소가 차단되어도 현재 페이지에서는 기본 OFF 상태로 동작합니다.
     }
 
     const audio = new Audio();
@@ -174,7 +174,7 @@ export function BlogBgm({ children }: Readonly<{ children: ReactNode }>) {
     void playBgm();
   };
 
-  const isEnabled = enabled !== false;
+  const isEnabled = enabled === true;
   const stateLabel = isEnabled ? "BGM ON" : "BGM OFF";
 
   return (
