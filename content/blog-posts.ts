@@ -7,6 +7,7 @@ import {
 } from "@/content/blog-posts-adsense-quality";
 import { applyBlogVisuals } from "@/content/blog-visuals";
 import { applyBlogPostEnhancement } from "@/content/blog-post-enhancements";
+import { applyBlogSearchIntentRefinement } from "@/content/blog-search-intent-refinements";
 import {
   searchFocusedPosts,
   searchFocusedPostSlugs,
@@ -1278,7 +1279,9 @@ const rawBlogPosts: BlogPost[] = [
 ];
 
 export const blogPosts: BlogPost[] = rawBlogPosts.map((post) =>
-  applyBlogVisuals(applyBlogPostEnhancement(post)),
+  applyBlogVisuals(
+    applyBlogSearchIntentRefinement(applyBlogPostEnhancement(post)),
+  ),
 );
 
 export function getPostBySlug(slug: string) {
